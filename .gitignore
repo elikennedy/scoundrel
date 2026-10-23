@@ -43,3 +43,8 @@ temp/
 !.env.example
 *.tsbuildinfo
 .vite/
+
+# Transient design review captures and generated mockups
+.impeccable/review/
+.impeccable/mocks/
+.impeccable/build/

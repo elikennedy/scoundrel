@@ -2,7 +2,7 @@
 
 ## Project Intent
 
-Build Scoundrel, a single-player dungeon-crawling card game playable in the browser. This is a newly bootstrapped personal app; the pure TypeScript game engine and playable React interface are implemented; unique artwork and catalogue names are connected for all 44 playable cards.
+Build Scoundrel, a single-player dungeon-crawling card game playable in the browser. This is a playable desktop personal app; the pure TypeScript game engine and playable React interface are implemented; unique artwork and catalogue names are connected for all 44 playable cards.
 
 ## Workspace Context
 
@@ -13,10 +13,12 @@ Canonical directory: `/Users/elikennedy/projects/personal/scoundrel`. Follow the
 - `src/game/`: React-independent cards, state machine, and action validation.
 - `tests/game.test.ts`: rule tests and deterministic complete-game simulations.
 - `src/App.tsx`: gameplay screen, lifecycle, announcements, and focus management.
-- `src/components/`: room cards, adventurer status, and presentation helpers.
+- `src/components/`: room cards, status, discard fan, cancellable card motion and the illustrated How to Play guide.
 - `src/components/cardIllustrations.ts`: catalogue names, local artwork paths, and optional crop overrides.
-- `public/art/cards/`, `public/art/ui/`: runtime WebP illustrations, backdrop, and deck back.
-- `docs/art/`: retained originals, prompts, and generation provenance.
+- `public/art/cards/`, `public/art/ui/`: selected runtime card/UI assets, including the backdrop, deck back and control sprites.
+- `docs/README.md`: documentation map and retention policy.
+- `docs/rules.md`, `docs/architecture.md`: rule interpretations, engine API and presentation lifecycle.
+- `docs/art/`: retained originals, exact prompts, selected export mappings and provenance.
 - `PRODUCT.md`, `DESIGN.md`, `.impeccable/design.json`: product constraints and the visual design contract.
 - `src/main.tsx`: React entry point.
 - `src/App.css`, `src/index.css`: styling.
@@ -27,7 +29,7 @@ Keep the rules engine in pure TypeScript, separate from React rendering. Verify 
 
 ## Run And Build
 
-Use Node.js 24 LTS and npm. Install with `npm ci`; develop with `npm run dev`; validate with `npm run lint` and `npm run build`; preview with `npm run preview`. Run `npm test` for strict engine/test type-checking and Node.js 24 built-in rule tests. Keep meaningful rule tests alongside engine changes. The chosen rule interpretations are documented in README.md.
+Use Node.js 24 LTS and npm. Install with `npm ci`; develop with `npm run dev`; validate with `npm run lint` and `npm run build`; preview with `npm run preview`. Run `npm test` for strict engine/test type-checking and Node.js 24 built-in rule tests. Keep meaningful rule tests alongside engine changes. The chosen rule interpretations are documented in `docs/rules.md`; validation guidance is in `docs/architecture.md`.
 
 ## Registry Relationship
 
@@ -39,4 +41,6 @@ Private GitHub backing: https://github.com/elikennedy/scoundrel. Use `main` as t
 
 ## Guardrails
 
-Preserve the personal classification and Vite/React/TypeScript stack. Keep documentation truthful as implementation evolves. Make browser interactions accessible by keyboard and usable on small screens. Preserve the user-approved bronze/parchment card faces, detached action buttons, and top-aligned monster artwork. Avoid reintroducing visible card type badges or identity subtitles. Avoid adding backend services until a concrete feature requires them.
+Preserve the personal classification and Vite/React/TypeScript stack. Keep documentation truthful as implementation evolves. The current product is desktop only by explicit user request; do not add mobile layout work by default. Keep keyboard operation and reduced motion. Preserve the user-approved bronze/parchment card faces, contextual image actions over cards on hover/focus, and top-aligned monster artwork. Avoid reintroducing visible card type badges or identity subtitles. Keep game-over dismissal limited to Play again; the guide may close with Return or Escape. Avoid adding backend services until a concrete feature requires them.
+
+Use the Impeccable plugin and its current skill workflow for frontend design work. Preserve the confirmed product and design contract; do not copy machine-specific plugin paths into project instructions. Put temporary review captures under ignored `.impeccable/review/`. Retain original art and prompts, but remove duplicate logs and superseded runtime exports after confirming their selected replacements.

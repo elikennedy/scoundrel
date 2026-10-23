@@ -13,7 +13,7 @@ The React `CardFace` component owns the frame, typography, values, icons, colour
 - Weathered bronze frame, portrait composition, artwork filling the upper region.
 - Upper-left banner: numeric gameplay value and a fixed vector type icon. Red for monsters, blue for weapons, green for potions. Icons and accessible labels distinguish types without colour; omit redundant type badges.
 - Lower parchment nameplate: original card name. Ordinary playing-card identity remains available to screen readers; omit visible identity subtitles.
-- Game action buttons sit detached below the illustrated face, with damage previews and accessible labels. Visible names and rules remain crisp at any size.
+- Contextual bronze image actions float over the card on hover or keyboard focus, with damage previews and accessible labels. They are not baked into the illustration. Visible names and rules remain crisp at any size.
 - Use numeric danger values for black face cards: 11, 12, 13, 14, rather than replacing them with J/Q/K/A on the banner.
 
 ## Data and identity
@@ -22,7 +22,7 @@ Keep presentation separate from the pure rules engine. Presentation metadata liv
 
 The reference’s 1–10 range does not match Scoundrel: there are 26 distinct monsters valued 2–14, nine weapons valued 2–10, and nine potions valued 2–10. Equal-value monsters in different suits need distinct identities and illustrations. Art must never change card values or mechanics.
 
-The [user-defined card catalogue](card-catalogue.md) is authoritative for names and concepts. All 44 playable cards now have illustrations and catalogue identities connected to CardFace. The user approved the first pair and requested continuation. See the [full-deck generation log](art/full-deck-run-2026-10-24.md) for prompts, original images and desktop/mobile review. Missing or failed artwork still falls back to a placeholder.
+The [user-defined card catalogue](card-catalogue.md) is authoritative for names and concepts. All 44 playable cards now have illustrations and catalogue identities connected to CardFace. The user approved the first pair and requested continuation. See the [artwork index](art/README.md) for exact prompts, original images and selected runtime exports. Missing or failed artwork still falls back to a placeholder.
 
 ## Generation brief
 
@@ -34,10 +34,10 @@ Monsters should escalate from small and vulnerable-looking at low danger to form
 
 Compose the main subject toward the centre/right, leaving the upper-left clear enough for the fixed value banner. Keep important details away from edges so a responsive `object-fit: cover` crop remains usable. Use a consistent portrait source size (approximately 1024 × 1536) and export web-optimised assets to `public/art/cards/<card-id>.webp`. Set `src` explicitly when an asset is ready; do not reference nonexistent files.
 
-## Review before the full set
+## Review for new or replacement art
 
-Generate one monster and one weapon first. Review their crop within the real component at desktop and mobile widths, readable value/type/name, shared lighting and palette, and clear danger/power cues. Then extend the approved look across the remaining unique cards. Retain the original illustrations separately if export/cropping changes are needed.
+The original deck is complete. For replacements or extensions, review the crop in the real desktop CardFace, checking readable value/icon/name, subject placement, shared lighting and palette, and danger/power cues. Preserve approved identities and game values. Retain source illustrations separately from selected runtime exports.
 
 ## Interface artwork
 
-The generated dungeon-table backdrop and embossed deck back ship from `public/art/ui/`. Their prompts are recorded in [UI generation provenance](art/ui-generation-2026-10-24.json), with source PNGs retained in `docs/art/ui-originals/`. Keep these atmospheric assets separate from the deterministic card frame and functional controls. See [DESIGN.md](../DESIGN.md) for the surrounding game-table layout.
+The generated dungeon-table backdrop and embossed deck back ship from `public/art/ui/`. Their prompts are recorded in [UI artwork index](art/ui/README.md), with source PNGs retained in `docs/art/ui/`. Keep these atmospheric assets separate from the deterministic card frame and functional controls. See [DESIGN.md](../DESIGN.md) for the surrounding game-table layout.

@@ -4,7 +4,7 @@ User-defined names and illustration concepts for Scoundrel. This catalogue super
 
 The current game uses 44 cards. Clubs and spades J/Q/K/A have danger values 11/12/13/14. Diamonds and hearts J/Q/K/A are **reserved concepts, excluded from the playable deck** under the current rules. Their inclusion here does not introduce a rules variant.
 
-Use stable asset IDs such as `clubs-9`, `spades-14`, and `diamonds-5`. Follow [card art direction](card-art-direction.md) when generating illustrations. All 44 playable cards now have generated illustrations and catalogue names connected to the interface. See the [full-deck run](art/full-deck-run-2026-10-24.md) for prompts, provenance and review. Reserved concepts remain ungenerated.
+Use stable asset IDs such as `clubs-9`, `spades-14`, and `diamonds-5`. Follow [card art direction](card-art-direction.md) when generating illustrations. All 44 playable cards now have generated illustrations and catalogue names connected to the interface. See the [artwork index](art/README.md) for prompts, provenance and review. Reserved concepts remain ungenerated.
 
 ## Clubs — Beasts & Abominations
 

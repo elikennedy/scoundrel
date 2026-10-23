@@ -15,10 +15,14 @@ export function hideCardSource(face: HTMLElement) {
 export async function flyCard(face: HTMLElement, from: DOMRect, to: DOMRect, signal: AbortSignal, options: { flip?: 'reveal' | 'hide'; delay?: number; duration?: number; flat?: boolean } = {}) {
   if (signal.aborted) return
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
+  // Returning cards keep their original layout; scaling must not reflow the artwork and nameplate.
+  const returning = options.flip === 'hide'
+  const layoutWidth = returning ? face.offsetWidth : to.width
+  const layoutHeight = returning ? face.offsetHeight : to.height
   const shell = document.createElement('div')
   shell.className = 'flying-card'
   shell.setAttribute('aria-hidden', 'true')
-  Object.assign(shell.style, { left: `${to.x}px`, top: `${to.y}px`, width: `${to.width}px`, height: `${to.height}px` })
+  Object.assign(shell.style, { left: `${to.x}px`, top: `${to.y}px`, width: `${layoutWidth}px`, height: `${layoutHeight}px` })
   const front = face.cloneNode(true) as HTMLElement
   front.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'))
   front.removeAttribute('id')
@@ -32,8 +36,9 @@ export async function flyCard(face: HTMLElement, from: DOMRect, to: DOMRect, sig
   const dx = from.x - to.x, dy = from.y - to.y
   const duration = reduced ? 90 : options.duration ?? 320
   const timing = { duration, delay: reduced ? 0 : options.delay ?? 0, fill: 'both' as const, easing: 'cubic-bezier(.16,1,.3,1)' }
-  const transform = reduced ? 'none' : `translate(${dx}px,${dy}px) scale(${from.width / to.width},${from.height / to.height}) rotate(${options.flat ? 0 : -5}deg)`
-  const travel = shell.animate([{ transform, opacity: reduced ? 0 : 1 }, { transform: 'none', opacity: 1 }], timing)
+  const settledTransform = returning ? `scale(${to.width / layoutWidth},${to.height / layoutHeight})` : 'none'
+  const transform = reduced ? settledTransform : `translate(${dx}px,${dy}px) scale(${from.width / layoutWidth},${from.height / layoutHeight}) rotate(${options.flat ? 0 : -5}deg)`
+  const travel = shell.animate([{ transform, opacity: reduced ? 0 : 1 }, { transform: settledTransform, opacity: 1 }], timing)
   const reveal = options.flip === 'reveal'
   const hide = options.flip === 'hide'
   const animations = [travel]

@@ -1,1 +1,130 @@
-{"schemaVersion":1,"name":"Scoundrel","mode":"experience","colors":{"surface":"#11150f","text":"#e8dfcd","brass":"#bfa16a","health":"#b75e46"},"typography":{"display":"Georgia, serif","body":"system-ui, sans-serif"},"radii":{"card":"10px","control":"4px"},"layout":{"desktopRoomColumns":4,"mobileRoomColumns":2,"mobileBreakpoint":"760px","cardActionGap":"17px"},"assets":{"background":"/art/ui/dungeon-table.webp","cardBack":"/art/ui/card-back.webp"},"motion":{"roomEntry":"450ms cubic-bezier(.16,1,.3,1)","reducedMotion":"none"}}
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-23T20:59:00.421751+00:00",
+  "title": "Design System: Scoundrel",
+  "extensions": {
+    "colorMeta": {
+      "surface": {
+        "role": "neutral",
+        "displayName": "Charcoal olive"
+      },
+      "brass": {
+        "role": "primary",
+        "displayName": "Aged bronze"
+      },
+      "parchment": {
+        "role": "neutral",
+        "displayName": "Card parchment"
+      },
+      "health": {
+        "role": "status",
+        "displayName": "Health terracotta"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Game typography",
+        "purpose": "Georgia card names, headings and themed controls; generated title art where specified."
+      }
+    },
+    "shadows": [
+      {
+        "name": "room-card",
+        "value": "0 12px 22px #0009",
+        "purpose": "Shared moving/landed room card depth."
+      },
+      {
+        "name": "bronze-medallion",
+        "value": "3px 7px 5px #000b",
+        "purpose": "Image silhouette drop shadow."
+      }
+    ],
+    "motion": [
+      {
+        "name": "arrival-easing",
+        "value": "cubic-bezier(.16,1,.3,1)",
+        "purpose": "Card and control deceleration."
+      },
+      {
+        "name": "deal-travel",
+        "value": "640ms",
+        "purpose": "Sequential right-to-left travel from draw pile."
+      },
+      {
+        "name": "deal-flip",
+        "value": "1280ms",
+        "purpose": "Reveal completes before next card."
+      },
+      {
+        "name": "deal-gap",
+        "value": "50ms",
+        "purpose": "Pause between dealt cards."
+      },
+      {
+        "name": "resolve-travel",
+        "value": "320ms",
+        "purpose": "Room card to discard/equipment."
+      },
+      {
+        "name": "carryover-slide",
+        "value": "340ms",
+        "purpose": "Survivor to rightmost slot before dealing."
+      },
+      {
+        "name": "flee-flip",
+        "value": "640ms",
+        "purpose": "Face-down return with 320ms travel and 50ms stagger."
+      },
+      {
+        "name": "discard-fan",
+        "value": "220ms open / 180ms close",
+        "purpose": "Last-five discard inspection."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "90ms opacity fade",
+        "purpose": "No spatial travel, flips or card/fan transitions."
+      }
+    ],
+    "breakpoints": []
+  },
+  "components": [],
+  "narrative": {
+    "northStar": "A candlelit dungeon card table",
+    "overview": "Paintings, bronze image controls and physical card movement lead the desktop game. The illustrated reading guide uses the same charcoal, bronze and parchment world.",
+    "keyCharacteristics": [
+      "Desktop four-slot room",
+      "Top-aligned monster art",
+      "Transparent image controls",
+      "Face-up discard fan",
+      "Isolated practice guide"
+    ],
+    "rules": [
+      {
+        "name": "Desktop scope",
+        "body": "1100px minimum table; four fixed slots. No mobile layout is implemented.",
+        "section": "layout"
+      },
+      {
+        "name": "Separate motion from rules",
+        "body": "Keep card animation in the presentation layer. Hide full source cards and commit destination slots before restoring visibility.",
+        "section": "components"
+      },
+      {
+        "name": "Outcome dismissal",
+        "body": "Only Play again dismisses outcomes; guide allows Return or Escape.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "Preserve bronze/parchment card faces and source artwork",
+      "Keep keyboard actions and reduced motion",
+      "Use DESIGN.md as the normative token/visual contract"
+    ],
+    "donts": [
+      "Restore detached action panels or visible type badges",
+      "Treat old screenshots as current specifications",
+      "Add mobile work or a backend without a concrete request"
+    ]
+  }
+}

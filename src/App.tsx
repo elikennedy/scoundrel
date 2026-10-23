@@ -4,6 +4,7 @@ import type { Card, GameAction } from './game'
 import { RoomCard } from './components/RoomCard'
 import { cardName } from './components/cardPresentation'
 import { GameSidebar } from './components/GameSidebar'
+import { HowToPlay } from './components/HowToPlay'
 import { DiscardPile } from './components/DiscardPile'
 import { cardElement, flyCard, hideCardSource } from './components/cardMotion'
 import './App.css'
@@ -190,10 +191,7 @@ function App() {
         <button className="replay-button" onClick={start} aria-label="Play again"><img src="/art/ui/play-again.webp" alt="Play again" /></button>
         </div>
       </dialog>
-      <dialog className="rules-screen" ref={rulesDialog} aria-labelledby="rules-title">
-        <button className="rules-close" onClick={() => rulesDialog.current?.close()}>Return to the dungeon <span aria-hidden="true">×</span></button>
-        <div className="rules-content"><h2 id="rules-title">The rules of survival</h2><p className="rules-intro">Resolve three cards in each room. Leave one behind and draw back to four. Survive the dungeon.</p><div className="rules-grid"><p><strong>Monsters</strong>Fight barehanded for full damage, or use a weapon to reduce damage by its power. After a weapon kill, it can only face monsters of equal or lower value.</p><p><strong>Weapons</strong>Taking a weapon equips it immediately, replacing your old one and resetting its monster limit. You may always choose to fight barehanded.</p><p><strong>Healing</strong>Heal up to 20 health. Only the first potion you take each turn heals; the others are discarded. Resolve three cards to begin the next turn.</p><p><strong>Escape</strong>Flee before touching any card. The room goes to the bottom of the deck. You cannot flee twice in a row. Clear all cards to win; reach zero health and your journey ends.</p></div></div>
-      </dialog>
+      <HowToPlay dialogRef={rulesDialog} />
     </main>
   )
 }
