@@ -1,0 +1,26 @@
+License scope and third-party credits
+
+The MIT License in LICENSE applies to the original React application,
+TypeScript game-engine implementation, and original artwork created for this
+repository, including original card and interface artwork in public/art/ and
+its retained source images in docs/art/. The same permission grant applies
+to that original artwork to the extent rights in it are held by the repository's
+copyright holder.
+
+Scoundrel rules are excluded
+
+Scoundrel was created by Zach Gage and Kurt Bieg. This repository does not own
+the Scoundrel game rules. The original rules, rulebook text and other original
+game materials are not covered by this repository's MIT License. References,
+links, summaries and implementation of the rules do not grant rights to or
+relicense those original materials. The MIT License covers this repository's
+original implementation, not ownership of the underlying game rules.
+
+Original rules: https://www.stfj.net/art/2011/Scoundrel.pdf
+
+Other third-party material
+
+Third-party dependencies remain subject to their own licenses. Supplied
+reference material, including docs/references/card-art-direction.png, is not
+original artwork created for this repository and is excluded from its MIT
+grant; its existing rights remain with the respective rights holders.

@@ -118,4 +118,12 @@ Deploy the new `dist/` contents together, ideally by uploading into a new releas
 
 `src/game/` contains the pure TypeScript rules engine; `tests/game.test.ts` validates it. `src/App.tsx` coordinates the table and dialogs. `src/components/` contains cards, status, piles, motion and How to Play. Artwork mappings are in `src/components/cardIllustrations.ts`; runtime art is under `public/art/` and retained originals under `docs/art/`.
 
-This is a personal project. The owner's local workspace registry and agent instructions are optional development metadata and are not needed to clone, build or host the game. No deployment automation or saved-game system is currently implemented.
+No deployment automation or saved-game system is currently implemented.
+
+## License and game credits
+
+The original React application, TypeScript game-engine implementation, and original card and interface artwork created for this repository are available under the [MIT License](LICENSE). See [NOTICE](NOTICE) for the license scope and third-party exclusions.
+
+**The Scoundrel game rules are not owned by this repository and are not covered by its MIT license.** Scoundrel was created by Zach Gage and Kurt Bieg. The [original rules](https://www.stfj.net/art/2011/Scoundrel.pdf) and their rulebook text remain separate from this application's implementation; this repository grants no rights to those materials. References to or summaries of the rules do not relicense the original game or rulebook.
+
+Third-party dependencies and supplied reference material retain their respective rights and licenses.

@@ -1,5 +1,7 @@
 # Artwork index
 
+Original artwork created for this repository is covered by the [MIT License](../../LICENSE), with the scope and third-party exclusions set out in [NOTICE](../../NOTICE). The supplied visual reference is excluded from that grant.
+
 ## Cards
 
 All 44 playable cards have unique catalogue names and selected local illustrations. The [catalogue](../card-catalogue.md) owns names/concepts; [art direction](../card-art-direction.md) owns composition and generation constraints. The supplied [visual reference](../references/card-art-direction.png) remains useful source material.
