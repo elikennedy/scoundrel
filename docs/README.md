@@ -4,8 +4,7 @@ Each current concern has one primary home:
 
 | Document | Owns |
 | --- | --- |
-| [Root README](../README.md) | Status, commands, workspace and next decisions |
-| [AGENTS.md](../AGENTS.md) | Agent instructions and project guardrails |
+| [Root README](../README.md) | Setup, commands, self-hosting, updates and current scope |
 | [PRODUCT.md](../PRODUCT.md) | Confirmed scope, capabilities and open decisions |
 | [DESIGN.md](../DESIGN.md) | Visual system, desktop layout, controls and motion timings |
 | [Rules](rules.md) | Game rules and deliberate implementation interpretations |

@@ -1,46 +1,121 @@
 # Scoundrel
 
-A personal, single-player browser adaptation of the dungeon-crawling card game by Zach Gage and Kurt Bieg. Built with React, TypeScript and Vite; the rules engine is independent of React.
+A single-player browser adaptation of the dungeon-crawling card game by Zach Gage and Kurt Bieg. Built with React, TypeScript and Vite; the rules engine is independent of React.
 
-## Current state
+The desktop game is playable with all 44 illustrated cards, weapons, healing, fleeing and scoring. It includes animated dealing, a face-up discard fan, bronze controls, illustrated outcome dialogs and a full-screen How to Play guide with rules, tactics and a practice room. Open the question-mark control for instructions.
 
-The desktop game is playable with all 44 illustrated cards, weapons, healing, fleeing and scoring. Bronze image controls, a face-up discard fan, animated dealing/carryover/returns, and illustrated outcome dialogs form the game table. The full-screen How to Play guide includes rules, tactics, scoring, a combat comparison and an isolated practice room.
+Keyboard interaction and reduced motion are supported. Mobile layouts are outside the current scope. Games run entirely in the browser: there is no backend, account system or saved-game persistence. Refreshing the page loses the current game.
 
-Keyboard interaction and reduced motion are supported. Mobile layouts are outside the current scope. There is no runtime backend, saved-game persistence or deployment configuration.
+## Clone and run locally
 
-## Run and validate
+Install Git and **Node.js 24 LTS**, including npm. Check your installation with `node --version` and `npm --version`. Access to this private GitHub repository is required; authenticate with GitHub before cloning.
 
-Use Node.js 24 LTS and npm. Install dependencies with `npm ci`.
+```sh
+git clone https://github.com/elikennedy/scoundrel.git
+cd scoundrel
+npm ci
+npm run dev
+```
+
+Open the local URL printed by Vite, normally `http://localhost:5173`. Stop the server with Ctrl+C. No environment variables, API keys, database, external services or artwork generation tools are required. All runtime artwork is included in the repository.
+
+## Build and validate
+
+```sh
+npm test
+npm run lint
+npm run build
+npm run preview
+```
+
+Open the preview URL printed in the terminal, normally `http://localhost:4173`, and check the start screen, dealing, card actions and How to Play guide.
 
 | Command | Purpose |
 | --- | --- |
-| `npm run dev` | Start the Vite development server |
-| `npm test` | Strict engine/test type-checking and 14 rule/simulation tests |
+| `npm ci` | Install the exact dependency versions in the lockfile |
+| `npm run dev` | Start the development server |
+| `npm test` | Strict engine/test type-checking and rule/simulation tests |
 | `npm run lint` | Static checks with Oxlint |
 | `npm run build` | Type-check and build production assets into `dist/` |
-| `npm run preview` | Preview the production build |
+| `npm run preview` | Preview the production build locally |
 
-No environment variables, credentials or services are needed. Keep secrets out of browser code and real environment files out of Git; add `.env.example` if configuration is introduced.
+Builds require development dependencies, so do not use `npm ci --omit=dev` on the build machine. `dist/` is generated and ignored by Git. Vite's development and preview servers are for development and local checks; use a static web server for production. See [Vite's deployment documentation](https://vite.dev/guide/static-deploy.html).
 
-## Documentation
+## Self-host
+
+Build on your workstation or a build server, then upload **the contents of `dist/`** to a static web server's document root. Include the entire directory tree, including `assets/` and `art/`. Node.js is needed to build, but is not needed on the web server serving the finished files. The repository, `node_modules/` and retained artwork originals in `docs/` do not need to be published.
+
+Serve the app at the root of a domain or subdomain, such as `https://scoundrel.example.com/`. Artwork currently uses root-relative `/art/...` URLs; hosting under a path such as `/scoundrel/` requires code changes as well as Vite's base-path setting. Open the game over HTTP or HTTPS rather than opening `dist/index.html` directly from disk.
+
+### Example: Nginx on your own server
+
+This example assumes Nginx is already installed on a Linux server and you have permission to configure it. Replace `scoundrel.example.com` with your hostname and point that hostname's DNS record at the server. Allow inbound traffic on the port you serve.
+
+On the server, create the document root:
+
+```sh
+sudo mkdir -p /var/www/scoundrel
+```
+
+Copy the contents of the built `dist/` directory into `/var/www/scoundrel/` using your normal deployment or file-transfer tool. The resulting paths should include `/var/www/scoundrel/index.html`, `/var/www/scoundrel/assets/` and `/var/www/scoundrel/art/`. Ensure the Nginx worker can read these files and traverse their directories.
+
+Add this server block to Nginx's loaded configuration. On installations that include `/etc/nginx/conf.d/*.conf` inside the `http` block, save it as `/etc/nginx/conf.d/scoundrel.conf`:
+
+```nginx
+server {
+    listen 80;
+    server_name scoundrel.example.com;
+    root /var/www/scoundrel;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location = /index.html {
+        add_header Cache-Control "no-cache";
+    }
+}
+```
+
+Check the configuration and reload Nginx:
+
+```sh
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+Open `http://scoundrel.example.com/`. This example serves HTTP; for HTTPS, configure a certificate for your hostname in Nginx or put it behind your existing HTTPS reverse proxy. No application API or WebSocket proxy is required. There are no client-side routes that need an HTML fallback.
+
+### Updates and troubleshooting
+
+To build a new version from a clean checkout:
+
+```sh
+git pull --ff-only origin main
+npm ci
+npm test
+npm run lint
+npm run build
+```
+
+Deploy the new `dist/` contents together, ideally by uploading into a new release directory and switching the web root once the upload finishes. Keep the previous release if you need a quick rollback. Players must refresh to load an update, which starts a new game.
+
+- **Clone denied:** confirm your GitHub account has repository access and your Git credentials are configured. SSH users can clone `git@github.com:elikennedy/scoundrel.git` instead.
+- **Install or build fails:** check Node.js is version 24, install development dependencies with `npm ci`, and retain the committed lockfile.
+- **Blank page or missing artwork:** check the browser's network panel for failed requests. Confirm you deployed everything in `dist/` at the domain root, rather than publishing a nested `dist/` folder or only `index.html`.
+- **Old UI after deployment:** refresh the browser and invalidate any proxy/CDN cache. Avoid long-lived caching of `index.html` and `/art/` files, whose names can remain unchanged between releases. Files in `assets/` have build-generated hashes.
+
+## Documentation and source
 
 - [Documentation map](docs/README.md): ownership and retention policy.
 - [Rules and interpretations](docs/rules.md): the game contract and credited original source.
 - [Architecture and validation](docs/architecture.md): engine API, animation lifecycle and UI checks.
-- [PRODUCT.md](PRODUCT.md): confirmed product scope and open decisions.
-- [DESIGN.md](DESIGN.md): current visual and motion contract; `.impeccable/design.json` extends it.
-- [Artwork index](docs/art/README.md): runtime/source assets, exact prompts and archived variants.
+- [PRODUCT.md](PRODUCT.md): product scope and open decisions.
+- [DESIGN.md](DESIGN.md): visual and motion contract; `.impeccable/design.json` extends it.
+- [Artwork index](docs/art/README.md): runtime/source assets, prompts and archived variants.
 - [Guide research](docs/guide/research.md): sources, limitations and worked examples.
-- [AGENTS.md](AGENTS.md): project-local operating instructions.
 
-## Important source
+`src/game/` contains the pure TypeScript rules engine; `tests/game.test.ts` validates it. `src/App.tsx` coordinates the table and dialogs. `src/components/` contains cards, status, piles, motion and How to Play. Artwork mappings are in `src/components/cardIllustrations.ts`; runtime art is under `public/art/` and retained originals under `docs/art/`.
 
-`src/game/` contains the rules; `tests/game.test.ts` validates them. `src/App.tsx` coordinates the live table and dialogs. `src/components/` contains cards, status, piles, motion and How to Play. Artwork mappings are in `cardIllustrations.ts`; runtime art is under `public/art/` and retained originals under `docs/art/`.
-
-## Workspace and Git
-
-Canonical directory: `/Users/elikennedy/projects/personal/scoundrel`. Private GitHub backing: [elikennedy/scoundrel](https://github.com/elikennedy/scoundrel), branch `main`. This is a personal project. The PocketBase registry is metadata only, never a runtime dependency; update it if the directory or Git backing changes.
-
-## Next decisions
-
-Continue desktop playtesting, especially keyboard use, endgames and the illustrated guide. Deployment and saved-game behaviour remain undecided. Do not introduce a backend without a concrete feature requiring one.
+This is a personal project. The owner's local workspace registry and agent instructions are optional development metadata and are not needed to clone, build or host the game. No deployment automation or saved-game system is currently implemented.
