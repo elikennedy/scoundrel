@@ -1,0 +1,45 @@
+# OS / editor noise
+.DS_Store
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Dependency / package manager artefacts
+node_modules/
+
+# Build output
+dist/
+build/
+coverage/
+.cache/
+.next/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Rust
+target/
+
+# Misc temp files
+tmp/
+temp/
+
+# Uncomment if project-level agent instructions should remain local-only
+# AGENTS.md
+
+# Environment variants (examples may be committed)
+.env.*
+!.env.example
+*.tsbuildinfo
+.vite/

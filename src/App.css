@@ -1,0 +1,5 @@
+main { max-width: 48rem; margin: auto; padding: 18vh 2rem 4rem; }
+h1 { font-family: Georgia, serif; font-size: clamp(3rem, 12vw, 6rem); font-weight: 400; margin: 1rem 0; }
+p { line-height: 1.7; max-width: 36rem; }
+.eyebrow { color: #c8aa72; text-transform: uppercase; letter-spacing: .15em; font-size: .8rem; }
+.status { margin-top: 3rem; color: #a6b4aa; border-top: 1px solid #36453b; padding-top: 1.5rem; }
