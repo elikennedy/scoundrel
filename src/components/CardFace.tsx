@@ -30,7 +30,7 @@ export function CardFace({ card, labelId }: { card: Card; labelId: string }) {
   // Keep monster heads and crowns in view when the portrait is cropped by the frame.
   const imagePosition = art?.position ?? (card.kind === 'monster' ? '50% 0%' : '50% 50%')
   return (
-    <div className="card-face">
+    <div className={`card-face ${card.kind}`}>
       <div className="card-illustration">
         {imageVisible
           ? <img src={art.src} alt="" style={{ objectPosition: imagePosition }} onError={() => setFailedSource(art.src!)} />

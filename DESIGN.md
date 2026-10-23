@@ -31,7 +31,7 @@ Muted brass, dark oak, charcoal olive, parchment. Existing card banners retain r
 Retain the established Georgia card typography. Title and room heading use Georgia; functional controls use the system sans. No promotional subtitles or eyebrow text.
 
 ## Layout
-Four room cards on desktop; two columns below 760px. Each card has detached action buttons with a 17px gap. A horizontal adventurer area follows the room; it wraps on mobile. Rules remain collapsed. Keep the title compact.
+Desktop table with four room cards. Bronze image actions float over cards on hover and keyboard focus. Flee sits beside the room indicator. Draw pile sits left; discard pile sits bottom right. Rules occupy a full screen dialog, opened by the top right question medallion alongside new game. The large generated bronze wordmark appears only at the gate, retaining an accessible Scoundrel text alternative.
 
 ## Elevation & Depth
 Generated candlelit dungeon/table background with a dark overlay. Card and control shadows ground objects on the table. Avoid informational panels surrounding every object.
@@ -44,3 +44,10 @@ Monster illustrations align top-centre. Type badges and visible playing-card ide
 
 ## Do's and Don'ts
 Keep gameplay and paintings central. Do not add marketing copy, decorative badges, fabricated lore, or a joined action-panel extension below cards. Keep generated prompts and originals in docs/art.
+
+Game outcomes appear in a centred bronze-framed modal over the dimmed table, with a bronze skull for defeat or bronze chalice for victory, final score and Play again action. Escape or Close returns to the finished table.
+
+## Card motion
+Desktop room cards retain four stable slots; the survivor stays in place as new cards refill gaps. Cards travel from the draw pile face down and flip into place (560 ms per card, dealt sequentially; each landed card remains visible immediately). Resolved cards travel face up to their rule-defined destination in 320 ms. Equipped weapons and attached monsters remain visible below the room; replacing a weapon discards the entire prior stack. Flee returns the room face down to the draw pile before redealing. Outcomes wait until the final movement finishes. New game cancels active motion. Reduced motion uses short fades instead of spatial travel or flips.
+
+The discard pile displays the newest face-up card. Hover or focus fans out the last five cards upwards and left; individual hover/focus raises a card for inspection. Empty piles show a quiet outline. Motion lives in the presentation layer; the pure rules engine remains unchanged.

@@ -1,5 +1,6 @@
 import { MAX_HEALTH } from '../game'
 import type { GameState } from '../game'
+import { CardFace } from './CardFace'
 import { illustrations } from './cardIllustrations'
 export function GameSidebar({ game }: { game: GameState }) {
   const lastMonster = game.weapon?.monsters.at(-1)
@@ -12,10 +13,13 @@ export function GameSidebar({ game }: { game: GameState }) {
         <p className={`potion-status ${game.potionUsed ? 'used' : ''}`}>{game.potionUsed ? 'Healing spent' : 'Healing ready'}</p>
       </section>
       <section className="weapon-panel" aria-label="Equipped weapon">
-        {weapon?.src && <img src={weapon.src} alt="" />}
+        <div className="equipped-stack" data-weapon-target>
+          {game.weapon?.monsters.slice(-3).map((card, i) => <div key={card.id} className="weapon-trophy" style={{ transform: `translate(${(i + 1) * 12}px,${-(i + 1) * 7}px) rotate(${(i + 1) * 7}deg)` }}><CardFace card={card} labelId={`trophy-${card.id}`} /></div>)}
+          {game.weapon && <div className="equipped-face"><CardFace card={game.weapon.card} labelId="equipped-card" /></div>}
+        </div>
         <div><h3>{weapon?.name ?? 'Unarmed'}</h3><p>{game.weapon ? `${game.weapon.card.value} power · ${lastMonster ? `Next target ≤ ${lastMonster.value}` : 'Any target'}` : 'Find a weapon in the dungeon'}</p></div>
       </section>
-      <div className="dungeon-pile"><img src="/art/ui/card-back.webp" alt="" /><dl className="dungeon-counts"><div><dt>Dungeon</dt><dd>{game.dungeon.length}</dd></div><div><dt>Discarded</dt><dd>{game.discard.length}</dd></div></dl></div>
+
     </aside>
   )
 }

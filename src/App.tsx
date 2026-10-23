@@ -1,12 +1,24 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { applyAction, canFlee, createDeck, createInitialState, shuffleDeck } from './game'
-import type { GameAction } from './game'
+import type { Card, GameAction } from './game'
 import { RoomCard } from './components/RoomCard'
 import { cardName } from './components/cardPresentation'
 import { GameSidebar } from './components/GameSidebar'
+import { DiscardPile } from './components/DiscardPile'
+import { cardElement, flyCard } from './components/cardMotion'
 import './App.css'
 
 function App() {
+  const [slots, setSlots] = useState<(Card | null)[]>([null, null, null, null])
+  const [healthPreview, setHealthPreview] = useState<number | null>(null)
+  const [busy, setBusy] = useState(false)
+  const [hiddenCards, setHiddenCards] = useState<string[]>([])
+  const motion = useRef(new AbortController())
+  const locked = useRef(false)
+  const incoming = useRef<Card[]>([])
+  useEffect(() => () => motion.current.abort(), [])
+  const resultDialog = useRef<HTMLDialogElement>(null)
+  const rulesDialog = useRef<HTMLDialogElement>(null)
   const [game, setGame] = useState(createInitialState)
   const [announcement, setAnnouncement] = useState('Your adventure awaits.')
   const roomHeading = useRef<HTMLHeadingElement>(null)
@@ -15,22 +27,97 @@ function App() {
   const playing = game.status === 'playing'
   const finished = game.status === 'won' || game.status === 'lost'
 
+  useLayoutEffect(() => {
+    const cards = incoming.current
+    if (!cards.length) return
+    incoming.current = []
+    const signal = motion.current.signal
+    const draw = document.querySelector('.draw-pile img')?.getBoundingClientRect()
+    void (async () => {
+      for (const card of cards) {
+        if (signal.aborted) return
+        const face = cardElement(card.id)
+        if (face && draw) {
+          await flyCard(face, draw, face.getBoundingClientRect(), signal, { flip: 'reveal', duration: 560 })
+        }
+        if (signal.aborted) return
+        // Reveal each real card as its flying copy lands, rather than waiting for the entire deal.
+        setHiddenCards(hidden => hidden.filter(id => id !== card.id))
+      }
+      setBusy(false)
+      locked.current = false
+      roomHeading.current?.focus()
+    })()
+  }, [game])
+
   useEffect(() => {
+    if (finished && !busy) resultDialog.current?.showModal()
+    else resultDialog.current?.close()
     if (moveFocus.current) {
       (finished ? resultHeading : roomHeading).current?.focus()
       moveFocus.current = false
     }
-  }, [game, finished])
+  }, [game, finished, busy])
 
-  function act(action: GameAction) {
+  async function act(action: GameAction) {
+    if (locked.current && action.type !== 'start') return
+    if (action.type === 'start') {
+      motion.current.abort()
+      motion.current = new AbortController()
+      resultDialog.current?.close()
+    }
+    const signal = motion.current.signal
     const result = applyAction(game, action)
     if (!result.ok) {
       setAnnouncement(`That action is unavailable: ${result.error.replaceAll('-', ' ')}.`)
       return
     }
     const next = result.state
+    locked.current = true
+    setBusy(true)
+    setHealthPreview(next.health)
+    const flights: Promise<void>[] = []
+    const discard = document.querySelector('[data-discard-target]')?.getBoundingClientRect()
+    const equipped = document.querySelector('[data-weapon-target]')?.getBoundingClientRect()
+    if (action.type === 'resolve') {
+      const face = cardElement(action.cardId)
+      const card = game.room.find(c => c.id === action.cardId)!
+      const target = card.kind === 'weapon' || (card.kind === 'monster' && action.combat === 'weapon') ? equipped : discard
+      if (face && target) {
+        flights.push(flyCard(face, face.getBoundingClientRect(), target, signal))
+        face.style.visibility = 'hidden'
+      }
+      if (card.kind === 'weapon' && discard) {
+        document.querySelectorAll<HTMLElement>('.equipped-stack .card-face').forEach((old, i) => {
+          flights.push(flyCard(old, old.getBoundingClientRect(), discard, signal, { delay: i * 60 }))
+          old.style.visibility = 'hidden'
+        })
+      }
+    }
+    if (action.type === 'flee') {
+      const draw = document.querySelector('.draw-pile img')?.getBoundingClientRect()
+      if (draw) game.room.forEach((card, i) => {
+        const face = cardElement(card.id)
+        if (face) {
+          flights.push(flyCard(face, face.getBoundingClientRect(), draw, signal, { flip: 'hide', delay: i * 50 }))
+          face.style.visibility = 'hidden'
+        }
+      })
+    }
+    await Promise.all(flights)
+    if (signal.aborted) return
+    document.querySelectorAll<HTMLElement>('.room-card > .card-face, .equipped-stack .card-face').forEach(face => { face.style.visibility = '' })
+    const previous = action.type === 'start' || action.type === 'flee' ? [] : slots
+    const nextSlots = Array.from({ length: 4 }, (_, i) => previous[i] && next.room.some(c => c.id === previous[i]!.id) ? previous[i]! : null)
+    const newcomers = next.room.filter(c => !nextSlots.some(existing => existing?.id === c.id))
+    newcomers.forEach(card => { nextSlots[nextSlots.indexOf(null)] = card })
+    incoming.current = newcomers
+    setHiddenCards(newcomers.map(c => c.id))
+    setSlots(nextSlots)
+    setHealthPreview(null)
+    if (!newcomers.length) { locked.current = false; setBusy(false) }
     let message = ''
-    if (action.type === 'start') message = 'A fresh dungeon. Room 1 revealed.'
+    if (action.type === 'start') message = ''
     if (action.type === 'flee') message = `You fled. Room ${next.roomNumber} revealed. You must face this room.`
     if (action.type === 'resolve') {
       const card = game.room.find((entry) => entry.id === action.cardId)!
@@ -53,31 +140,43 @@ function App() {
 
   return (
     <main className={`app-shell ${game.status === 'ready' ? 'at-gate' : 'at-table'}`}>
-      <header className="masthead">
-        <h1>Scoundrel</h1>
-        {playing && <button className="quiet-button" onClick={start}>New game</button>}
-      </header>
+      <nav className="table-tools" aria-label="Game controls">
+        {game.status !== 'ready' && <button className="medallion restart" aria-label="New game" title="New game" onClick={start} />}
+        <button className="medallion help" aria-label="Rules" title="Rules" onClick={() => rulesDialog.current?.showModal()} />
+      </nav>
       {game.status === 'ready' ? (
         <section className="welcome" aria-label="Begin a game">
+          <h1 className="title-wordmark"><img src="/art/ui/scoundrel-title-v2.webp" alt="Scoundrel" /></h1>
           <img className="welcome-deck" src="/art/ui/card-back.webp" alt="An ancient deck embossed with a horned skull" />
           <button className="primary-button" onClick={start}>Enter the dungeon</button>
         </section>
       ) : (
         <div className="game-layout">
+          <aside className="table-pile draw-pile" aria-label={`Draw pile: ${game.dungeon.length} cards`}><img src="/art/ui/card-back.webp" alt="Draw pile" /><span>Dungeon <strong>{game.dungeon.length}</strong></span></aside>
+          <DiscardPile cards={game.discard} />
           <div className="play-area">
-            {finished && <section className={`result ${game.status}`} aria-labelledby="result-title"><h2 id="result-title" ref={resultHeading} tabIndex={-1}>{game.status === 'won' ? 'You survived.' : 'Your descent ends.'}</h2><p>Score <strong>{game.score}</strong></p><button className="primary-button" onClick={start}>Play again</button></section>}
+
             <section className="room-section" aria-labelledby="room-title">
-              <div className="section-heading"><h2 id="room-title" ref={roomHeading} tabIndex={-1}>Room {game.roomNumber}</h2><span className="turn-counter" aria-label={`${game.resolvedThisRoom} of 3 cards resolved`}>{[0,1,2].map(i => <i key={i} className={i < game.resolvedThisRoom ? 'resolved' : ''} aria-hidden="true" />)}</span></div>
-              <div className="room-grid">{game.room.map((card) => <RoomCard key={card.id} card={card} game={game} onAction={act} />)}{game.room.length === 0 && <p className="empty-room">The dungeon is cleared.</p>}</div>
-              {playing && <div className="room-footer"><button className="secondary-button" disabled={!canFlee(game)} aria-describedby="flee-reason" onClick={() => act({ type: 'flee' })}>Flee room</button><p className="small-note" id="flee-reason">{!canFlee(game) ? fleeReason : ''}</p></div>}
+              <div className="section-heading"><h2 id="room-title" ref={roomHeading} tabIndex={-1}>Room {game.roomNumber}</h2><span className="turn-counter" aria-label={`${game.resolvedThisRoom} of 3 cards resolved`}>{[0,1,2].map(i => <i key={i} className={i < game.resolvedThisRoom ? 'resolved' : ''} aria-hidden="true" />)}</span>{playing && <button className="flee-control" disabled={busy || !canFlee(game)} title={fleeReason} aria-label={`Flee room. ${fleeReason}`} onClick={() => act({ type: 'flee' })}><span className="medallion escape" aria-hidden="true" /><span>Flee room</span></button>}</div>
+              <div className="room-grid" aria-busy={busy}>{slots.map((card, i) => <div className="room-slot" key={i} style={{ visibility: card && hiddenCards.includes(card.id) ? 'hidden' : undefined }}>{card && <RoomCard card={card} game={game} onAction={act} busy={busy} />}</div>)}</div>
+
             </section>
           </div>
-          <GameSidebar game={game} />
+          <GameSidebar game={healthPreview === null ? game : { ...game, health: healthPreview }} />
         </div>
       )}
       <p className="activity" role="status" aria-live="polite" aria-atomic="true">{game.status !== 'ready' ? announcement : ''}</p>
-      <details className="rules"><summary>Rules</summary><div className="rules-grid"><p><strong>Monsters</strong>Fight barehanded for full damage, or use a weapon to reduce damage by its power. After a weapon kill, it can only face monsters of equal or lower value.</p><p><strong>Weapons</strong>Taking a weapon equips it immediately, replacing your old one and resetting its monster limit. You may always choose to fight barehanded.</p><p><strong>Healing</strong>Heal up to 20 health. Only the first potion you take each turn heals; the others are discarded. Resolve three cards to begin the next turn.</p><p><strong>Escape</strong>Flee before touching any card. The room goes to the bottom of the deck. You cannot flee twice in a row. Clear all cards to win; reach zero health and your journey ends.</p></div></details>
-      <footer className="credits"><span>Zach Gage &amp; Kurt Bieg</span><a href="https://www.stfj.net/art/2011/Scoundrel.pdf" target="_blank" rel="noreferrer">Original rules</a></footer>
+      <dialog className={`result-modal ${game.status}`} ref={resultDialog} aria-labelledby="result-title" aria-describedby="result-score">
+        <button className="result-close" aria-label="Close result" onClick={() => resultDialog.current?.close()}>×</button>
+        <img className="result-emblem" src={game.status === 'won' ? '/art/ui/bronze-chalice.webp' : '/art/ui/bronze-skull.webp?v=1'} alt="" />
+        <h2 id="result-title" ref={resultHeading} tabIndex={-1}>{game.status === 'won' ? 'You survived.' : 'Your descent ends.'}</h2>
+        <p id="result-score">Final score <strong>{game.score}</strong></p>
+        <button className="primary-button" onClick={start}>Play again</button>
+      </dialog>
+      <dialog className="rules-screen" ref={rulesDialog} aria-labelledby="rules-title">
+        <button className="rules-close" onClick={() => rulesDialog.current?.close()}>Return to the dungeon <span aria-hidden="true">×</span></button>
+        <div className="rules-content"><h2 id="rules-title">The rules of survival</h2><p className="rules-intro">Resolve three cards in each room. Leave one behind and draw back to four. Survive the dungeon.</p><div className="rules-grid"><p><strong>Monsters</strong>Fight barehanded for full damage, or use a weapon to reduce damage by its power. After a weapon kill, it can only face monsters of equal or lower value.</p><p><strong>Weapons</strong>Taking a weapon equips it immediately, replacing your old one and resetting its monster limit. You may always choose to fight barehanded.</p><p><strong>Healing</strong>Heal up to 20 health. Only the first potion you take each turn heals; the others are discarded. Resolve three cards to begin the next turn.</p><p><strong>Escape</strong>Flee before touching any card. The room goes to the bottom of the deck. You cannot flee twice in a row. Clear all cards to win; reach zero health and your journey ends.</p></div></div>
+      </dialog>
     </main>
   )
 }
