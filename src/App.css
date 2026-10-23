@@ -23,7 +23,7 @@ button:disabled { color: #9d927f; border-color: #4d4537; background: #211f1b; bo
 .room-card { --card-accent: #762f28; --card-accent-light: #a25b3f; min-width: 0; }
 .room-card.weapon { --card-accent: #17475c; --card-accent-light: #397286; }
 .room-card.potion { --card-accent: #37553a; --card-accent-light: #6a8050; }
-.room-card > .card-face { border: 2px solid #8a6b40; border-radius: 10px; overflow: hidden; box-shadow: 0 12px 22px #0009; }
+.room-card > .card-face, .flying-card > .card-face { border: 2px solid #8a6b40; border-radius: 10px; overflow: hidden; box-shadow: 0 12px 22px #0009; }
 .card-face { position: relative; isolation: isolate; aspect-ratio: 2 / 3; min-height: 300px; display: grid; grid-template-rows: 1fr auto; padding: 5px; background: linear-gradient(135deg, #ad915c, #34271d 5%, #8a683d 6%, #2b241a 7%, #5c422a 94%, #be9f63 96%, #3c2d1e); }
 .card-face::after { content: ''; position: absolute; z-index: 4; inset: 5px; border: 1px solid #d1b77885; border-radius: 5px; pointer-events: none; }
 .card-illustration { min-height: 0; position: relative; background: #242e2b; overflow: hidden; }
@@ -58,7 +58,7 @@ progress::-moz-progress-bar { background: #b75e46; }
 .potion-status { font-size: .73rem; color: #c2d0a9; margin: 0; }
 .potion-status.used { color: #bdb09a; }
 .weapon-panel { display: flex; align-items: center; gap: 16px; min-height: 84px; }
-.weapon-panel img { width: 52px; height: 78px; object-fit: cover; border: 1px solid #9b8051; border-radius: 3px; }
+.weapon-panel > img { width: 52px; height: 78px; object-fit: cover; border: 1px solid #9b8051; border-radius: 3px; }
 .weapon-panel h3 { font-size: 1.1rem; color: #e4cd9f; margin: 0 0 8px; }
 .weapon-panel p { font-size: .76rem; color: #c1b49e; line-height: 1.6; margin: 0; }
 .dungeon-pile { display: flex; align-items: center; justify-content: end; gap: 20px; }
@@ -94,7 +94,7 @@ progress::-moz-progress-bar { background: #b75e46; }
 .welcome-deck { width:190px; }
 .primary-button { border:0; border-radius:0; color:#ebd1a0; background:transparent; font-variant:small-caps; letter-spacing:.06em; font-size:1.5rem; text-shadow:0 3px 4px #000; box-shadow:none; }
 .primary-button:hover:not(:disabled) { background:transparent; color:#fff0cf; }
-.game-layout { padding-top:28px; gap:30px; }
+.game-layout { padding-top:60px; gap:30px; }
 .play-area { max-width:1080px; }
 .room-grid { gap:24px; }
 .room-card { position:relative; }
@@ -117,28 +117,30 @@ progress::-moz-progress-bar { background: #b75e46; }
 .table-pile { position:fixed; width:116px; display:flex; flex-direction:column; align-items:center; gap:18px; color:#ceba94; font: .95rem Georgia,serif; }
 .table-pile img { width:100%; border-radius:6px; box-shadow:2px 3px 1px #8c734a,5px 7px 1px #28251c,8px 12px 18px #000c; }
 .table-pile span { display:flex; gap:12px; align-items:baseline; text-shadow:0 2px 3px #000; }.table-pile strong { font-size:1.4rem; font-weight:normal; }
-.draw-pile { left:30px; top:190px; transform:rotate(-5deg); }.discard-pile { right:30px; bottom:42px; transform:rotate(7deg); }.is-empty img { opacity:.18; box-shadow:none; }
+.draw-pile { left:30px; top:102px; transform:rotate(-5deg); }.discard-pile { right:30px; bottom:42px; transform:rotate(7deg); }.is-empty img { opacity:.18; box-shadow:none; }
 .activity { margin:12px auto; }.activity:empty { display:none; }
 .rules-screen { position:fixed; inset:0; width:100vw; height:100vh; max-width:none; max-height:none; margin:0; padding:80px 12vw; border:0; color:#ead8b5; background:linear-gradient(#10150ff2,#10150ff2),url('/art/ui/dungeon-table.webp') center/cover; }
 .rules-screen::backdrop { background:#080b08; }.rules-content { max-width:1050px; margin:8vh auto; }.rules-content h2 { font-size:3.5rem; margin-bottom:24px; }.rules-intro { max-width:650px; font:1.25rem/1.7 Georgia,serif; color:#cfbf9f; }.rules-grid { grid-template-columns:1fr 1fr; gap:28px 70px; margin-top:40px; }.rules-grid p { font:1rem/1.8 Georgia,serif; }.rules-grid strong { font-size:1.5rem; }.rules-close { position:absolute; top:28px; right:40px; background:transparent; border:0; box-shadow:none; font-family:Georgia,serif; }.rules-close span { font-size:2rem; vertical-align:middle; margin-left:20px; }
 .medallion { background-size:100% 100%; }.help { background-image:url('/art/ui/control-0.png'); }.restart { background-image:url('/art/ui/control-1.png'); }.escape { background-image:url('/art/ui/control-2.png'); }
 .card-actions button::before { background:url('/art/ui/control-3.png') center/contain no-repeat; }.card-actions .barehanded::before { background-image:url('/art/ui/control-4.png'); background-position:center; }.card-actions .action-heal::before { background-image:url('/art/ui/control-5.png'); background-position:center; }
-.result-modal { width:520px; max-width:calc(100vw - 80px); padding:48px 48px 36px; overflow:visible; text-align:center; color:#ead8b5; border:3px ridge #a38450; border-radius:10px; background:linear-gradient(#11150fe8,#11150ff5),url('/art/ui/dungeon-table.webp') center/cover; box-shadow:0 24px 80px #000d,inset 0 0 40px #0009; }
+.result-modal { width:560px; max-width:calc(100vw - 80px); padding:0; overflow:visible; text-align:center; color:#ead8b5; border:0; border-radius:0; background:transparent; box-shadow:none; }
+.result-plate { position:absolute; inset:0; width:100%; height:100%; object-fit:fill; pointer-events:none; filter:drop-shadow(5px 20px 24px #000b); }
+.result-content { position:relative; display:flex; flex-direction:column; align-items:center; padding:56px 48px 48px; }
+.replay-button { display:block; width:260px; padding:0; min-height:60px; border:0; border-radius:0; background:transparent; box-shadow:none; filter:drop-shadow(2px 6px 5px #0009); }
+.replay-button img { display:block; width:100%; height:auto; }
+.replay-button:hover:not(:disabled) { background:transparent; border:0; filter:brightness(1.16) drop-shadow(2px 7px 5px #0009); }
 .result-modal::backdrop { background:#050805b8; }
-.result-modal h2 { font-size:2.8rem; margin:24px 0; text-shadow:0 3px 5px #000; }
+.result-modal h2 { font-size:2.5rem; margin:20px 0 14px; text-shadow:0 3px 5px #000; }
 .result-modal h2:focus { outline:none; }
-.result-emblem { width:160px; height:160px; object-fit:contain; filter:drop-shadow(3px 8px 7px #000b); }
-.result-modal p { font:1.1rem Georgia,serif; color:#cfbf9f; }
+.result-emblem { width:140px; height:140px; object-fit:contain; filter:drop-shadow(3px 8px 7px #000b); }
+.result-modal p { margin:0 0 22px; font:1.1rem Georgia,serif; color:#cfbf9f; }
 .result-modal p strong { display:block; margin-top:12px; font-size:3rem; font-weight:normal; color:#ead8b5; }
-.result-close { position:absolute; top:10px; right:12px; padding:0; width:44px; font:2rem Georgia,serif; border:0; background:transparent; box-shadow:none; color:#cfbf9f; }
-.result-close:hover:not(:disabled) { background:transparent; }
 /* Card travel uses isolated temporary faces; room slots stay fixed. */
 .room-slot { min-width:0; aspect-ratio:2/3; }
 .room-section { animation:none; }
 .flying-card { position:fixed; z-index:50; pointer-events:none; transform-origin:top left; perspective:1100px; }
-.flying-card .card-face,.flight-back { position:absolute; inset:0; width:100%; height:100%; margin:0; min-height:0; backface-visibility:hidden; border-radius:8px; }
-.flying-card .card-face { box-shadow:5px 14px 22px #0009; }
-.flight-back { object-fit:fill; transform:rotateY(180deg); box-shadow:5px 14px 22px #0009; }
+.flying-card .card-face,.flight-back { position:absolute; inset:0; width:100%; height:100%; margin:0; min-height:0; backface-visibility:hidden; }
+.flight-back { border-radius:8px; object-fit:fill; transform:rotateY(180deg); box-shadow:5px 14px 22px #0009; }
 .discard-pile { transform:none; z-index:12; width:116px; }
 .discard-stack { position:relative; width:116px; height:174px; }
 .empty-discard { width:100%; height:100%; border:1px solid #af946547; border-radius:8px; box-shadow:inset 2px 4px 12px #0006; }
@@ -158,3 +160,35 @@ progress::-moz-progress-bar { background: #b75e46; }
 .equipped-stack .card-nameplate { min-height:12px; padding:3px 0; }.equipped-stack .card-nameplate h3 { font-size:.32rem; }.equipped-stack .value-banner { width:16px; left:6px; padding:3px 0 5px; gap:1px; }.equipped-stack .value-banner strong { font-size:.7rem; }.equipped-stack .value-banner svg { width:9px; height:9px; }
 @media(prefers-reduced-motion:reduce) { .discard-card { transition:none; } }
 .card-face { --card-accent:#762f28; --card-accent-light:#a25b3f; }.card-face.weapon { --card-accent:#17475c; --card-accent-light:#397286; }.card-face.potion { --card-accent:#37553a; --card-accent-light:#6a8050; }
+/* The adventurer's status anchors the bottom of the desktop table. */
+.at-table { display:flex; flex-direction:column; }
+.at-table .game-layout { flex:1; gap:72px; }
+.at-table .play-area { margin:0 auto; }
+.game-sidebar { width:100%; max-width:960px; grid-template-columns:1fr 1.25fr; gap:100px; min-height:156px; margin: auto auto 18px; padding:16px 0; }
+.health-value { align-items:baseline; }
+.health-value > span { font:1.35rem Georgia,serif; color:#e4cd9f; text-shadow:0 3px 5px #000; }
+.health-value strong { font-size:3.4rem; line-height:1.15; text-shadow:0 3px 6px #000; }
+.health-value small { font:1.1rem Georgia,serif; color:#c1b49e; }
+.health-panel progress { height:15px; margin:16px 0 0; border:1px solid #9b8051; border-radius:3px; overflow:hidden; box-shadow:0 4px 8px #0009,inset 0 2px 5px #000; }
+.health-panel progress::-webkit-progress-bar { background:#181b16; box-shadow:inset 0 2px 5px #000; }
+.health-panel progress::-webkit-progress-value { background:linear-gradient(0deg,#762f28,#b75e46 65%,#c78061); box-shadow:inset 0 1px 1px #eddfbd66; }
+.health-panel progress::-moz-progress-bar { background:linear-gradient(0deg,#762f28,#b75e46 65%,#c78061); }
+.weapon-panel { gap:24px; min-height:144px; }
+.weapon-panel h3 { font-size:1.65rem; margin:0 0 10px; text-shadow:0 3px 6px #000; }
+.weapon-panel p { font-size:1rem; color:#d0bc96; }
+.weapon-panel p strong { font:1.4rem Georgia,serif; color:#ead8b5; }
+.equipped-stack { width:96px; height:144px; margin-right:30px; }
+.equipped-stack.unarmed { margin-right:0; display:flex; align-items:center; justify-content:center; }
+.weapon-panel .unarmed-icon { width:110px; height:110px; max-width:none; object-fit:contain; border:0; border-radius:0; filter:drop-shadow(3px 7px 6px #000b); }
+.equipped-stack .card-nameplate { min-height:22px; padding:5px 2px; }.equipped-stack .card-nameplate h3 { font-size:.48rem; margin:0; text-shadow:none; }.equipped-stack .value-banner { width:23px; left:6px; padding:4px 0 9px; gap:3px; }.equipped-stack .value-banner strong { font-size:1.05rem; }.equipped-stack .value-banner svg { width:13px; height:13px; }
+.room-card { transform-origin:center center; transition:transform 200ms cubic-bezier(.16,1,.3,1); }
+.room-slot { position:relative; }
+.room-slot:has(.room-card:hover),.room-slot:has(.room-card:focus-within) { z-index:2; }
+.room-grid[aria-busy="false"]:has(.room-card:hover) .room-card,
+.room-grid[aria-busy="false"]:not(:has(.room-card:hover)):has(.room-card:focus-within) .room-card { transform:scale(.96); }
+.room-grid[aria-busy="false"]:has(.room-card:hover) .room-card:hover,
+.room-grid[aria-busy="false"]:not(:has(.room-card:hover)):has(.room-card:focus-within) .room-card:focus-within { transform:translateY(-8px) scale(1.045); }
+@media(prefers-reduced-motion:reduce) { .room-card { transition:none; } }
+
+/* Overlays never remain behind while a card is travelling. */
+.room-grid[aria-busy="true"] .card-actions { visibility:hidden; opacity:0; pointer-events:none; }

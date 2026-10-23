@@ -5,7 +5,7 @@ import { RoomCard } from './components/RoomCard'
 import { cardName } from './components/cardPresentation'
 import { GameSidebar } from './components/GameSidebar'
 import { DiscardPile } from './components/DiscardPile'
-import { cardElement, flyCard } from './components/cardMotion'
+import { cardElement, flyCard, hideCardSource } from './components/cardMotion'
 import './App.css'
 
 function App() {
@@ -28,17 +28,19 @@ function App() {
   const finished = game.status === 'won' || game.status === 'lost'
 
   useLayoutEffect(() => {
+    // Restore only after React has committed the new slots, before the next paint.
+    document.querySelectorAll<HTMLElement>('.room-card, .equipped-stack .card-face').forEach(source => { source.style.visibility = '' })
     const cards = incoming.current
     if (!cards.length) return
     incoming.current = []
     const signal = motion.current.signal
     const draw = document.querySelector('.draw-pile img')?.getBoundingClientRect()
     void (async () => {
-      for (const card of cards) {
+      for (const [index, card] of cards.entries()) {
         if (signal.aborted) return
         const face = cardElement(card.id)
         if (face && draw) {
-          await flyCard(face, draw, face.getBoundingClientRect(), signal, { flip: 'reveal', duration: 560 })
+          await flyCard(face, draw, face.getBoundingClientRect(), signal, { flip: 'reveal', duration: 640, delay: index === 0 ? 0 : 50 })
         }
         if (signal.aborted) return
         // Reveal each real card as its flying copy lands, rather than waiting for the entire deal.
@@ -84,13 +86,11 @@ function App() {
       const card = game.room.find(c => c.id === action.cardId)!
       const target = card.kind === 'weapon' || (card.kind === 'monster' && action.combat === 'weapon') ? equipped : discard
       if (face && target) {
-        flights.push(flyCard(face, face.getBoundingClientRect(), target, signal))
-        face.style.visibility = 'hidden'
+        flights.push(flyCard(face, hideCardSource(face), target, signal))
       }
       if (card.kind === 'weapon' && discard) {
         document.querySelectorAll<HTMLElement>('.equipped-stack .card-face').forEach((old, i) => {
-          flights.push(flyCard(old, old.getBoundingClientRect(), discard, signal, { delay: i * 60 }))
-          old.style.visibility = 'hidden'
+          flights.push(flyCard(old, hideCardSource(old), discard, signal, { delay: i * 60 }))
         })
       }
     }
@@ -99,19 +99,34 @@ function App() {
       if (draw) game.room.forEach((card, i) => {
         const face = cardElement(card.id)
         if (face) {
-          flights.push(flyCard(face, face.getBoundingClientRect(), draw, signal, { flip: 'hide', delay: i * 50 }))
-          face.style.visibility = 'hidden'
+          flights.push(flyCard(face, hideCardSource(face), draw, signal, { flip: 'hide', delay: i * 50 }))
         }
       })
     }
     await Promise.all(flights)
     if (signal.aborted) return
-    document.querySelectorAll<HTMLElement>('.room-card > .card-face, .equipped-stack .card-face').forEach(face => { face.style.visibility = '' })
     const previous = action.type === 'start' || action.type === 'flee' ? [] : slots
     const nextSlots = Array.from({ length: 4 }, (_, i) => previous[i] && next.room.some(c => c.id === previous[i]!.id) ? previous[i]! : null)
+    if (action.type === 'resolve' && next.status === 'playing' && next.roomNumber !== game.roomNumber) {
+      const survivorIndex = nextSlots.findIndex(card => card !== null)
+      const survivor = nextSlots[survivorIndex]
+      if (survivor && survivorIndex !== 3) {
+        const face = cardElement(survivor.id)
+        const destination = document.querySelectorAll<HTMLElement>('.room-slot')[3]
+        if (face && destination) {
+          const slide = flyCard(face, hideCardSource(face), destination.getBoundingClientRect(), signal, { duration: 340, flat: true })
+          await slide
+          if (signal.aborted) return
+        }
+        nextSlots[survivorIndex] = null
+        nextSlots[3] = survivor
+      }
+    }
     const newcomers = next.room.filter(c => !nextSlots.some(existing => existing?.id === c.id))
     newcomers.forEach(card => { nextSlots[nextSlots.indexOf(null)] = card })
-    incoming.current = newcomers
+    // The draw pile is on the left: deal the farthest (rightmost) open slot first.
+    incoming.current = [...newcomers].sort((a, b) =>
+      nextSlots.findIndex(card => card?.id === b.id) - nextSlots.findIndex(card => card?.id === a.id))
     setHiddenCards(newcomers.map(c => c.id))
     setSlots(nextSlots)
     setHealthPreview(null)
@@ -165,13 +180,15 @@ function App() {
           <GameSidebar game={healthPreview === null ? game : { ...game, health: healthPreview }} />
         </div>
       )}
-      <p className="activity" role="status" aria-live="polite" aria-atomic="true">{game.status !== 'ready' ? announcement : ''}</p>
-      <dialog className={`result-modal ${game.status}`} ref={resultDialog} aria-labelledby="result-title" aria-describedby="result-score">
-        <button className="result-close" aria-label="Close result" onClick={() => resultDialog.current?.close()}>×</button>
+      <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{game.status !== 'ready' ? announcement : ''}</p>
+      <dialog className={`result-modal ${game.status}`} ref={resultDialog} aria-labelledby="result-title" aria-describedby="result-score" onCancel={event => event.preventDefault()}>
+        <img className="result-plate" src="/art/ui/result-plate.webp?v=1" alt="" />
+        <div className="result-content">
         <img className="result-emblem" src={game.status === 'won' ? '/art/ui/bronze-chalice.webp' : '/art/ui/bronze-skull.webp?v=1'} alt="" />
         <h2 id="result-title" ref={resultHeading} tabIndex={-1}>{game.status === 'won' ? 'You survived.' : 'Your descent ends.'}</h2>
         <p id="result-score">Final score <strong>{game.score}</strong></p>
-        <button className="primary-button" onClick={start}>Play again</button>
+        <button className="replay-button" onClick={start} aria-label="Play again"><img src="/art/ui/play-again.webp" alt="Play again" /></button>
+        </div>
       </dialog>
       <dialog className="rules-screen" ref={rulesDialog} aria-labelledby="rules-title">
         <button className="rules-close" onClick={() => rulesDialog.current?.close()}>Return to the dungeon <span aria-hidden="true">×</span></button>
