@@ -163,7 +163,7 @@ function App() {
       {game.status === 'ready' ? (
         <section className="welcome" aria-label="Begin a game">
           <h1 className="title-wordmark"><img src="/art/ui/scoundrel-title-v2.webp" alt="Scoundrel" /></h1>
-          <img className="welcome-deck" src="/art/ui/card-back.webp" alt="An ancient deck embossed with a horned skull" />
+          <button className="welcome-deck-button" onClick={start} aria-label="Enter the dungeon with this deck"><img className="welcome-deck" src="/art/ui/card-back.webp" alt="" /></button>
           <button className="primary-button" onClick={start}>Enter the dungeon</button>
         </section>
       ) : (

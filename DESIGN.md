@@ -56,7 +56,7 @@ Preserve the bronze illustrated card template, 10px room-card corners, top-left 
 
 ### Game controls and status
 
-Help and new game use top-right bronze medallions. Contextual actions float over a hovered or focused card with damage/healing previews and unavailable states. Card emphasis raises the selected card 8px and scales it to 104.5%, while neighbours shrink to 96%; keyboard focus gets the same treatment when there is no hover. Pause emphasis and hide action overlays during busy transitions.
+Help and new game use top-right bronze medallions that brighten on hover or keyboard focus without clearing their background images. Both the start-screen deck and Enter the dungeon text action start a new game. Contextual actions float over a hovered or focused card with damage/healing previews and unavailable states. Card emphasis raises the selected card 8px and scales it to 104.5%, while neighbours shrink to 96%; keyboard focus gets the same treatment when there is no hover. Pause emphasis and hide action overlays during busy transitions.
 
 The lower status area uses large health numerals, a recessed bronze-edged health bar and an enlarged equipped-card stack. When unarmed, show the bronze fist and Barehanded label. Do not restore healing-readiness, weapon-discovery or visible action-result prose; retain screen-reader announcements.
 
