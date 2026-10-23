@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.node.json",
+  "compilerOptions": { "strict": true },
+  "include": ["src/game/**/*.ts", "tests/**/*.ts"]
+}

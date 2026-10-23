@@ -1,3 +1,10 @@
-:root { font-family: system-ui, sans-serif; color: #eee4ce; background: #131b18; font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
-body { margin: 0; min-width: 280px; }
-* { box-sizing: border-box; }
+:root { font-family: system-ui,sans-serif; color: #e8dfcd; background: #11150f; font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; color-scheme:dark; }
+body { margin:0; min-width:320px; background:linear-gradient(#0b100c75,#0e120fbf),url('/art/ui/dungeon-table.webp') center / cover fixed; }
+* { box-sizing:border-box; }
+button,a,summary { -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+button { font:inherit; cursor:pointer; min-height:44px; }
+button:disabled { cursor:not-allowed; }
+:focus-visible { outline:3px solid #f4ce79; outline-offset:5px; }
+h2[tabindex]:focus { outline:none; }
+a { color:inherit; text-underline-offset:4px; }
+::selection { background:#d1b777; color:#141810; }

@@ -2,7 +2,7 @@
 
 ## Project Intent
 
-Build Scoundrel, a single-player dungeon-crawling card game playable in the browser. This is a newly bootstrapped personal app; gameplay remains to be implemented.
+Build Scoundrel, a single-player dungeon-crawling card game playable in the browser. This is a newly bootstrapped personal app; the pure TypeScript game engine and playable React interface are implemented; unique artwork and catalogue names are connected for all 44 playable cards.
 
 ## Workspace Context
 
@@ -10,17 +10,24 @@ Canonical directory: `/Users/elikennedy/projects/personal/scoundrel`. Follow the
 
 ## Structure
 
-- `src/App.tsx`: application shell.
+- `src/game/`: React-independent cards, state machine, and action validation.
+- `tests/game.test.ts`: rule tests and deterministic complete-game simulations.
+- `src/App.tsx`: gameplay screen, lifecycle, announcements, and focus management.
+- `src/components/`: room cards, adventurer status, and presentation helpers.
+- `src/components/cardIllustrations.ts`: catalogue names, local artwork paths, and optional crop overrides.
+- `public/art/cards/`, `public/art/ui/`: runtime WebP illustrations, backdrop, and deck back.
+- `docs/art/`: retained originals, prompts, and generation provenance.
+- `PRODUCT.md`, `DESIGN.md`, `.impeccable/design.json`: product constraints and the visual design contract.
 - `src/main.tsx`: React entry point.
 - `src/App.css`, `src/index.css`: styling.
 - `vite.config.ts`, `tsconfig*.json`: build and TypeScript configuration.
 - `README.md`: status, commands, and next steps.
 
-Keep the eventual rules engine in pure TypeScript, separate from React rendering. Verify the original rules and credit their creators before implementing or copying game material. Do not assume a rules variant without documenting it.
+Keep the rules engine in pure TypeScript, separate from React rendering. Verify the original rules and credit their creators before implementing or copying game material. Do not assume a rules variant without documenting it.
 
 ## Run And Build
 
-Use Node.js 24 LTS and npm. Install with `npm ci`; develop with `npm run dev`; validate with `npm run lint` and `npm run build`; preview with `npm run preview`. No test runner is configured yet. Add meaningful rule tests when implementing gameplay.
+Use Node.js 24 LTS and npm. Install with `npm ci`; develop with `npm run dev`; validate with `npm run lint` and `npm run build`; preview with `npm run preview`. Run `npm test` for strict engine/test type-checking and Node.js 24 built-in rule tests. Keep meaningful rule tests alongside engine changes. The chosen rule interpretations are documented in README.md.
 
 ## Registry Relationship
 
@@ -32,4 +39,4 @@ Private GitHub backing: https://github.com/elikennedy/scoundrel. Use `main` as t
 
 ## Guardrails
 
-Preserve the personal classification and Vite/React/TypeScript stack. Keep documentation truthful as implementation evolves. Make browser interactions accessible by keyboard and usable on small screens. Avoid adding backend services until a concrete feature requires them.
+Preserve the personal classification and Vite/React/TypeScript stack. Keep documentation truthful as implementation evolves. Make browser interactions accessible by keyboard and usable on small screens. Preserve the user-approved bronze/parchment card faces, detached action buttons, and top-aligned monster artwork. Avoid reintroducing visible card type badges or identity subtitles. Avoid adding backend services until a concrete feature requires them.

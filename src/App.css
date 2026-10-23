@@ -1,5 +1,86 @@
-main { max-width: 48rem; margin: auto; padding: 18vh 2rem 4rem; }
-h1 { font-family: Georgia, serif; font-size: clamp(3rem, 12vw, 6rem); font-weight: 400; margin: 1rem 0; }
-p { line-height: 1.7; max-width: 36rem; }
-.eyebrow { color: #c8aa72; text-transform: uppercase; letter-spacing: .15em; font-size: .8rem; }
-.status { margin-top: 3rem; color: #a6b4aa; border-top: 1px solid #36453b; padding-top: 1.5rem; }
+.app-shell { max-width: 1380px; min-height: 100svh; margin: auto; padding: 26px 48px 18px; }
+h1,h2,h3,p { margin-top: 0; }
+h1,h2,h3 { font-family: Georgia, serif; font-weight: 400; }
+.masthead { display: flex; align-items: center; justify-content: space-between; min-height: 60px; }
+h1 { font-size: 2.2rem; letter-spacing: -.03em; margin: 0; color: #dcc49a; text-shadow: 0 3px 9px #000; }
+button { border: 1px solid #85704b; background: #28241c; color: #f1e4c9; padding: 11px 20px; box-shadow: 0 4px 12px #0006; border-radius: 4px; }
+button:hover:not(:disabled) { background: #453a27; border-color: #d2af6e; }
+button:active:not(:disabled) { transform: translateY(1px); }
+button:disabled { color: #9d927f; border-color: #4d4537; background: #211f1b; box-shadow: none; }
+.quiet-button { background: #151613a6; border-color: #77684c70; font-size: .8rem; }
+.primary-button { background: #bfa16a; border-color: #e0c694; color: #211b12; font-family: Georgia,serif; font-size: 1.2rem; padding: 15px 38px; }
+.primary-button:hover:not(:disabled) { background: #dbc08d; color: #17130e; }
+.welcome { min-height: 66svh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 36px; }
+.welcome-deck { width: min(210px,40vw); aspect-ratio: 2/3; object-fit: cover; border-radius: 9px; transform: rotate(-7deg); box-shadow: 12px 20px 35px #000b; }
+.game-layout { display: flex; flex-direction: column; gap: 22px; padding-top: 18px; }
+.play-area { width: 100%; max-width: 1140px; margin: auto; }
+.section-heading { display: flex; align-items: center; justify-content: center; gap: 20px; margin: 4px 0 24px; }
+.section-heading h2 { font-size: 1.3rem; margin: 0; color: #dec9a0; text-shadow: 0 2px 5px #000; }
+.turn-counter { display: flex; gap: 7px; }
+.turn-counter i { width: 7px; height: 7px; border: 1px solid #c5a775; transform: rotate(45deg); }
+.turn-counter i.resolved { background: #d9b675; }
+.room-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 24px; align-items: start; }
+.room-card { --card-accent: #762f28; --card-accent-light: #a25b3f; min-width: 0; }
+.room-card.weapon { --card-accent: #17475c; --card-accent-light: #397286; }
+.room-card.potion { --card-accent: #37553a; --card-accent-light: #6a8050; }
+.room-card > .card-face { border: 2px solid #8a6b40; border-radius: 10px; overflow: hidden; box-shadow: 0 12px 22px #0009; }
+.card-face { position: relative; isolation: isolate; aspect-ratio: 2 / 3; min-height: 300px; display: grid; grid-template-rows: 1fr auto; padding: 5px; background: linear-gradient(135deg, #ad915c, #34271d 5%, #8a683d 6%, #2b241a 7%, #5c422a 94%, #be9f63 96%, #3c2d1e); }
+.card-face::after { content: ''; position: absolute; z-index: 4; inset: 5px; border: 1px solid #d1b77885; border-radius: 5px; pointer-events: none; }
+.card-illustration { min-height: 0; position: relative; background: #242e2b; overflow: hidden; }
+.card-illustration::after { content: ''; position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 32px #0009; background: linear-gradient(0deg, #0004, transparent 45%); }
+.card-illustration img { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; }
+.art-placeholder { height: 100%; min-height: 175px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #bcad87; background: radial-gradient(ellipse at 65% 25%, #66726855, transparent 65%), repeating-linear-gradient(130deg, #ffffff02 0 1px, transparent 1px 12px), linear-gradient(150deg, #1b2928, #1a1c18); }
+.art-placeholder > svg { width: 64px; height: 64px; opacity: .65; margin-top: 20px; }
+.art-placeholder > span { font-size: .5rem; text-transform: uppercase; letter-spacing: .15em; opacity: .8; }
+.value-banner { position: absolute; top: 6px; left: 10px; z-index: 2; width: 47px; padding: 10px 4px 22px; display: flex; align-items: center; flex-direction: column; gap: 8px; color: #f3dfb4; border-left: 1px solid #c4a76e; border-right: 1px solid #c4a76e; background: linear-gradient(100deg, #0004, transparent 40%, #0005), var(--card-accent); clip-path: polygon(0 0, 100% 0, 100% 83%, 50% 100%, 0 83%); filter: drop-shadow(2px 3px 2px #0007); }
+.value-banner strong { font-family: Georgia, serif; font-size: 2.3rem; line-height: 1; font-weight: 400; text-shadow: 1px 2px 2px #000; }
+.value-banner svg { width: 26px; height: 26px; }
+.card-nameplate { position: relative; z-index: 3; color: #251e15; background: radial-gradient(ellipse at center, #eddfbd, #c7ae81); border-top: 2px solid #8a6b40; box-shadow: inset 0 0 18px #74532d55; padding: 15px 8px; text-align: center; min-height: 66px; }
+.card-nameplate h3 { font-family: Georgia, serif; font-size: clamp(.85rem, 1.4vw, 1.25rem); line-height: 1.15; margin: 0; font-weight: 500; overflow-wrap: anywhere; }
+.card-flavour { margin: 8px 0 0; border-top: 1px solid #886c4260; padding-top: 7px; font-family: Georgia, serif; font-style: italic; font-size: .68rem; line-height: 1.4; }.card-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 17px; }
+.card-actions button { display: flex; align-items: center; justify-content: space-between; gap: 6px; width: 100%; min-height: 44px; padding: 10px 13px; font-size: .78rem; }
+.card-actions button span { color: #e2c392; font-variant-numeric: tabular-nums; white-space: nowrap; font-size: .74rem; }
+.card-actions button:disabled span { color: inherit; }
+.card-actions .barehanded { background: #171714d9; }
+.room-footer { min-height: 62px; display: flex; flex-direction: column; align-items: center; margin-top: 24px; gap: 7px; }
+.secondary-button { min-width: 160px; background: #141613c9; }
+.small-note { color: #cbbfa7; font-size: .75rem; line-height: 1.5; margin: 0; }
+.game-sidebar { display: grid; grid-template-columns: 1fr 1.4fr 1fr; align-items: center; gap: 36px; margin: 0 auto; width: 100%; max-width: 980px; padding: 24px 0 12px; border-top: 1px solid #af946547; }
+.health-value { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; color: #e7d4b4; }
+.health-value > span { font-size: .85rem; }
+.health-value strong { font: 1.9rem Georgia,serif; font-variant-numeric: tabular-nums; }
+.health-value small { font: .8rem system-ui,sans-serif; color: #bcb09b; }
+progress { display: block; width: 100%; height: 7px; border: 0; margin: 10px 0; accent-color: #b75e46; background: #181b16; }
+progress::-webkit-progress-bar { background: #181b16; }
+progress::-webkit-progress-value { background: #b75e46; }
+progress::-moz-progress-bar { background: #b75e46; }
+.critical .health-value strong { color: #ffb4a0; }
+.potion-status { font-size: .73rem; color: #c2d0a9; margin: 0; }
+.potion-status.used { color: #bdb09a; }
+.weapon-panel { display: flex; align-items: center; gap: 16px; min-height: 84px; }
+.weapon-panel img { width: 52px; height: 78px; object-fit: cover; border: 1px solid #9b8051; border-radius: 3px; }
+.weapon-panel h3 { font-size: 1.1rem; color: #e4cd9f; margin: 0 0 8px; }
+.weapon-panel p { font-size: .76rem; color: #c1b49e; line-height: 1.6; margin: 0; }
+.dungeon-pile { display: flex; align-items: center; justify-content: end; gap: 20px; }
+.dungeon-pile > img { width: 50px; height: 75px; object-fit: cover; transform: rotate(6deg); border-radius: 4px; box-shadow: -3px 3px #6d5a3a,-6px 6px #1b1b16,0 8px 15px #0008; }
+.dungeon-counts { margin: 0; }
+.dungeon-counts > div { display: flex; align-items: baseline; gap: 16px; justify-content: space-between; margin: 5px 0; }
+.dungeon-counts dt { font-size: .73rem; color: #c1b49e; }
+.dungeon-counts dd { font: 1.3rem Georgia,serif; margin: 0; color: #e4cd9f; }
+.activity { min-height: 26px; margin: 16px auto 12px; text-align: center; max-width: 800px; color: #c9bca3; font-size: .78rem; line-height: 1.6; }
+.rules { max-width: 980px; margin: auto; }
+.rules summary { min-height: 44px; padding: 12px 0; width: fit-content; cursor: pointer; color: #d0bc96; font-size: .8rem; }
+.rules-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; padding: 14px 0; }
+.rules-grid p { font-size: .8rem; line-height: 1.7; color: #ccc0ac; }
+.rules-grid strong { display: block; color: #ead8b5; margin-bottom: 8px; }
+.credits { max-width: 980px; margin: 8px auto 0; display: flex; gap: 18px; color: #aa9c83; font-size: .68rem; }
+.result { text-align: center; padding: 22px; margin-bottom: 26px; background: #121610e8; border: 1px solid #aa8b53; }
+.result h2 { font-size: 2.3rem; color: #ebd3a6; margin-bottom: 14px; }
+.result p { color: #d9c399; }
+.empty-room { grid-column: 1/-1; text-align: center; padding: 60px 0; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }
+@media(max-width:1000px) { .app-shell { padding: 20px 26px; } .room-grid { gap: 16px; } .card-actions button { font-size:.72rem; padding:10px 8px; } .game-sidebar { gap:24px; } }
+@media(max-width:760px) { .app-shell { padding:18px 20px; } .masthead h1 { font-size:1.8rem; } .room-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px 16px; } .game-layout { padding-top:12px; } .section-heading { margin-bottom:20px; } .card-face { min-height:280px; } .card-nameplate h3 { font-size:.95rem; } .value-banner { width:39px; left:8px; } .value-banner strong { font-size:1.9rem; } .game-sidebar { grid-template-columns:1fr 1fr; gap:22px; } .weapon-panel { grid-column:1/-1; grid-row:2; } .dungeon-pile { gap:14px; } .rules-grid { grid-template-columns:1fr 1fr; } .welcome { min-height:65svh; } }
+@media(prefers-reduced-motion:no-preference) { button { transition:background-color .15s,border-color .15s; } .room-section { animation:deal-in .45s cubic-bezier(.16,1,.3,1); } @keyframes deal-in { from { opacity:.6; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } } }
+/* A tall face must not impose its aspect-ratio width on narrow grid tracks. */
+.card-face { width: 100%; min-width: 0; }
