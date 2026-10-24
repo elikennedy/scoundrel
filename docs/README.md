@@ -16,7 +16,7 @@ Each current concern has one primary home:
 
 ## Retention and cleanup
 
-Keep original artwork, exact prompts, the supplied reference and meaningful alternate-source provenance. A source image is not orphaned merely because its selected export is different. Only selected assets and the six control sprites belong under `public/art/`.
+Keep original artwork, exact prompts and meaningful alternate-source provenance. A source image is not orphaned merely because its selected export is different. Only selected assets and the six control sprites belong under `public/art/`.
 
 Do not retain duplicate prompt transcripts, superseded runtime exports or historical screenshots as current documentation. Temporary browser captures go under ignored `.impeccable/review/`; current behaviour must be checked against source and a running build. Generated build/dependency/cache directories are ignored, not documentation.
 

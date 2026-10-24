@@ -2,14 +2,14 @@
   {
     "id": "dungeon-table",
     "prompt": "Use case: stylized-concept. Create a landscape 1536x1024 background painting for a dark fantasy solitaire card game. View from slightly above a broad ancient oak gaming table inside a ruined stone dungeon. Table surface occupies central 80 percent and lower area, almost empty, dark worn brown wood, subtle grain and a few shallow scratches. At far left and right edges only: melted beeswax candles with tiny amber flames, old stone arch fragments, drifting smoke, shadow. Distant upper middle: dark indistinct stone archway. Realistic painterly rendering matching gritty fantasy card paintings, muted brown charcoal olive, warm amber rim lighting. Centre must be quiet dark low contrast and free of objects so playing cards can sit over it. No cards, no text, no logos, no interface, no ornate border, no people. Atmospheric high quality matte game environment.",
-    "generationSource": "/Users/elikennedy/.codex/generated_images/01a16884-0f22-73c3-8d0c-64024500a119/exec-2abd19db-a17c-4214-acd9-c39c308f1900.png",
+    "generationSource": "docs/art/ui/dungeon-table-original.png",
     "original": "docs/art/ui/dungeon-table-original.png",
     "runtime": "public/art/ui/dungeon-table.webp"
   },
   {
     "id": "card-back",
     "prompt": "Use case: stylized-concept. Generate a single portrait 1024x1536 original dark fantasy playing card back, straight-on flat full-bleed image. Weathered black-brown leather panel with aged embossed bronze filigree, symmetric interlaced thorn branches surrounding a central ancient skull with small branching antlers, restrained muted gold patina and deep charcoal shadows. Fine engraved craftsmanship, realistically painted textured materials, dark solemn medieval relic. Complete symmetrical design inset from edges for cropping. No text, numerals, letters, logos or UI. No perspective, no scene outside the panel.",
-    "generationSource": "/Users/elikennedy/.codex/generated_images/01a16884-0f22-73c3-8d0c-64024500a119/exec-fac993c7-07f6-4d68-8a65-2332f4dc7e8c.png",
+    "generationSource": "docs/art/ui/card-back-original.png",
     "original": "docs/art/ui/card-back-original.png",
     "runtime": "public/art/ui/card-back.webp"
   }

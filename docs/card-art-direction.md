@@ -1,10 +1,10 @@
 # Card art direction
 
-User-provided reference: [card layout and illustration sample](references/card-art-direction.png).
+The original supplied visual reference is not distributed with this repository. The art direction below and retained original artwork describe the selected visual system.
 
 ## Visual target
 
-Dark, gritty, realistically painted fantasy. Weathered materials, muted earth tones, atmospheric fog, dramatic directional lighting, and restrained accents. Subjects must read clearly at room-card size. Use the supplied reference for mood and composition while creating original creatures and weapons. The example suggests the mood of The Witcher 3’s Gwent cards; do not reproduce existing illustrations or logos.
+Dark, gritty, realistically painted fantasy. Weathered materials, muted earth tones, atmospheric fog, dramatic directional lighting, and restrained accents. Subjects must read clearly at room-card size. Create original creatures and weapons; do not reproduce existing illustrations or logos.
 
 ## Deterministic layout
 
@@ -20,7 +20,7 @@ The React `CardFace` component owns the frame, typography, values, icons, colour
 
 Keep presentation separate from the pure rules engine. Presentation metadata lives in `src/components/cardIllustrations.ts`. Artwork is keyed by the engine’s stable card ID, e.g. `clubs-7` or `diamonds-5`. Presentation fields: `name`, optional `flavour`, optional local `src`, optional CSS `position` for cropping. Monster images default to top-centre alignment to preserve heads, crowns and antlers in the shorter illustration window; weapons and healing cards retain centred alignment. An explicit per-card `position` overrides these defaults. Subject, environment, palette, and danger/power cues belong in the asset brief.
 
-The reference’s 1–10 range does not match Scoundrel: there are 26 distinct monsters valued 2–14, nine weapons valued 2–10, and nine potions valued 2–10. Equal-value monsters in different suits need distinct identities and illustrations. Art must never change card values or mechanics.
+Scoundrel uses 26 distinct monsters valued 2–14, nine weapons valued 2–10, and nine potions valued 2–10. Equal-value monsters in different suits need distinct identities and illustrations. Art must never change card values or mechanics.
 
 The [user-defined card catalogue](card-catalogue.md) is authoritative for names and concepts. All 44 playable cards now have illustrations and catalogue identities connected to CardFace. The user approved the first pair and requested continuation. See the [artwork index](art/README.md) for exact prompts, original images and selected runtime exports. Missing or failed artwork still falls back to a placeholder.
 

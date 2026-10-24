@@ -1,12 +1,12 @@
 # Artwork index
 
-Original artwork created for this repository is covered by the [MIT License](../../LICENSE), with the scope and third-party exclusions set out in [NOTICE](../../NOTICE). The supplied visual reference is excluded from that grant.
+Original artwork created for this repository is covered by the [MIT License](../../LICENSE), with the scope and third-party exclusions set out in [NOTICE](../../NOTICE).
 
 ## Cards
 
-All 44 playable cards have unique catalogue names and selected local illustrations. The [catalogue](../card-catalogue.md) owns names/concepts; [art direction](../card-art-direction.md) owns composition and generation constraints. The supplied [visual reference](../references/card-art-direction.png) remains useful source material.
+All 44 playable cards have unique catalogue names and selected local illustrations. The [catalogue](../card-catalogue.md) owns names/concepts; [art direction](../card-art-direction.md) owns composition and generation constraints.
 
-The [generation manifest](card-generation.jsonl) is the single exact-prompt record: 44 original cards and one ceramic correction for Witch's Remedy. Every record identifies its retained original, whether it is selected, and its runtime path when selected. Original generation-cache paths are historical provenance, not runtime dependencies.
+The [generation manifest](card-generation.jsonl) is the single exact-prompt record: 44 original cards and one ceramic correction for Witch's Remedy. Every record identifies its retained original, whether it is selected, and its runtime path when selected. All asset paths, including generation sources, are relative to the repository root and point to retained files rather than machine-specific generation caches.
 
 - Originals: `docs/art/originals/` (1024 × 1536 PNGs).
 - Selected exports: `public/art/cards/` (WebP, quality 85).

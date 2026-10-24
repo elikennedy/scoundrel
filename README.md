@@ -8,7 +8,7 @@ Keyboard interaction and reduced motion are supported. Mobile layouts are outsid
 
 ## Clone and run locally
 
-Install Git and **Node.js 24 LTS**, including npm. Check your installation with `node --version` and `npm --version`. Access to this private GitHub repository is required; authenticate with GitHub before cloning.
+Install Git and **Node.js 24 LTS**, including npm. Check your installation with `node --version` and `npm --version`.
 
 ```sh
 git clone https://github.com/elikennedy/scoundrel.git
