@@ -8,6 +8,8 @@
 - `RoomCard.tsx`, `CardFace.tsx`, `cardIllustrations.ts`: actions, shared card template and artwork catalogue.
 - `GameSidebar.tsx`, `DiscardPile.tsx`: health/equipment and the last-five discard fan.
 - `HowToPlay.tsx` / `.css`: scrolling illustrated guide and isolated engine-backed practice.
+- `src/scores/store.ts`: validated high score records, ranking and async storage contract; browser implementation and future cloud adapter selection. `config.ts` reads the Vite build-time cloud flag.
+- `HighScores.tsx` / `.css`: shared illustrated score ledger, initials entry and standalone high score dialog. The outcome embeds the same ledger beside its result plate.
 
 ## Engine API
 
@@ -39,9 +41,21 @@ Native buttons expose unavailable actions and health consequences. Tab reveals c
 
 Outcome dialogs use native modal focus containment and prevent the cancel event. Play again is their only dismissal action. Reduced motion replaces spatial travel/flips with brief fades and removes card/fan transitions; interactions still update normally.
 
+The standalone high score dialog closes with its Return to game image button or native Escape handling and restores focus to the opener. Its plate and laurel/crown images are decorative; headings, labels, score data and table semantics remain HTML. Image controls retain accessible names and keyboard focus styling. Populated score tables expose a focusable scroll region so keyboard users can reach all ten entries; the outcome ledger does not add a dismissal action.
+
+## High score lifecycle
+
+App captures a stable random run ID, final engine score and ISO completion timestamp when an action produces a terminal state. The outcome mounts one ledger per run; saving is explicit and optional. Initials normalize to three uppercase A–Z letters. A submission lock and stable ID prevent duplicate entries; Play again is disabled during a pending write. The list refreshes when the standalone ledger opens. The stored top ten rank by score descending, completion time ascending, then ID for deterministic ordering. Scores outside the top ten are acknowledged without claiming a retained entry.
+
+The browser store reads and validates existing records before each write, so it does not overwrite damaged data and incorporates other tabs' completed writes. Simultaneous writes across tabs are not transactional. Storage access and quota failures reject into visible recovery messages. Timestamps persist as ISO strings and display as local date/time. Data is scoped to the site origin; no current-game persistence is added.
+
+`VITE_CLOUD_STORAGE_ENABLED=true` selects the cloud boundary; absent/false uses local storage. The unconfigured cloud implementation rejects explicitly. A future Firestore store implements `list()` and idempotent `save(entry)` and is supplied to `selectScoreStore`; it must preserve validation, ranking, stable IDs and timestamps. Cloud authentication, security rules and abuse prevention remain future work. No Firebase SDK or service is initialized in this version.
+
 ## Validation
 
-Run `npm test`, `npm run lint`, `npm run build`, and `git diff --check` before a handoff. The 14 engine tests cover deck validation, turns, fleeing, weapon limits, healing, scoring, immutability and complete deterministic runs.
+Run `npm test`, `npm run lint`, `npm run build`, and `git diff --check` before a handoff. The 14 engine tests cover deck validation, turns, fleeing, weapon limits, healing, scoring, immutability and complete deterministic runs. Seven storage tests cover initials, ordering/retention, persistence, duplicate saves, damaged data, access/quota failures and cloud selection.
+
+For high scores, check empty/populated ledgers, initials normalization, one save per run, reload persistence, save failure/retry, local date/time and keyboard access. Escape closes the standalone ledger and returns focus to its opener; the outcome still only closes with Play again. Review ten rows at 1280×720 in both contexts: the bounded table may show fewer rows initially, and keyboard scrolling must reach the final entries without crossing the illustrated rim.
 
 For UI changes, check the affected states in a desktop browser: deal order, landing handoff, carryover slide, source cleanup, correct discard/equipment destinations, flee returns and restart cancellation. Check keyboard focus and reduced motion when changing interaction code. For guide changes, check combat comparison, all practice steps/reset, scrolling/return controls and the longest narration at 1280×720. Practice health should read 14 → 14 → 11 → 17.
 

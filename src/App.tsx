@@ -6,6 +6,8 @@ import { cardName } from './components/cardPresentation'
 import { GameSidebar } from './components/GameSidebar'
 import { HowToPlay } from './components/HowToPlay'
 import { DiscardPile } from './components/DiscardPile'
+import { HighScores, ScoreLedger } from './components/HighScores'
+import type { HighScore } from './scores/store'
 import { cardElement, flyCard, hideCardSource } from './components/cardMotion'
 import './App.css'
 
@@ -20,6 +22,10 @@ function App() {
   useEffect(() => () => motion.current.abort(), [])
   const resultDialog = useRef<HTMLDialogElement>(null)
   const rulesDialog = useRef<HTMLDialogElement>(null)
+  const scoresDialog = useRef<HTMLDialogElement>(null)
+  const [scoresOpen, setScoresOpen] = useState(false)
+  const [completedRun, setCompletedRun] = useState<Omit<HighScore, 'name'> | null>(null)
+  const [savingScore, setSavingScore] = useState(false)
   const [game, setGame] = useState(createInitialState)
   const [announcement, setAnnouncement] = useState('Your adventure awaits.')
   const roomHeading = useRef<HTMLHeadingElement>(null)
@@ -68,6 +74,7 @@ function App() {
       motion.current.abort()
       motion.current = new AbortController()
       resultDialog.current?.close()
+      setCompletedRun(null)
     }
     const signal = motion.current.signal
     const result = applyAction(game, action)
@@ -76,6 +83,11 @@ function App() {
       return
     }
     const next = result.state
+    if ((next.status === 'won' || next.status === 'lost') && next.score !== null) {
+      // getRandomValues also works on plain-HTTP self-hosts, unlike randomUUID.
+      const id = Array.from(crypto.getRandomValues(new Uint32Array(4)), value => value.toString(16).padStart(8, '0')).join('')
+      setCompletedRun({ id, score: next.score, completedAt: new Date().toISOString() })
+    }
     locked.current = true
     setBusy(true)
     setHealthPreview(next.health)
@@ -157,6 +169,7 @@ function App() {
   return (
     <main className={`app-shell ${game.status === 'ready' ? 'at-gate' : 'at-table'}`}>
       <nav className="table-tools" aria-label="Game controls">
+        <button className="medallion scores-medallion" aria-label="High scores" title="High scores" onClick={() => { setScoresOpen(true); scoresDialog.current?.showModal() }} />
         {game.status !== 'ready' && <button className="medallion restart" aria-label="New game" title="New game" onClick={start} />}
         <button className="medallion help" aria-label="Rules" title="Rules" onClick={() => rulesDialog.current?.showModal()} />
       </nav>
@@ -182,16 +195,22 @@ function App() {
         </div>
       )}
       <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{game.status !== 'ready' ? announcement : ''}</p>
-      <dialog className={`result-modal ${game.status}`} ref={resultDialog} aria-labelledby="result-title" aria-describedby="result-score" onCancel={event => event.preventDefault()}>
+      <dialog className={`result-modal with-scores ${game.status}`} ref={resultDialog} aria-labelledby="result-title" aria-describedby="result-score" onCancel={event => event.preventDefault()}>
+        <div className="result-layout">
+        <div className="result-summary">
         <img className="result-plate" src="/art/ui/result-plate.webp?v=1" alt="" />
         <div className="result-content">
         <img className="result-emblem" src={game.status === 'won' ? '/art/ui/bronze-chalice.webp' : '/art/ui/bronze-skull.webp?v=1'} alt="" />
         <h2 id="result-title" ref={resultHeading} tabIndex={-1}>{game.status === 'won' ? 'You survived.' : 'Your descent ends.'}</h2>
         <p id="result-score">Final score <strong>{game.score}</strong></p>
-        <button className="replay-button" onClick={start} aria-label="Play again"><img src="/art/ui/play-again.webp" alt="Play again" /></button>
+        <button className="replay-button" disabled={savingScore} onClick={start} aria-label="Play again"><img src="/art/ui/play-again.webp" alt="Play again" /></button>
+        </div>
+        </div>
+        <div className="result-record">{finished && completedRun && <ScoreLedger key={completedRun.id} run={completedRun} onSaving={setSavingScore} />}</div>
         </div>
       </dialog>
       <HowToPlay dialogRef={rulesDialog} />
+      <HighScores dialogRef={scoresDialog} open={scoresOpen} onClose={() => setScoresOpen(false)} />
     </main>
   )
 }

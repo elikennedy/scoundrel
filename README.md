@@ -2,7 +2,7 @@
 
 A single-player browser adaptation of the dungeon-crawling card game by Zach Gage and Kurt Bieg. Built with React, TypeScript and Vite; the rules engine is independent of React.
 
-The desktop game is playable with all 44 illustrated cards, weapons, healing, fleeing and scoring. It includes animated dealing, a face-up discard fan, bronze controls, illustrated outcome dialogs and a full-screen How to Play guide with rules, tactics and a practice room. Open the question-mark control for instructions.
+The desktop game is playable with all 44 illustrated cards, weapons, healing, fleeing and scoring. It includes animated dealing, a face-up discard fan, bronze controls, illustrated outcome dialogs, a local top-ten high score table and a full-screen How to Play guide with rules, tactics and a practice room. Open the question-mark control for instructions.
 
 Keyboard interaction and reduced motion are supported. Mobile layouts are outside the current scope. Games run entirely in the browser: there is no backend, account system or saved-game persistence. Refreshing the page loses the current game.
 
@@ -18,6 +18,14 @@ npm run dev
 ```
 
 Open the local URL printed by Vite, normally `http://localhost:5173`. Stop the server with Ctrl+C. No environment variables, API keys, database, external services or artwork generation tools are required. All runtime artwork is included in the repository.
+
+## High scores and storage
+
+Open **High scores** from the table controls. After any completed run, including a defeat with a negative score, optionally enter three letters and choose **Save score**. The table keeps the ten highest scores, with earlier completion times breaking ties. Each entry records initials, final score and completion date/time, displayed in the viewer's local timezone. **Play again** may be used without saving.
+
+Scores persist in this browser's local storage, separately from the current run. They are specific to the browser profile and site origin; clearing site data removes them. Storage errors are shown without claiming a score was saved or overwriting damaged data.
+
+The optional build-time flag `VITE_CLOUD_STORAGE_ENABLED` defaults to `false` when omitted. Copy `.env.example` to `.env.local` to configure it, then restart Vite or rebuild. Only the literal string `true` selects cloud mode. **Firestore is not connected yet:** enabling cloud mode shows an unavailable message and never silently falls back to local storage. `src/scores/store.ts` defines an asynchronous `ScoreStore` interface and selection boundary for a future Firestore adapter; the browser build has no Firebase dependency. Firebase hosting and Firestore score storage can be added separately. Variables prefixed `VITE_` are public in the browser bundle; never put secrets in them.
 
 ## Build and validate
 

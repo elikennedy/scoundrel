@@ -29,7 +29,8 @@ The app runs in a desktop browser without accounts, network services or a runtim
 - Animated dealing, carryover, equipping, discarding and fleeing; face-up last-five discard fan.
 - Health/equipment status, illustrated victory/death modal, and a How to Play guide with a combat comparison and independent engine-backed practice.
 - Desktop only by the user's explicit request. Keep keyboard operation and reduced-motion alternatives.
-- No saved-game system, leaderboard, backend or deployment target is currently implemented.
+- A browser-local top-ten high score table records three-letter initials, final score and completion timestamp. Victories and defeats are eligible; recording is optional. A shared illustrated slate ledger appears beside the outcome and in its own dialog, with a bronze laurel/crown emblem and image controls. A build-time cloud flag reserves a future Firestore adapter, currently unavailable.
+- No saved-game system, backend or deployment target is currently implemented.
 
 ## Brand Commitments
 
@@ -37,7 +38,7 @@ Preserve the bronze/parchment card faces, generated bronze wordmarks and image c
 
 ## Evidence on Hand
 
-The executable engine and 14 tests, all local card/UI artwork, the supplied visual reference, exact generation prompts, the user-defined catalogue, and guide research are retained in the repository. Source links and original creators' credit live in the rules documentation and player guide.
+The executable engine and 14 rule tests, seven storage tests, all local card/UI artwork, exact generation prompts, the user-defined catalogue, and guide research are retained in the repository. The supplied visual reference was removed for public release. Source links and original creators' credit live in the rules documentation and player guide.
 
 ## Product Principles
 
