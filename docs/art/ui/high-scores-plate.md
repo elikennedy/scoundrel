@@ -1,6 +1,6 @@
-# high-scores-plate
+# High score plate
 
-Generated with the built-in image generation tool. Transparent original retained as `docs/art/ui/high-scores-plate-original.png`; alpha-preserving runtime export: `public/art/ui/high-scores-plate.webp`.
+Generated with OpenAI image generation tools on 2026-10-24T07:36:34.979Z. Transparent original retained as `docs/art/ui/high-scores-plate-original.png`; alpha-preserving runtime export: `public/art/ui/high-scores-plate.webp`.
 
 Used as the decorative surface behind the shared high score ledger in the standalone dialog and outcome view. All ledger text and table data remain HTML. The retained style reference is `docs/art/ui/result-plate-original.png` (runtime export: `public/art/ui/result-plate.webp`).
 

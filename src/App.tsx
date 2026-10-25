@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { applyAction, canFlee, createDeck, createInitialState, shuffleDeck } from './game'
-import type { Card, GameAction } from './game'
+import { applyAction, isHighScoreEligible, canFlee, createDeck, createInitialState, shuffleDeck } from './game'
+import type { Card, GameAction, HouseRules } from './game'
 import { RoomCard } from './components/RoomCard'
 import { cardName } from './components/cardPresentation'
 import { GameSidebar } from './components/GameSidebar'
@@ -8,10 +8,19 @@ import { HowToPlay } from './components/HowToPlay'
 import { DiscardPile } from './components/DiscardPile'
 import { HighScores, ScoreLedger } from './components/HighScores'
 import type { HighScore } from './scores/store'
-import { cardElement, flyCard, hideCardSource } from './components/cardMotion'
+import { cardElement, flyCard, hideCardSource, slashCard, healCard } from './components/cardMotion'
+import { getDealSound, prepareGameAudio, playActionSound, warmGameAudio } from './components/gameAudio'
+import { waitForImages } from './components/imageReadiness'
+import { TableTool } from './components/TableTool'
+import { SoundSettings } from './components/SoundSettings'
+import { setAudioPageActive } from './components/gameAudio'
+import { resolutionSound } from './components/actionSounds'
+import { loadHouseRules, saveHouseRules } from './components/houseRulesPreferences'
 import './App.css'
 
 function App() {
+  const [houseRules, setHouseRules] = useState(loadHouseRules)
+  function updateHouseRules(rules: HouseRules) { setHouseRules(rules); saveHouseRules(rules) }
   const [slots, setSlots] = useState<(Card | null)[]>([null, null, null, null])
   const [healthPreview, setHealthPreview] = useState<number | null>(null)
   const [busy, setBusy] = useState(false)
@@ -19,10 +28,20 @@ function App() {
   const motion = useRef(new AbortController())
   const locked = useRef(false)
   const incoming = useRef<Card[]>([])
+  const returningCard = useRef<string | null>(null)
   useEffect(() => () => motion.current.abort(), [])
+  useEffect(() => {
+    const updateVisibility = () => setAudioPageActive(!document.hidden)
+    updateVisibility()
+    document.addEventListener('visibilitychange', updateVisibility)
+    return () => { document.removeEventListener('visibilitychange', updateVisibility); setAudioPageActive(false) }
+  }, [])
+  const soundDialog = useRef<HTMLDialogElement>(null)
   const resultDialog = useRef<HTMLDialogElement>(null)
   const rulesDialog = useRef<HTMLDialogElement>(null)
   const scoresDialog = useRef<HTMLDialogElement>(null)
+  const [rulesOpen, setRulesOpen] = useState(false)
+  const [soundOpen, setSoundOpen] = useState(false)
   const [scoresOpen, setScoresOpen] = useState(false)
   const [completedRun, setCompletedRun] = useState<Omit<HighScore, 'name'> | null>(null)
   const [savingScore, setSavingScore] = useState(false)
@@ -43,16 +62,30 @@ function App() {
     const signal = motion.current.signal
     const draw = document.querySelector('.draw-pile img')?.getBoundingClientRect()
     void (async () => {
+      // Start decoding all four eager room images together, alongside the deal sound.
+      const ready = cards.map(card => {
+        const face = cardElement(card.id)
+        return waitForImages(face ? [...face.querySelectorAll('img')] : [], signal)
+      })
+      const back = document.querySelector<HTMLImageElement>('.draw-pile img')
+      const [sound] = await Promise.all([getDealSound(), waitForImages(back ? [back] : [], signal)])
+      if (signal.aborted) return
       for (const [index, card] of cards.entries()) {
         if (signal.aborted) return
+        await ready[index]
+        if (signal.aborted) return
         const face = cardElement(card.id)
-        if (face && draw) {
-          await flyCard(face, draw, face.getBoundingClientRect(), signal, { flip: 'reveal', duration: 640, delay: index === 0 ? 0 : 50 })
+        const fromDiscard = returningCard.current === card.id
+        const origin = fromDiscard ? document.querySelector('[data-discard-target]')?.getBoundingClientRect() : draw
+        if (face && origin) {
+          await flyCard(face, origin, face.getBoundingClientRect(), signal, fromDiscard ? { duration: 320 } : { flip: 'reveal', duration: sound.duration, flipDuration: sound.duration, sound: sound.play, delay: index === 0 ? 0 : 50 })
         }
         if (signal.aborted) return
         // Reveal each real card as its flying copy lands, rather than waiting for the entire deal.
         setHiddenCards(hidden => hidden.filter(id => id !== card.id))
       }
+      returningCard.current = null
+      warmGameAudio()
       setBusy(false)
       locked.current = false
       roomHeading.current?.focus()
@@ -82,8 +115,9 @@ function App() {
       setAnnouncement(`That action is unavailable: ${result.error.replaceAll('-', ' ')}.`)
       return
     }
+    prepareGameAudio({ deferMusic: action.type === 'start' })
     const next = result.state
-    if ((next.status === 'won' || next.status === 'lost') && next.score !== null) {
+    if ((next.status === 'won' || next.status === 'lost') && next.score !== null && isHighScoreEligible(next)) {
       // getRandomValues also works on plain-HTTP self-hosts, unlike randomUUID.
       const id = Array.from(crypto.getRandomValues(new Uint32Array(4)), value => value.toString(16).padStart(8, '0')).join('')
       setCompletedRun({ id, score: next.score, completedAt: new Date().toISOString() })
@@ -97,7 +131,16 @@ function App() {
     if (action.type === 'resolve') {
       const face = cardElement(action.cardId)
       const card = game.room.find(c => c.id === action.cardId)!
+      void playActionSound(resolutionSound(card, game.potionUsed), signal)
       const target = card.kind === 'weapon' || (card.kind === 'monster' && action.combat === 'weapon') ? equipped : discard
+      if (face && card.kind === 'monster') {
+        await slashCard(face, signal)
+        if (signal.aborted) return
+      }
+      if (face && card.kind === 'potion' && !game.potionUsed) {
+        await healCard(face, signal)
+        if (signal.aborted) return
+      }
       if (face && target) {
         flights.push(flyCard(face, hideCardSource(face), target, signal))
       }
@@ -135,20 +178,29 @@ function App() {
         nextSlots[3] = survivor
       }
     }
+    const swapped = action.type === 'resolve' && action.joker === 'play'
+      ? next.room.find(card => !game.room.some(old => old.id === card.id)) : undefined
+    if (swapped && action.type === 'resolve') {
+      const replacedId = action.cardId
+      nextSlots[slots.findIndex(card => card?.id === replacedId)] = swapped
+    }
     const newcomers = next.room.filter(c => !nextSlots.some(existing => existing?.id === c.id))
     newcomers.forEach(card => { nextSlots[nextSlots.indexOf(null)] = card })
     // The draw pile is on the left: deal the farthest (rightmost) open slot first.
     incoming.current = [...newcomers].sort((a, b) =>
       nextSlots.findIndex(card => card?.id === b.id) - nextSlots.findIndex(card => card?.id === a.id))
-    setHiddenCards(newcomers.map(c => c.id))
+    returningCard.current = swapped?.id ?? null
+    if (swapped) incoming.current.push(swapped)
+    setHiddenCards([...newcomers, ...(swapped ? [swapped] : [])].map(c => c.id))
     setSlots(nextSlots)
     setHealthPreview(null)
-    if (!newcomers.length) { locked.current = false; setBusy(false) }
+    if (!newcomers.length && !swapped) { locked.current = false; setBusy(false) }
     let message = ''
     if (action.type === 'start') message = ''
     if (action.type === 'flee') message = `You fled. Room ${next.roomNumber} revealed. You must face this room.`
     if (action.type === 'resolve') {
       const card = game.room.find((entry) => entry.id === action.cardId)!
+      if (card.kind === 'joker') message = action.joker === 'play' ? `${cardName(card)} exchanged for ${swapped ? cardName(swapped) : 'a discarded card'}.` : `Discarded ${cardName(card)}.`
       if (card.kind === 'monster') message = `Defeated ${cardName(card)} ${action.combat === 'weapon' ? 'with your weapon' : 'barehanded'}. Lost ${game.health - next.health} health.`
       if (card.kind === 'weapon') message = `Equipped ${cardName(card)}. Weapon power ${card.value}.`
       if (card.kind === 'potion') message = game.potionUsed ? `Discarded ${cardName(card)}. Healing already used this turn.` : `Drank ${cardName(card)}. Restored ${next.health - game.health} health.`
@@ -161,17 +213,18 @@ function App() {
     setGame(next)
   }
 
-  function start() { act({ type: 'start', deck: shuffleDeck(createDeck()) }) }
-  const fleeReason = game.resolvedThisRoom > 0 ? 'You have already entered this room.'
+  function start() { act({ type: 'start', deck: shuffleDeck(createDeck(houseRules)), rules: houseRules }) }
+  const fleeReason = game.resolvedThisRoom > 0 || game.jokerPlayedThisRoom ? 'You have already entered this room.'
     : game.previousRoomFled ? 'You fled the last room. Stand your ground.'
     : game.room.length < 4 ? 'The final cards must be faced.' : 'Return this room to the bottom of the dungeon.'
 
   return (
     <main className={`app-shell ${game.status === 'ready' ? 'at-gate' : 'at-table'}`}>
       <nav className="table-tools" aria-label="Game controls">
-        <button className="medallion scores-medallion" aria-label="High scores" title="High scores" onClick={() => { setScoresOpen(true); scoresDialog.current?.showModal() }} />
-        {game.status !== 'ready' && <button className="medallion restart" aria-label="New game" title="New game" onClick={start} />}
-        <button className="medallion help" aria-label="Rules" title="Rules" onClick={() => rulesDialog.current?.showModal()} />
+        <TableTool className="restart" label="New game" tooltip="Start a new game" onClick={start} />
+        <TableTool className="settings-medallion" label="Settings" tooltip="Sound and optional house rules" onClick={() => { prepareGameAudio(); setSoundOpen(true) }} />
+        <TableTool className="scores-medallion" label="High scores" tooltip="View high scores" onClick={() => { setScoresOpen(true) }} />
+        <TableTool className="help" label="How to play" tooltip="Rules and practice" onClick={() => setRulesOpen(true)} />
       </nav>
       {game.status === 'ready' ? (
         <section className="welcome" aria-label="Begin a game">
@@ -195,21 +248,23 @@ function App() {
         </div>
       )}
       <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{game.status !== 'ready' ? announcement : ''}</p>
-      <dialog className={`result-modal with-scores ${game.status}`} ref={resultDialog} aria-labelledby="result-title" aria-describedby="result-score" onCancel={event => event.preventDefault()}>
-        <div className="result-layout">
+      <dialog className={`result-modal ${isHighScoreEligible(game) ? 'with-scores' : 'house-result'} ${game.status}`} ref={resultDialog} aria-labelledby="result-title" aria-describedby="result-score" onCancel={event => event.preventDefault()}>
+        {finished && <div className="result-layout">
         <div className="result-summary">
         <img className="result-plate" src="/art/ui/result-plate.webp?v=1" alt="" />
         <div className="result-content">
         <img className="result-emblem" src={game.status === 'won' ? '/art/ui/bronze-chalice.webp' : '/art/ui/bronze-skull.webp?v=1'} alt="" />
         <h2 id="result-title" ref={resultHeading} tabIndex={-1}>{game.status === 'won' ? 'You survived.' : 'Your descent ends.'}</h2>
         <p id="result-score">Final score <strong>{game.score}</strong></p>
+        {(game.rules.handicap > 0 || game.rules.jokers) && <p className="house-run-note">House rules run · excluded from high scores</p>}
         <button className="replay-button" disabled={savingScore} onClick={start} aria-label="Play again"><img src="/art/ui/play-again.webp" alt="Play again" /></button>
         </div>
         </div>
-        <div className="result-record">{finished && completedRun && <ScoreLedger key={completedRun.id} run={completedRun} onSaving={setSavingScore} />}</div>
-        </div>
+        {finished && completedRun && <div className="result-record"><ScoreLedger key={completedRun.id} run={completedRun} onSaving={setSavingScore} /></div>}
+        </div>}
       </dialog>
-      <HowToPlay dialogRef={rulesDialog} />
+      <SoundSettings dialogRef={soundDialog} open={soundOpen} rules={houseRules} onRulesChange={updateHouseRules} onClose={() => setSoundOpen(false)} />
+      <HowToPlay dialogRef={rulesDialog} open={rulesOpen} onClose={() => setRulesOpen(false)} />
       <HighScores dialogRef={scoresDialog} open={scoresOpen} onClose={() => setScoresOpen(false)} />
     </main>
   )

@@ -1,6 +1,5 @@
 # Rules and implementation decisions
 
-
 Source: [original rules PDF](https://www.stfj.net/art/2011/Scoundrel.pdf), version 1.0, 15 August 2011, by Zach Gage and Kurt Bieg. This remains the documented baseline; the guide research on 24 October 2026 could not freshly verify the complete PDF because its fetch returned 502. See [research and source limitations](guide/research.md). Paraphrased baseline:
 
 - **Setup:** Remove jokers, red aces, and red face cards. Shuffle the 44-card Dungeon. Health starts/caps at 20.
@@ -10,7 +9,7 @@ Source: [original rules PDF](https://www.stfj.net/art/2011/Scoundrel.pdf), versi
 - **Potions:** Heal their value; discard. Only one heals per turn; discard extras.
 - **Ending/scoring:** Die at health ≤0; subtract remaining Dungeon monsters’ values from health. Clear Dungeon: score health; at 20, add the final potion’s value if it was the last card.
 
-### Implementation Clarifications
+## Implementation clarifications
 
 The engine uses these explicit interpretations of the original rules:
 
@@ -22,7 +21,16 @@ The engine uses these explicit interpretations of the original rules:
 
 These decisions are covered by rule tests and can be revised explicitly if we choose a different variant.
 
-
 ## Player guide
 
 The question-mark control opens the illustrated How to Play guide, including an isolated practice room. Its research and worked examples are recorded in [research notes](guide/research.md). The engine in `src/game/engine.ts` and tests in `tests/game.test.ts` are the executable contract.
+
+## Optional house rules
+
+Standard play remains the original 44-card deck. Browser-saved Settings apply only when starting a new game; each run retains its own rules.
+
+- Handicap 0 (Off) uses no additional red cards. Levels 1–4 randomly choose that many distinct hearts/diamonds valued 11–14 from the eight-card pool, then shuffle them with the standard deck. These use ordinary potion/weapon rules, including the 20-health cap, healing allowance and final-potion bonus.
+- Jokers in adds two distinct jokers. Discard resolves a joker and counts toward the room’s three resolutions. Play exchanges the joker in its room slot with a uniformly random card from the existing discard pile; the played joker goes on top of discard and cannot select itself. The exchange consumes no resolution and preserves healing allowance. Either joker can retrieve the other. Empty discard disables Play. Both choices commit the player to the room.
+- Both optional settings default off. Any run begun with handicap or jokers enabled shows a final score but never offers high-score recording. Later preference changes cannot change that run’s eligibility. These are house rules for this adaptation, not rules attributed to Zach Gage or Kurt Bieg.
+
+The pure engine accepts an explicit random sample for a joker exchange, making transitions reproducible without hidden randomness.

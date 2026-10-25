@@ -102,3 +102,8 @@
 .guide-sources h2 { font-size:1.6rem; }.guide-sources p { font-size:.95rem; max-width:85ch; }
 .guide-sources a { display:inline-block; color:#d0bc96; margin-right:24px; text-underline-offset:5px; }
 .guide-sources .guide-return { margin:28px 0 0; }
+
+.guide-house-row { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 64px; align-items: start; margin-bottom: 64px; }
+.guide-house-art { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; padding-top: 6px; }
+.guide-house-art .card-nameplate h3 { font-size: .8rem; }
+.guide-house-scores { max-width: 800px; margin-left: 424px; }

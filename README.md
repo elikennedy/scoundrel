@@ -1,14 +1,14 @@
 # Scoundrel
 
-A single-player browser adaptation of the dungeon-crawling card game by Zach Gage and Kurt Bieg. Built with React, TypeScript and Vite; the rules engine is independent of React.
+An illustrated, single-player browser adaptation of the dungeon-crawling card game by **Zach Gage and Kurt Bieg**. Survive a 44-card dungeon by choosing when to fight, equip weapons, heal, or flee.
 
-The desktop game is playable with all 44 illustrated cards, weapons, healing, fleeing and scoring. It includes animated dealing, a face-up discard fan, bronze controls, illustrated outcome dialogs, a local top-ten high score table and a full-screen How to Play guide with rules, tactics and a practice room. Open the question-mark control for instructions.
+This is an independent adaptation, built with React, TypeScript and Vite. It includes a How to Play guide with an interactive practice room, animated card movement, and a local high score table. Card and interface artwork is AI-generated; original images and prompts are included.
 
-Keyboard interaction and reduced motion are supported. Mobile layouts are outside the current scope. Games run entirely in the browser: there is no backend, account system or saved-game persistence. Refreshing the page loses the current game.
+Desktop browsers only. Keyboard controls and reduced motion are supported. The game runs entirely in your browser without an account or backend. Refreshing starts over; high scores and audio preferences persist.
 
-## Clone and run locally
+## Run locally
 
-Install Git and **Node.js 24 LTS**, including npm. Check your installation with `node --version` and `npm --version`.
+Install Git and **Node.js 24 LTS** (including npm), then:
 
 ```sh
 git clone https://github.com/elikennedy/scoundrel.git
@@ -17,121 +17,44 @@ npm ci
 npm run dev
 ```
 
-Open the local URL printed by Vite, normally `http://localhost:5173`. Stop the server with Ctrl+C. No environment variables, API keys, database, external services or artwork generation tools are required. All runtime artwork is included in the repository.
+Open the URL printed by Vite, normally `http://localhost:5173`. No environment variables, API keys, database or artwork-generation tools are needed.
 
-## High scores and storage
+Choose **Enter the dungeon**, then open the question-mark control for rules and practice. Hover over a card or focus it with Tab to reveal its actions. Enter or Space activates a focused button. The guide closes with Return to game or Escape; a finished run closes with Play again.
 
-Open **High scores** from the table controls. After any completed run, including a defeat with a negative score, optionally enter three letters and choose **Save score**. The table keeps the ten highest scores, with earlier completion times breaking ties. Each entry records initials, final score and completion date/time, displayed in the viewer's local timezone. **Play again** may be used without saving.
+Use the **Settings** cog beside New game to adjust effects and music, mute either channel, or mute all. Background music begins after a game or audio interaction. Settings are saved in this browser.
 
-Scores persist in this browser's local storage, separately from the current run. They are specific to the browser profile and site origin; clearing site data removes them. Storage errors are shown without claiming a score was saved or overwriting damaged data.
+## High scores
 
-The optional build-time flag `VITE_CLOUD_STORAGE_ENABLED` defaults to `false` when omitted. Copy `.env.example` to `.env.local` to configure it, then restart Vite or rebuild. Only the literal string `true` selects cloud mode. **Firestore is not connected yet:** enabling cloud mode shows an unavailable message and never silently falls back to local storage. `src/scores/store.ts` defines an asynchronous `ScoreStore` interface and selection boundary for a future Firestore adapter; the browser build has no Firebase dependency. Firebase hosting and Firestore score storage can be added separately. Variables prefixed `VITE_` are public in the browser bundle; never put secrets in them.
+After a run, optionally enter three letters and choose **Save score**. The ten highest scores are kept in this browser, including negative scores; earlier completion times break ties. Dates display in your local timezone. Clearing site data removes scores, and different browsers or site addresses have separate tables.
 
-## Build and validate
+Cloud scores are not implemented. Leave `VITE_CLOUD_STORAGE_ENABLED` at its default `false`; enabling it shows an unavailable message. See [storage architecture](docs/architecture.md#high-score-lifecycle) for the extension point.
 
-```sh
-npm test
-npm run lint
-npm run build
-npm run preview
-```
-
-Open the preview URL printed in the terminal, normally `http://localhost:4173`, and check the start screen, dealing, card actions and How to Play guide.
+## Develop and build
 
 | Command | Purpose |
 | --- | --- |
-| `npm ci` | Install the exact dependency versions in the lockfile |
+| `npm ci` | Install locked dependencies |
 | `npm run dev` | Start the development server |
-| `npm test` | Strict engine/test type-checking and rule/simulation tests |
-| `npm run lint` | Static checks with Oxlint |
-| `npm run build` | Type-check and build production assets into `dist/` |
-| `npm run preview` | Preview the production build locally |
+| `npm test` | Type-check and run engine and score-storage tests |
+| `npm run lint` | Run Oxlint |
+| `npm run build` | Type-check and create the static site in `dist/` |
+| `npm run preview` | Preview the build locally, normally on port 4173 |
 
-Builds require development dependencies, so do not use `npm ci --omit=dev` on the build machine. `dist/` is generated and ignored by Git. Vite's development and preview servers are for development and local checks; use a static web server for production. See [Vite's deployment documentation](https://vite.dev/guide/static-deploy.html).
+To change the game, start with the [architecture and validation guide](docs/architecture.md). Rules live in pure TypeScript under `src/game/`; React rendering and animation are separate. Run tests, lint, build and `git diff --check` before submitting changes. There is no saved-game system or deployment automation.
 
-## Self-host
+To publish your own copy, follow the [self-hosting guide](docs/hosting.md). Only the built `dist/` directory needs to be served.
 
-Build on your workstation or a build server, then upload **the contents of `dist/`** to a static web server's document root. Include the entire directory tree, including `assets/` and `art/`. Node.js is needed to build, but is not needed on the web server serving the finished files. The repository, `node_modules/` and retained artwork originals in `docs/` do not need to be published.
+## Explore the project
 
-Serve the app at the root of a domain or subdomain, such as `https://scoundrel.example.com/`. Artwork currently uses root-relative `/art/...` URLs; hosting under a path such as `/scoundrel/` requires code changes as well as Vite's base-path setting. Open the game over HTTP or HTTPS rather than opening `dist/index.html` directly from disk.
+- [Rules and interpretations](docs/rules.md): how this adaptation plays.
+- [Documentation index](docs/README.md): development, design and artwork references.
+- [Artwork and prompts](docs/art/README.md): AI-generated sources and selected exports.
+- [Product scope](PRODUCT.md) and [design system](DESIGN.md): constraints for future changes.
 
-### Example: Nginx on your own server
+## Credits and license
 
-This example assumes Nginx is already installed on a Linux server and you have permission to configure it. Replace `scoundrel.example.com` with your hostname and point that hostname's DNS record at the server. Allow inbound traffic on the port you serve.
+Scoundrel was created by Zach Gage and Kurt Bieg. Read their [original rules](https://www.stfj.net/art/2011/Scoundrel.pdf).
 
-On the server, create the document root:
+This repository's original application, engine implementation and artwork are offered under the [MIT License](LICENSE), subject to the scope in [NOTICE](NOTICE). The original Scoundrel rules, rulebook and other third-party materials are excluded from that grant. This is not an official release by the game's creators.
 
-```sh
-sudo mkdir -p /var/www/scoundrel
-```
-
-Copy the contents of the built `dist/` directory into `/var/www/scoundrel/` using your normal deployment or file-transfer tool. The resulting paths should include `/var/www/scoundrel/index.html`, `/var/www/scoundrel/assets/` and `/var/www/scoundrel/art/`. Ensure the Nginx worker can read these files and traverse their directories.
-
-Add this server block to Nginx's loaded configuration. On installations that include `/etc/nginx/conf.d/*.conf` inside the `http` block, save it as `/etc/nginx/conf.d/scoundrel.conf`:
-
-```nginx
-server {
-    listen 80;
-    server_name scoundrel.example.com;
-    root /var/www/scoundrel;
-    index index.html;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-
-    location = /index.html {
-        add_header Cache-Control "no-cache";
-    }
-}
-```
-
-Check the configuration and reload Nginx:
-
-```sh
-sudo nginx -t
-sudo systemctl reload nginx
-```
-
-Open `http://scoundrel.example.com/`. This example serves HTTP; for HTTPS, configure a certificate for your hostname in Nginx or put it behind your existing HTTPS reverse proxy. No application API or WebSocket proxy is required. There are no client-side routes that need an HTML fallback.
-
-### Updates and troubleshooting
-
-To build a new version from a clean checkout:
-
-```sh
-git pull --ff-only origin main
-npm ci
-npm test
-npm run lint
-npm run build
-```
-
-Deploy the new `dist/` contents together, ideally by uploading into a new release directory and switching the web root once the upload finishes. Keep the previous release if you need a quick rollback. Players must refresh to load an update, which starts a new game.
-
-- **Clone denied:** confirm your GitHub account has repository access and your Git credentials are configured. SSH users can clone `git@github.com:elikennedy/scoundrel.git` instead.
-- **Install or build fails:** check Node.js is version 24, install development dependencies with `npm ci`, and retain the committed lockfile.
-- **Blank page or missing artwork:** check the browser's network panel for failed requests. Confirm you deployed everything in `dist/` at the domain root, rather than publishing a nested `dist/` folder or only `index.html`.
-- **Old UI after deployment:** refresh the browser and invalidate any proxy/CDN cache. Avoid long-lived caching of `index.html` and `/art/` files, whose names can remain unchanged between releases. Files in `assets/` have build-generated hashes.
-
-## Documentation and source
-
-- [Documentation map](docs/README.md): ownership and retention policy.
-- [Rules and interpretations](docs/rules.md): the game contract and credited original source.
-- [Architecture and validation](docs/architecture.md): engine API, animation lifecycle and UI checks.
-- [PRODUCT.md](PRODUCT.md): product scope and open decisions.
-- [DESIGN.md](DESIGN.md): visual and motion contract; `.impeccable/design.json` extends it.
-- [Artwork index](docs/art/README.md): runtime/source assets, prompts and archived variants.
-- [Guide research](docs/guide/research.md): sources, limitations and worked examples.
-
-`src/game/` contains the pure TypeScript rules engine; `tests/game.test.ts` validates it. `src/App.tsx` coordinates the table and dialogs. `src/components/` contains cards, status, piles, motion and How to Play. Artwork mappings are in `src/components/cardIllustrations.ts`; runtime art is under `public/art/` and retained originals under `docs/art/`.
-
-No deployment automation or saved-game system is currently implemented.
-
-## License and game credits
-
-The original React application, TypeScript game-engine implementation, and original card and interface artwork created for this repository are available under the [MIT License](LICENSE). See [NOTICE](NOTICE) for the license scope and third-party exclusions.
-
-**The Scoundrel game rules are not owned by this repository and are not covered by its MIT license.** Scoundrel was created by Zach Gage and Kurt Bieg. The [original rules](https://www.stfj.net/art/2011/Scoundrel.pdf) and their rulebook text remain separate from this application's implementation; this repository grants no rights to those materials. References to or summaries of the rules do not relicense the original game or rulebook.
-
-Third-party dependencies and supplied reference material retain their respective rights and licenses.
+Optional house rules are available from the bronze Settings cog: handicap 1–4 adds random high-value red cards; Jokers in adds two tricksters that can exchange with a discarded card. Settings apply to the next new game. House-rule runs show a final score and are excluded from high scores. See [rules](docs/rules.md) and [art prompts](docs/art/house-rules-generation.json).

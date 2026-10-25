@@ -1,13 +1,28 @@
 export type Suit = 'clubs' | 'spades' | 'diamonds' | 'hearts'
 export type Rank = 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14
-export type CardId = `${Suit}-${Rank}`
+export type CardId = `${Suit}-${Rank}` | 'joker-1' | 'joker-2'
 export type Monster = Readonly<{ id: CardId; kind: 'monster'; suit: 'clubs' | 'spades'; value: Rank }>
 export type Weapon = Readonly<{ id: CardId; kind: 'weapon'; suit: 'diamonds'; value: Rank }>
 export type Potion = Readonly<{ id: CardId; kind: 'potion'; suit: 'hearts'; value: Rank }>
-export type Card = Monster | Weapon | Potion
+export type Joker = Readonly<{ id: 'joker-1' | 'joker-2'; kind: 'joker'; suit: 'jokers'; value: 0 }>
+export type Card = Monster | Weapon | Potion | Joker
+export type HouseRules = Readonly<{ handicap: 0 | 1 | 2 | 3 | 4; jokers: boolean }>
+export const DEFAULT_HOUSE_RULES: HouseRules = { handicap: 0, jokers: false }
+
+export function validHouseRules(rules: HouseRules): boolean {
+  return Number.isInteger(rules.handicap) && rules.handicap >= 0 && rules.handicap <= 4 && typeof rules.jokers === 'boolean'
+}
+
+export function createHandicapCards(): (Weapon | Potion)[] {
+  return ([11, 12, 13, 14] as const).flatMap(value => [
+    { id: `diamonds-${value}`, kind: 'weapon', suit: 'diamonds', value } as Weapon,
+    { id: `hearts-${value}`, kind: 'potion', suit: 'hearts', value } as Potion,
+  ])
+}
 
 /** Stable IDs are also the future artwork keys; no presentation data belongs here. */
-export function createDeck(): Card[] {
+export function createDeck(rules: HouseRules = DEFAULT_HOUSE_RULES, random: () => number = Math.random): Card[] {
+  if (!validHouseRules(rules)) throw new RangeError('Invalid house rules.')
   const cards: Card[] = []
   for (let value = 2; value <= 14; value++) {
     const rank = value as Rank
@@ -18,6 +33,8 @@ export function createDeck(): Card[] {
       cards.push({ id: `hearts-${rank}`, kind: 'potion', suit: 'hearts', value: rank })
     }
   }
+  if (rules.handicap) cards.push(...shuffleDeck(createHandicapCards(), random).slice(0, rules.handicap))
+  if (rules.jokers) cards.push({ id: 'joker-1', kind: 'joker', suit: 'jokers', value: 0 }, { id: 'joker-2', kind: 'joker', suit: 'jokers', value: 0 })
   return cards
 }
 
@@ -35,13 +52,17 @@ export function shuffleDeck(deck: readonly Card[], random: () => number = Math.r
   return shuffled
 }
 
-export function isCompleteDeck(deck: readonly Card[]): boolean {
-  const expected = new Map(createDeck().map((card) => [card.id, card]))
-  if (deck.length !== expected.size) return false
+export function isCompleteDeck(deck: readonly Card[], rules: HouseRules = DEFAULT_HOUSE_RULES): boolean {
+  if (!validHouseRules(rules)) return false
+  const base = createDeck({ ...rules, handicap: 0 })
+  const expected = new Map([...base, ...createHandicapCards()].map(card => [card.id, card]))
+  const seen = new Set<CardId>()
+  let extras = 0
   for (const card of deck) {
     const canonical = expected.get(card.id)
-    if (!canonical || canonical.kind !== card.kind || canonical.suit !== card.suit || canonical.value !== card.value) return false
-    expected.delete(card.id)
+    if (!canonical || seen.has(card.id) || canonical.kind !== card.kind || canonical.suit !== card.suit || canonical.value !== card.value) return false
+    seen.add(card.id)
+    if ((card.kind === 'weapon' || card.kind === 'potion') && card.value > 10) extras++
   }
-  return expected.size === 0
+  return extras === rules.handicap && deck.length === base.length + extras && base.every(card => seen.has(card.id))
 }

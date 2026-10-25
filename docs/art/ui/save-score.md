@@ -1,6 +1,6 @@
-# save-score
+# Save score button
 
-Generated with the built-in image generation tool. Transparent original retained as `docs/art/ui/save-score-original.png`; alpha-preserving runtime export: `public/art/ui/save-score.webp`.
+Generated with OpenAI image generation tools on 2026-10-24T07:36:35.013Z. Transparent original retained as `docs/art/ui/save-score-original.png`; alpha-preserving runtime export: `public/art/ui/save-score.webp`.
 
 Used by the outcome ledger's native Save score button, which retains an accessible name and pending/disabled states. The retained style reference is `docs/art/ui/play-again-original.png` (runtime export: `public/art/ui/play-again.webp`). The standalone ledger reuses `public/art/ui/return-to-game.webp` for its return action.
 

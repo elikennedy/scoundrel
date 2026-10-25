@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { applyAction, canFlee, canUseWeapon, createDeck, createInitialState, gameReducer, getLegalActions, shuffleDeck } from '../src/game/index.ts'
+import { applyAction, isHighScoreEligible, canFlee, canUseWeapon, createDeck, createInitialState, gameReducer, getLegalActions, shuffleDeck } from '../src/game/index.ts'
 import type { Card, CardId, GameAction, GameState, Monster, Weapon } from '../src/game/index.ts'
 
 function card(id: CardId): Card {
@@ -212,4 +212,75 @@ test('complete deterministic runs conserve every card, never mutate state and al
     }
     assert.equal(typeof state.score, 'number')
   }
+})
+
+test('house rule decks add exactly the requested distinct red cards and both optional jokers', () => {
+  for (const handicap of [0, 1, 2, 3, 4] as const) for (const jokers of [false, true]) {
+    const rules = { handicap, jokers }
+    const deck = createDeck(rules, () => .3)
+    assert.equal(deck.length, 44 + handicap + (jokers ? 2 : 0))
+    assert.equal(new Set(deck.map(c => c.id)).size, deck.length)
+    assert.equal(deck.filter(c => (c.kind === 'weapon' || c.kind === 'potion') && c.value > 10).length, handicap)
+    const result = applyAction(createInitialState(), { type: 'start', deck, rules })
+    assert.equal(result.ok, true)
+    assert.deepEqual(result.state.rules, rules)
+    if (handicap || jokers) assert.equal(applyAction(createInitialState(), { type: 'start', deck }).ok, false)
+    assert.equal(applyAction(createInitialState(), { type: 'start', deck: [...deck.slice(1), deck[1]], rules }).ok, false)
+  }
+  const first = createDeck({ handicap: 1, jokers: false }, () => 0).at(-1)!
+  const last = createDeck({ handicap: 1, jokers: false }, () => .99).at(-1)!
+  assert.notEqual(first.id, last.id)
+})
+
+test('joker play swaps an existing discard into its room slot without spending a resolution', () => {
+  const joker = createDeck({ handicap: 0, jokers: true }).find(c => c.kind === 'joker')!
+  const original = frozen({ ...scenario(['clubs-2', 'hearts-2', 'diamonds-2']), room: [card('clubs-2'), joker, card('hearts-2')], discard: [card('spades-14'), card('diamonds-10')], resolvedThisRoom: 2, potionUsed: true })
+  for (const [sample, expected] of [[0, 'spades-14'], [.999, 'diamonds-10']] as const) {
+    const result = applyAction(original, { type: 'resolve', cardId: joker.id, joker: 'play', randomSample: sample })
+    assert.equal(result.ok, true)
+    assert.equal(result.state.room[1].id, expected)
+    assert.equal(result.state.discard.at(-1)?.id, joker.id)
+    assert.equal(result.state.discard.some(c => c.id === expected), false)
+    assert.equal(result.state.resolvedThisRoom, 2)
+    assert.equal(result.state.potionUsed, true)
+    assert.equal(result.state.health, original.health)
+    const cards = [...result.state.room, ...result.state.discard]
+    assert.equal(new Set(cards.map(c => c.id)).size, 5)
+  }
+  for (const sample of [-1, 1, NaN, undefined]) assert.equal(applyAction(original, { type: 'resolve', cardId: joker.id, joker: 'play', randomSample: sample }).ok, false)
+  const empty = { ...original, discard: [] }
+  assert.equal(applyAction(empty, { type: 'resolve', cardId: joker.id, joker: 'play', randomSample: 0 }).ok, false)
+  assert.equal(getLegalActions(empty).some(a => a.type === 'resolve' && a.joker === 'play'), false)
+  assert.equal(applyAction(original, { type: 'resolve', cardId: joker.id }).ok, false)
+  const discarded = applyAction(original, { type: 'resolve', cardId: joker.id, joker: 'discard' }).state
+  assert.equal(discarded.roomNumber, original.roomNumber + 1)
+  assert.equal(discarded.discard.at(-1)?.id, joker.id)
+})
+
+test('a joker can retrieve the other joker; discarding the last joker wins normally', () => {
+  const jokers = createDeck({ handicap: 0, jokers: true }).filter(c => c.kind === 'joker')
+  const state = { ...scenario([]), room: [jokers[0]], discard: [jokers[1]] }
+  const swapped = applyAction(state, { type: 'resolve', cardId: jokers[0].id, joker: 'play', randomSample: 0 }).state
+  assert.equal(swapped.room[0].id, jokers[1].id)
+  const final = applyAction(swapped, { type: 'resolve', cardId: jokers[1].id, joker: 'discard' }).state
+  assert.equal(final.status, 'won')
+  assert.equal(final.score, 20)
+})
+
+test('only the standard rules snapshot is eligible for high scores', () => {
+  for (const handicap of [0, 1, 2, 3, 4] as const) for (const jokers of [false, true]) {
+    const rules = { handicap, jokers }
+    const state = applyAction(createInitialState(), { type: 'start', deck: createDeck(rules), rules }).state
+    assert.equal(isHighScoreEligible(state), handicap === 0 && !jokers)
+    assert.equal(isHighScoreEligible({ ...state, status: 'lost', score: -10 }), handicap === 0 && !jokers)
+  }
+})
+
+test('a joker exchange commits a full room without spending a resolution', () => {
+  const joker = createDeck({ handicap: 0, jokers: true }).find(c => c.kind === 'joker')!
+  const state = { ...scenario(['clubs-2', 'hearts-2', 'diamonds-2']), room: [joker, card('clubs-2'), card('hearts-2'), card('diamonds-2')], discard: [card('clubs-3')] }
+  assert.equal(canFlee(state), true)
+  const next = applyAction(state, { type: 'resolve', cardId: joker.id, joker: 'play', randomSample: 0 }).state
+  assert.equal(next.resolvedThisRoom, 0)
+  assert.equal(canFlee(next), false)
 })

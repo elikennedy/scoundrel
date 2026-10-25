@@ -1,6 +1,6 @@
 # Bronze emblems and title
 
-Generated with the built-in image generation tool on 2026-10-24. Transparent PNG originals are retained in this directory. Runtime WebP assets have transparent margins trimmed and are resized for display; alpha transparency is preserved.
+Generated with the OpenAI image generation tools on 2026-10-24. Transparent PNG originals are retained in this directory. Runtime WebP assets have transparent margins trimmed and are resized for display; alpha transparency is preserved.
 
 ## Skull prompt
 A single antique bronze human skull game UI emblem, front facing with slight downward tilt, sculptural embossed cast bronze with deep eye sockets, worn warm brass highlights and dark brown patina, subtle intricate gothic engraving on forehead, realistic metal relief, candlelight from upper left, restrained dark fantasy medieval dungeon aesthetic. Centered isolated complete skull, no pedestal, no text, no surrounding frame, transparent background. Clear silhouette readable at 140 pixels. Square composition.

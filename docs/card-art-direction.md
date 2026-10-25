@@ -1,6 +1,6 @@
 # Card art direction
 
-The original supplied visual reference is not distributed with this repository. The art direction below and retained original artwork describe the selected visual system.
+The cards use AI-generated illustrations inside a shared HTML/CSS frame. This guide describes their visual style and how to create replacements.
 
 ## Visual target
 
@@ -8,7 +8,7 @@ Dark, gritty, realistically painted fantasy. Weathered materials, muted earth to
 
 ## Deterministic layout
 
-The React `CardFace` component owns the frame, typography, values, icons, colours, nameplate, and optional flavour text. Generate the illustration alone: **no text, numbers, borders, ribbons, icons, logos, or UI baked into the art**.
+The React `CardFace` component owns the frame, typography, values, icons, colours, nameplate, and optional flavour text (currently unused). Generate the illustration alone: **no text, numbers, borders, ribbons, icons, logos, or UI baked into the art**.
 
 - Weathered bronze frame, portrait composition, artwork filling the upper region.
 - Upper-left banner: numeric gameplay value and a fixed vector type icon. Red for monsters, blue for weapons, green for potions. Icons and accessible labels distinguish types without colour; omit redundant type badges.
@@ -22,7 +22,7 @@ Keep presentation separate from the pure rules engine. Presentation metadata liv
 
 Scoundrel uses 26 distinct monsters valued 2–14, nine weapons valued 2–10, and nine potions valued 2–10. Equal-value monsters in different suits need distinct identities and illustrations. Art must never change card values or mechanics.
 
-The [user-defined card catalogue](card-catalogue.md) is authoritative for names and concepts. All 44 playable cards now have illustrations and catalogue identities connected to CardFace. The user approved the first pair and requested continuation. See the [artwork index](art/README.md) for exact prompts, original images and selected runtime exports. Missing or failed artwork still falls back to a placeholder.
+The [card catalogue](card-catalogue.md) is authoritative for names and concepts. All 44 standard cards and the ten optional house-rule cards have illustrations and catalogue identities connected to CardFace. See the [artwork index](art/README.md) for exact prompts, original images and selected runtime exports. Missing or failed artwork still falls back to a placeholder.
 
 ## Generation brief
 
@@ -32,7 +32,7 @@ For each asset, specify card ID, type, value, original name, subject, pose, envi
 
 Monsters should escalate from small and vulnerable-looking at low danger to formidable, ancient or supernatural threats at high danger. Weapons should progress from crude, worn tools to masterworked or enchanted arms. Avoid making every high-value weapon a sword; silhouettes and materials should distinguish the entire collection.
 
-Compose the main subject toward the centre/right, leaving the upper-left clear enough for the fixed value banner. Keep important details away from edges so a responsive `object-fit: cover` crop remains usable. Use a consistent portrait source size (approximately 1024 × 1536) and export web-optimised assets to `public/art/cards/<card-id>.webp`. Set `src` explicitly when an asset is ready; do not reference nonexistent files.
+Compose the main subject toward the centre/right, leaving the upper-left clear enough for the fixed value banner. Keep important details away from edges so the `object-fit: cover` crop remains usable at different desktop sizes. Use a consistent portrait source size (approximately 1024 × 1536) and export web-optimised assets to `public/art/cards/<card-id>.webp`. Set `src` explicitly when an asset is ready; do not reference nonexistent files.
 
 ## Review for new or replacement art
 

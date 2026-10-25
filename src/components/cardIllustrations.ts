@@ -2,6 +2,7 @@ import type { Card } from '../game'
 
 export type CardIllustration = Readonly<{
   name: string
+  description?: string
   flavour?: string
   src?: string
   position?: string
@@ -53,5 +54,15 @@ export const illustrations: Partial<Record<Card['id'], CardIllustration>> = {
   'hearts-8': { name: "Dryad's Gift", src: '/art/cards/hearts-8.webp' },
   'hearts-9': { name: "Starlight Elixir", src: '/art/cards/hearts-9.webp' },
   'hearts-10': { name: "The White Stag", src: '/art/cards/hearts-10.webp' },
+  "diamonds-11": { name: "The Oathbreaker", description: "Black executioner’s sword bound in broken chains", src: "/art/cards/diamonds-11.webp" },
+  "diamonds-12": { name: "Widow’s Lament", description: "Ornate enchanted rapier trailing violet spectral mist", src: "/art/cards/diamonds-12-v2.webp" },
+  "diamonds-13": { name: "Kingsbane", description: "Legendary royal greatsword blazing with pale golden fire", src: "/art/cards/diamonds-13.webp" },
+  "diamonds-14": { name: "The Last Needle", description: "Tiny ancient enchanted stiletto, deceptively delicate", src: "/art/cards/diamonds-14-v2.webp" },
+  "hearts-11": { name: "The Kindly Witch", description: "Elderly forest healer holding a glowing herbal charm", src: "/art/cards/hearts-11.webp" },
+  "hearts-12": { name: "The Dawn Maiden", description: "Benevolent spectral woman radiating golden morning light", src: "/art/cards/hearts-12.webp" },
+  "hearts-13": { position: "50% 0%", name: "The Ancient Guardian", description: "Majestic moss-covered forest spirit with luminous antlers", src: "/art/cards/hearts-13.webp" },
+  "hearts-14": { name: "The First Light", description: "A single radiant flame suspended within an ancient stone shrine", src: "/art/cards/hearts-14.webp" },
+  "joker-1": { name: "The Grinning Harlequin", description: "Sneaky and creepy harlequin jester, gaunt sly face, ragged muted burgundy and charcoal motley, crouching beside a ruined crypt doorway, a hand concealing a stolen trinket", src: "/art/cards/joker-1.webp" },
+  "joker-2": { name: "The Briar Trickster", description: "Fey-wild trickster with pointed ears, mischievous knowing expression, leaf-and-briar motley and crooked twig crown, perched on a mossy root beside an ancient forest shrine", src: "/art/cards/joker-2.webp" },
 }
 

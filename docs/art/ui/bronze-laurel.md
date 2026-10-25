@@ -1,8 +1,8 @@
-# bronze-laurel
+# Bronze laurel
 
-Generated with the built-in image generation tool. Transparent original retained as `docs/art/ui/bronze-laurel-original.png`; alpha-preserving runtime export: `public/art/ui/bronze-laurel.webp`.
+Generated with OpenAI image generation tools on 2026-10-24T07:36:34.996Z. Transparent original retained as `docs/art/ui/bronze-laurel-original.png`; alpha-preserving runtime export: `public/art/ui/bronze-laurel.webp`.
 
-Used as the decorative laurel/crown emblem in both high score views and as the High scores navigation control image. The retained style reference is `docs/art/ui/bronze-chalice-original.png` (runtime export: `public/art/ui/bronze-chalice.webp`).
+Used as the decorative laurel/crown emblem in both high score views. The navigation control uses the separate [ringed laurel medallion](laurel-medallion.md). The retained style reference is `docs/art/ui/bronze-chalice-original.png` (runtime export: `public/art/ui/bronze-chalice.webp`).
 
 ## Exact prompt
 

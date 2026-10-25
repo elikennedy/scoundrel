@@ -1,23 +1,30 @@
-# Documentation map
+# Documentation
 
-Each current concern has one primary home:
+New here? Start with the [README](../README.md) to run the game, or the [rules](rules.md) to understand it. The in-game question-mark control opens the illustrated guide and practice room.
 
-| Document | Owns |
+## Development and design
+
+| Document | What you will find |
 | --- | --- |
-| [Root README](../README.md) | Setup, commands, self-hosting, updates and current scope |
-| [PRODUCT.md](../PRODUCT.md) | Confirmed scope, capabilities and open decisions |
-| [DESIGN.md](../DESIGN.md) | Visual system, desktop layout, controls and motion timings |
-| [Rules](rules.md) | Game rules and deliberate implementation interpretations |
-| [Architecture](architecture.md) | Engine API, presentation sequencing and validation |
-| [Card catalogue](card-catalogue.md) | User-approved card names and illustration concepts |
-| [Card art direction](card-art-direction.md) | Illustration composition and generation constraints |
-| [Artwork index](art/README.md) | Originals, selected runtime exports and exact prompts |
-| [Guide research](guide/research.md) | External sources, limitations and engine-checked examples |
+| [Architecture](architecture.md) | Source layout, engine API, animation lifecycle, storage and validation |
+| [Self-hosting](hosting.md) | Static deployment, configuration, updates and troubleshooting |
+| [Product scope](../PRODUCT.md) | Capabilities, constraints and possible future work |
+| [Design system](../DESIGN.md) | Palette, typography, desktop layout, controls and motion |
+| [Rules](rules.md) | Credited baseline and this adaptation's interpretations |
+| [Guide research](guide/research.md) | Source limitations and worked examples |
 
-## Retention and cleanup
+## Artwork
 
-Keep original artwork, exact prompts and meaningful alternate-source provenance. A source image is not orphaned merely because its selected export is different. Only selected assets and the six control sprites belong under `public/art/`.
+| Document | What you will find |
+| --- | --- |
+| [Artwork index](art/README.md) | Original images, exact prompts and selected runtime exports |
+| [Card catalogue](card-catalogue.md) | Names and illustration concepts for standard cards and optional house-rule cards |
+| [Art direction](card-art-direction.md) | Composition, cropping and replacement guidance |
 
-Do not retain duplicate prompt transcripts, superseded runtime exports or historical screenshots as current documentation. Temporary browser captures go under ignored `.impeccable/review/`; current behaviour must be checked against source and a running build. Generated build/dependency/cache directories are ignored, not documentation.
+## Keeping documentation useful
 
-Update the owning document when behaviour changes, and update links when files move. The illustrated player guide lives in `src/components/HowToPlay.tsx`; it should agree with the rules contract and engine rather than introducing another variant.
+Update the relevant document when behaviour changes. Keep setup in the root README, deployment details in the hosting guide, and technical contracts in architecture and rules. The in-game guide should agree with the engine and documented interpretations.
+
+Retain original artwork and exact prompts in `docs/art/`; only selected runtime images belong in `public/art/`. Keep meaningful source variants, but remove superseded runtime exports and duplicate prompt records after verifying their replacements. Temporary review captures belong in ignored `.impeccable/review/`.
+
+`DESIGN.md` holds the visual contract. `.impeccable/design.json` supplies design-tool previews and extended motion/shadow metadata; it is not used by the running game. Refresh it when the design changes. Machine-specific workspace instructions belong in the ignored local `AGENTS.md`.

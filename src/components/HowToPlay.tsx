@@ -1,15 +1,16 @@
-import { useId, useState } from 'react'
+import { useId, useLayoutEffect, useState } from 'react'
 import type { RefObject } from 'react'
-import { applyAction, createDeck, createInitialState } from '../game'
+import { applyAction, createDeck, createHandicapCards, createInitialState } from '../game'
 import type { CardId, GameAction } from '../game'
 import { CardFace } from './CardFace'
 import './HowToPlay.css'
 
 const deck = createDeck()
+const guideDeck = [...deck, ...createHandicapCards(), ...createDeck({ handicap: 0, jokers: true }).filter(card => card.kind === 'joker')]
 function GuideCard({ id, caption, className = '' }: { id: CardId; caption?: string; className?: string }) {
   const labelId = useId()
-  const card = deck.find(c => c.id === id)!
-  return <figure className={`guide-card ${className}`}><CardFace card={card} labelId={labelId} />{caption && <figcaption>{caption}</figcaption>}</figure>
+  const card = guideDeck.find(c => c.id === id)!
+  return <figure className={`guide-card ${className}`}><CardFace card={card} labelId={labelId} loading="lazy" />{caption && <figcaption>{caption}</figcaption>}</figure>
 }
 function BronzeAction({ icon, children, onClick, pressed }: { icon: number; children: React.ReactNode; onClick: () => void; pressed?: boolean }) {
   return <button className="guide-bronze-action" onClick={onClick} aria-pressed={pressed}><img src={`/art/ui/control-${icon}.png`} alt="" /><span>{children}</span></button>
@@ -37,9 +38,13 @@ const practiceCopy = [
   'The troll costs 3 health: 10 minus 7. You are at 11. Your spear can now face monsters of value 10 or less.',
   'The remedy restores 6 health, bringing you to 17. Three cards are resolved. The queen slides right and three new cards are dealt. Your spear cannot face the queen yet: her value is 12.',
 ]
-const chapters = [['guide-room', 'The room'], ['guide-combat', 'Combat'], ['guide-healing', 'Healing'], ['guide-tactics', 'Tactics'], ['guide-ending', 'Winning']]
+const chapters = [['guide-room', 'The room'], ['guide-combat', 'Combat'], ['guide-healing', 'Healing'], ['guide-tactics', 'Tactics'], ['guide-ending', 'Winning'], ['guide-house', 'House rules']]
 
-export function HowToPlay({ dialogRef }: { dialogRef: RefObject<HTMLDialogElement | null> }) {
+export function HowToPlay({ dialogRef, open, onClose }: { dialogRef: RefObject<HTMLDialogElement | null>; open: boolean; onClose: () => void }) {
+  useLayoutEffect(() => {
+    if (open) dialogRef.current?.showModal()
+    else dialogRef.current?.close()
+  }, [open, dialogRef])
   const [step, setStep] = useState(0)
   const [combat, setCombat] = useState<'weapon' | 'barehanded'>('weapon')
   const practice = practiceState(step)
@@ -50,7 +55,8 @@ export function HowToPlay({ dialogRef }: { dialogRef: RefObject<HTMLDialogElemen
     heading?.setAttribute('tabindex', '-1')
     heading?.focus({ preventScroll: true })
   }
-  return <dialog className="how-to-play" ref={dialogRef} aria-labelledby="guide-title">
+  return <dialog className="how-to-play" ref={dialogRef} aria-labelledby="guide-title" onClose={onClose}>
+    {open && <>
     <div className="guide-toolbar">
       <img className="guide-brand" src="/art/ui/scoundrel-title-v2.webp" alt="Scoundrel" />
       <nav aria-label="How to play chapters">{chapters.map(([id, name]) => <button key={id} onClick={() => jump(id)}>{name}</button>)}</nav>
@@ -58,12 +64,12 @@ export function HowToPlay({ dialogRef }: { dialogRef: RefObject<HTMLDialogElemen
     </div>
     <div className="guide-body">
       <header className="guide-hero">
-        <div><h2 id="guide-title"><img src="/art/ui/how-to-play.webp" alt="How to Play" /></h2><p className="guide-lead">You have 20 health. The dungeon has 44 cards.<br />Make every choice earn its place.</p><p>Scoundrel is a solitaire dungeon crawl. Monsters cost health, weapons soften their blows, and potions buy you another chance. Survive every card to win. The challenge is deciding what to face, what to save, and when to run.</p><button className="guide-text-link" onClick={() => jump('guide-practice')}>Try a room below <span aria-hidden="true">↓</span></button></div>
+        <div><h2 id="guide-title"><img src="/art/ui/how-to-play.webp" alt="How to Play" /></h2><p className="guide-lead">You have 20 health. The standard dungeon has 44 cards.<br />Make every choice earn its place.</p><p>Scoundrel is a solitaire dungeon crawl. Monsters cost health, weapons soften their blows, and potions buy you another chance. Survive every card to win. The challenge is deciding what to face, what to save, and when to run.</p><button className="guide-text-link" onClick={() => jump('guide-practice')}>Try a room below <span aria-hidden="true">↓</span></button></div>
         <div className="guide-hero-art" aria-label="A monster, a weapon and a healing potion"><GuideCard id="clubs-13" /><GuideCard id="diamonds-10" /><GuideCard id="hearts-10" /></div>
       </header>
 
       <section className="guide-section" id="guide-room" aria-labelledby="room-guide-title">
-        <div className="guide-section-intro"><h2 id="room-guide-title">Four cards. Three choices.</h2><p>The face-down pile is the dungeon. Each room reveals four cards. The deck uses a standard deck’s values, with jokers, red aces and red face cards removed. Before touching any of them, decide whether to flee. If you stay, resolve <strong>three cards, in any order</strong>. Each fight, weapon pickup or potion counts as one choice.</p></div>
+        <div className="guide-section-intro"><h2 id="room-guide-title">Four cards. Three choices.</h2><p>The face-down pile is the dungeon. Each room reveals four cards. The standard deck removes jokers, red aces and red face cards. Optional house rules can add them back; see the House rules chapter. Before touching any of them, decide whether to flee. If you stay, resolve <strong>three cards, in any order</strong>. Each fight, weapon pickup or potion counts as one choice.</p></div>
         <div className="guide-room-example"><GuideCard id="diamonds-7" caption="Equip a weapon" /><GuideCard id="clubs-10" caption="Fight a monster" /><GuideCard id="hearts-6" caption="Drink a potion" /><GuideCard id="spades-12" caption="Carry one forward" className="guide-carry" /></div>
         <div className="guide-room-afterword"><p>The fourth card is your next room’s first problem—or its saving grace. It slides to the rightmost position, then three new cards join it. There is no separate “end turn” button.</p><p><strong>At the dungeon’s end:</strong> if there aren’t enough cards to refill the room, play what remains. Emptying the draw pile alone does not win. Resolve every card still on the table; every three resolutions still start a fresh turn.</p></div>
       </section>
@@ -122,9 +128,23 @@ export function HowToPlay({ dialogRef }: { dialogRef: RefObject<HTMLDialogElemen
         <div className="guide-endings"><article><img src="/art/ui/bronze-chalice.webp" alt="" /><div><h3>Leave the dungeon alive</h3><p>Your remaining health is your score. Finishing at 13 health scores <strong>13</strong>.</p><p>For the final-potion bonus, finish at exactly 20 health with a potion as the last card resolved. Add that potion’s value: a final 8 scores <strong>28</strong>. In this version, the last card’s identity counts even if that potion did not heal.</p></div></article><article><img src="/art/ui/bronze-skull.webp" alt="" /><div><h3>Fall in the dungeon</h3><p>Keep any negative health, then subtract the total value of every unresolved monster in the room and draw pile. Do not count defeated monsters attached to your weapon.</p><p>Example: at 3 health, an 11-value barehanded fight leaves −8. If a 14 and a 6 remain unresolved, your score is <strong>−28</strong>.</p></div></article></div>
       </section>
 
+      <section className="guide-section guide-house" id="guide-house" aria-labelledby="house-guide-title">
+        <div className="guide-section-intro"><h2 id="house-guide-title">Optional house rules</h2><p>Open the bronze Settings cog to change your next dungeon. Handicap and jokers are optional house rules for this adaptation, separate from the original Scoundrel rules by Zach Gage and Kurt Bieg. Both default off. Your choices are saved in this browser and apply when you start a new game; the current run keeps its rules.</p></div>
+        <div className="guide-house-row">
+          <div className="guide-house-art" aria-label="Examples of the eight optional handicap cards"><GuideCard id="diamonds-12" caption="A stronger weapon" /><GuideCard id="hearts-13" caption="More healing" /></div>
+          <div><h3>Handicap: one to four extra cards</h3><p>Choose level 1–4 to add that many distinct cards at random from the eight hearts and diamonds valued 11–14: their jacks, queens, kings and aces. The selection is made again for every new game, then shuffled into the dungeon.</p><p>Diamonds equip as weapons with power 11–14. Hearts restore their value in health, still capped at 20, and follow the usual one-potion-per-turn rule. At 16 health, a value-13 heart restores only 4 health and uses that turn’s healing allowance.</p><p>Level 2 makes a 46-card dungeon. Add both jokers as well and it becomes 48 cards. Leave Handicap Off to keep the high-value red cards out.</p></div>
+        </div>
+        <div className="guide-house-row">
+          <div className="guide-house-art" aria-label="The two optional jokers"><GuideCard id="joker-1" /><GuideCard id="joker-2" /></div>
+          <div><h3>Jokers: discard or take a chance</h3><p>Jokers in adds The Grinning Harlequin and The Briar Trickster. Each offers two choices:</p><p><strong>Discard</strong> sends the joker to the discard pile and counts as one of the room’s three resolutions.</p><p><strong>Play</strong> sends it to discard and replaces it in the same room slot with one randomly selected card already in the discard pile. You might retrieve a useful weapon or potion—or bring back a monster. Resolve the returned card as usual.</p><p>A swap does not count as a resolution or reset your healing allowance. The joker being played cannot draw itself, but either joker can retrieve the other. With an empty discard pile, only Discard is available. Either choice commits you to the room, so you cannot flee afterward.</p></div>
+        </div>
+        <div className="guide-house-scores"><h3>A final score, without a leaderboard entry</h3><p>Any run started with handicap or jokers enabled still shows its final score, including the usual final-potion bonus, but cannot be entered on the high score board. Changing Settings during the run does not change its eligibility. Turn both options off, then start a new game for a standard scored run.</p></div>
+      </section>
+
       <section className="guide-section guide-controls" aria-labelledby="controls-guide-title"><div><h2 id="controls-guide-title">At your table</h2><p>Hover a room card to reveal its actions and preview the health cost. The bronze sword attacks with a weapon; the fist attacks barehanded; the flask takes a potion. A dimmed action is unavailable.</p><p>Use <kbd>Tab</kbd> to focus cards and controls, then <kbd>Enter</kbd> or <kbd>Space</kbd> to activate a focused button. Focus reveals the same card actions as hovering. Press <kbd>Escape</kbd> to close this guide, or use Return to game. Reading the guide does not resolve any cards.</p></div><div className="guide-control-icons"><img src="/art/ui/control-3.png" alt="Weapon attack" /><img src="/art/ui/control-4.png" alt="Barehanded attack" /><img src="/art/ui/control-5.png" alt="Take potion" /></div></section>
 
       <footer className="guide-sources"><h2>The rules behind the dungeon</h2><p>Scoundrel was created by <strong>Zach Gage and Kurt Bieg</strong> in 2011. This guide explains this browser adaptation’s rules, with original examples checked against its game engine.</p><p>We allow equal-value weapon targets. Turns reset after three resolutions even when the draw pile is empty. Loss scoring includes unresolved room monsters and retains negative health. These are this adaptation’s documented interpretations.</p><p><a href="https://www.stfj.net/art/2011/Scoundrel.pdf" target="_blank" rel="noreferrer">Original rules</a><a href="https://howto.cards/en/scoundrel/" target="_blank" rel="noreferrer">Rules cross-reference</a><a href="https://www.scoundrelcardgame.com/strategy" target="_blank" rel="noreferrer">Further strategy reading</a></p><button className="guide-return" aria-label="Return to game" onClick={() => dialogRef.current?.close()}><img src="/art/ui/return-to-game.webp" alt="Return to game" /></button></footer>
     </div>
+    </>}
   </dialog>
 }

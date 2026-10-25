@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useEffect, useRef, useState } from 'react'
 import type { FormEvent, RefObject } from 'react'
 import { scoreStore } from '../scores/config'
 import { normalizeInitials } from '../scores/store'
@@ -94,6 +94,10 @@ export function ScoreLedger({ run, onSaving, onReturn }: { run?: CompletedRun; o
 }
 
 export function HighScores({ dialogRef, open, onClose }: { dialogRef: RefObject<HTMLDialogElement | null>; open: boolean; onClose: () => void }) {
+  useLayoutEffect(() => {
+    if (open) dialogRef.current?.showModal()
+    else dialogRef.current?.close()
+  }, [open, dialogRef])
   return <dialog className="scores-modal" ref={dialogRef} aria-labelledby="scores-title" onClose={onClose}>
     {open && <ScoreLedger onReturn={() => dialogRef.current?.close()} />}
   </dialog>

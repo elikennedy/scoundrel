@@ -8,7 +8,7 @@ web
 
 ## Users
 
-A personal single-player browser game. Current work targets desktop play.
+Players using desktop browsers, including keyboard navigation and reduced motion.
 
 ## Product Purpose
 
@@ -16,7 +16,7 @@ Play Scoundrel's 44-card solitaire dungeon game, created by Zach Gage and Kurt B
 
 ## Positioning
 
-A personal illustrated adaptation with unique catalogue names and art for every playable card, a physical card-table presentation and an integrated rules/practice guide. It is not presented as an official release by the original creators.
+An independent illustrated adaptation with unique catalogue names and art for every playable card, a physical card-table presentation and an integrated rules/practice guide. It is not presented as an official release by the original creators.
 
 ## Operating Context
 
@@ -25,12 +25,13 @@ The app runs in a desktop browser without accounts, network services or a runtim
 ## Capabilities and Constraints
 
 - Four-card rooms; resolve three or flee when legal. The engine owns all validation and scoring.
-- All 44 playable cards have local illustrations and catalogue names. Eight reserved red face-card/ace concepts are excluded from play.
-- Animated dealing, carryover, equipping, discarding and fleeing; face-up last-five discard fan.
+- All 44 playable cards have local illustrations and catalogue names. Eight illustrated red face cards/aces valued 11–14 form an optional handicap pool; levels 1–4 add that many random distinct cards. Two optional illustrated jokers exchange with a random discarded card or can be discarded. These house rules default off, apply to new games, and exclude runs from high scores.
+- Animated dealing, carryover, attack slashes, equipping, discarding and fleeing; face-up last-five discard fan. Individual deals play a local card sound and match its duration. Attacks, bottle use and spent healing-card discards have contextual sound cues.
 - Health/equipment status, illustrated victory/death modal, and a How to Play guide with a combat comparison and independent engine-backed practice.
-- Desktop only by the user's explicit request. Keep keyboard operation and reduced-motion alternatives.
+- Desktop only. Keep keyboard operation and reduced-motion alternatives.
 - A browser-local top-ten high score table records three-letter initials, final score and completion timestamp. Victories and defeats are eligible; recording is optional. A shared illustrated slate ledger appears beside the outcome and in its own dialog, with a bronze laurel/crown emblem and image controls. A build-time cloud flag reserves a future Firestore adapter, currently unavailable.
-- No saved-game system, backend or deployment target is currently implemented.
+- Settings provides optional house rules alongside independent effects/music volume, channel mutes and Mute all, saved in this browser. Harp.mp3 supplies looping background music after an audio-enabled interaction.
+- No saved-game system, backend or deployment automation is implemented. Static self-hosting is supported.
 
 ## Brand Commitments
 
@@ -38,7 +39,7 @@ Preserve the bronze/parchment card faces, generated bronze wordmarks and image c
 
 ## Evidence on Hand
 
-The executable engine and 14 rule tests, seven storage tests, all local card/UI artwork, exact generation prompts, the user-defined catalogue, and guide research are retained in the repository. The supplied visual reference was removed for public release. Source links and original creators' credit live in the rules documentation and player guide.
+Engine and storage tests, AI-generated card and interface artwork, original images, exact prompts, the card catalogue and guide research are included. Source links and creator credits live in the rules documentation and player guide.
 
 ## Product Principles
 
@@ -54,4 +55,4 @@ Use native buttons/dialogs, readable labels and values, keyboard-revealed action
 
 ## Open Decisions
 
-Deployment and saved-game behaviour. Add services only when a concrete feature requires them.
+Hosted deployment, cloud scores and saved games are possible future work, with no implementation commitment. Add services only when a concrete feature requires them.

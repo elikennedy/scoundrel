@@ -1,30 +1,166 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-23T20:59:00.421751+00:00",
+  "generatedAt": "2026-10-25T02:20:53.629314+00:00",
   "title": "Design System: Scoundrel",
   "extensions": {
     "colorMeta": {
       "surface": {
         "role": "neutral",
-        "displayName": "Charcoal olive"
+        "displayName": "Charcoal olive",
+        "tonalRamp": [
+          "oklch(0.15 0.0134 135.20)",
+          "oklch(0.26 0.0134 135.20)",
+          "oklch(0.38 0.0134 135.20)",
+          "oklch(0.49 0.0134 135.20)",
+          "oklch(0.61 0.0134 135.20)",
+          "oklch(0.72 0.0134 135.20)",
+          "oklch(0.84 0.0134 135.20)",
+          "oklch(0.95 0.0134 135.20)"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Warm ivory",
+        "tonalRamp": [
+          "oklch(0.15 0.0260 84.59)",
+          "oklch(0.26 0.0260 84.59)",
+          "oklch(0.38 0.0260 84.59)",
+          "oklch(0.49 0.0260 84.59)",
+          "oklch(0.61 0.0260 84.59)",
+          "oklch(0.72 0.0260 84.59)",
+          "oklch(0.84 0.0260 84.59)",
+          "oklch(0.95 0.0260 84.59)"
+        ]
       },
       "brass": {
         "role": "primary",
-        "displayName": "Aged bronze"
+        "displayName": "Aged bronze",
+        "tonalRamp": [
+          "oklch(0.15 0.0807 82.00)",
+          "oklch(0.26 0.0807 82.00)",
+          "oklch(0.38 0.0807 82.00)",
+          "oklch(0.49 0.0807 82.00)",
+          "oklch(0.61 0.0807 82.00)",
+          "oklch(0.72 0.0807 82.00)",
+          "oklch(0.84 0.0807 82.00)",
+          "oklch(0.95 0.0807 82.00)"
+        ]
       },
       "parchment": {
         "role": "neutral",
-        "displayName": "Card parchment"
+        "displayName": "Card parchment",
+        "tonalRamp": [
+          "oklch(0.15 0.0474 88.30)",
+          "oklch(0.26 0.0474 88.30)",
+          "oklch(0.38 0.0474 88.30)",
+          "oklch(0.49 0.0474 88.30)",
+          "oklch(0.61 0.0474 88.30)",
+          "oklch(0.72 0.0474 88.30)",
+          "oklch(0.84 0.0474 88.30)",
+          "oklch(0.95 0.0474 88.30)"
+        ]
       },
       "health": {
         "role": "status",
-        "displayName": "Health terracotta"
+        "displayName": "Health terracotta",
+        "tonalRamp": [
+          "oklch(0.15 0.1211 36.06)",
+          "oklch(0.26 0.1211 36.06)",
+          "oklch(0.38 0.1211 36.06)",
+          "oklch(0.49 0.1211 36.06)",
+          "oklch(0.61 0.1211 36.06)",
+          "oklch(0.72 0.1211 36.06)",
+          "oklch(0.84 0.1211 36.06)",
+          "oklch(0.95 0.1211 36.06)"
+        ]
+      },
+      "frame": {
+        "role": "secondary",
+        "displayName": "Weathered bronze",
+        "tonalRamp": [
+          "oklch(0.15 0.0714 74.44)",
+          "oklch(0.26 0.0714 74.44)",
+          "oklch(0.38 0.0714 74.44)",
+          "oklch(0.49 0.0714 74.44)",
+          "oklch(0.61 0.0714 74.44)",
+          "oklch(0.72 0.0714 74.44)",
+          "oklch(0.84 0.0714 74.44)",
+          "oklch(0.95 0.0714 74.44)"
+        ]
+      },
+      "monster": {
+        "role": "status",
+        "displayName": "Monster oxblood",
+        "tonalRamp": [
+          "oklch(0.15 0.1015 28.07)",
+          "oklch(0.26 0.1015 28.07)",
+          "oklch(0.38 0.1015 28.07)",
+          "oklch(0.49 0.1015 28.07)",
+          "oklch(0.61 0.1015 28.07)",
+          "oklch(0.72 0.1015 28.07)",
+          "oklch(0.84 0.1015 28.07)",
+          "oklch(0.95 0.1015 28.07)"
+        ]
+      },
+      "attack": {
+        "role": "status",
+        "displayName": "Strike red",
+        "tonalRamp": [
+          "oklch(0.15 0.1925 27.79)",
+          "oklch(0.26 0.1925 27.79)",
+          "oklch(0.38 0.1925 27.79)",
+          "oklch(0.49 0.1925 27.79)",
+          "oklch(0.61 0.1925 27.79)",
+          "oklch(0.72 0.1925 27.79)",
+          "oklch(0.84 0.1925 27.79)",
+          "oklch(0.95 0.1925 27.79)"
+        ]
+      },
+      "weapon": {
+        "role": "status",
+        "displayName": "Weapon blue",
+        "tonalRamp": [
+          "oklch(0.15 0.0620 230.63)",
+          "oklch(0.26 0.0620 230.63)",
+          "oklch(0.38 0.0620 230.63)",
+          "oklch(0.49 0.0620 230.63)",
+          "oklch(0.61 0.0620 230.63)",
+          "oklch(0.72 0.0620 230.63)",
+          "oklch(0.84 0.0620 230.63)",
+          "oklch(0.95 0.0620 230.63)"
+        ]
+      },
+      "potion": {
+        "role": "status",
+        "displayName": "Potion green",
+        "tonalRamp": [
+          "oklch(0.15 0.0571 146.92)",
+          "oklch(0.26 0.0571 146.92)",
+          "oklch(0.38 0.0571 146.92)",
+          "oklch(0.49 0.0571 146.92)",
+          "oklch(0.61 0.0571 146.92)",
+          "oklch(0.72 0.0571 146.92)",
+          "oklch(0.84 0.0571 146.92)",
+          "oklch(0.95 0.0571 146.92)"
+        ]
+      },
+      "joker": {
+        "role": "status",
+        "displayName": "Joker muted purple"
+      },
+      "healing": {
+        "role": "status",
+        "displayName": "Healing gold"
       }
     },
     "typographyMeta": {
       "display": {
         "displayName": "Game typography",
         "purpose": "Georgia card names, headings and themed controls; generated title art where specified."
+      },
+      "body": {
+        "displayName": "Functional text",
+        "purpose": "System sans for score data and supporting interface text."
       }
     },
     "shadows": [
@@ -47,13 +183,13 @@
       },
       {
         "name": "deal-travel",
-        "value": "640ms",
-        "purpose": "Sequential right-to-left travel from draw pile."
+        "value": "Decoded WAV duration (currently ~733ms)",
+        "purpose": "Travel and flip finish with one card-dealt.wav playback per card."
       },
       {
         "name": "deal-flip",
-        "value": "1280ms",
-        "purpose": "Reveal completes before next card."
+        "value": "Decoded WAV duration (currently ~733ms)",
+        "purpose": "Travel and flip finish with one card-dealt.wav playback per card."
       },
       {
         "name": "deal-gap",
@@ -83,21 +219,75 @@
       {
         "name": "reduced-motion",
         "value": "90ms opacity fade",
-        "purpose": "No spatial travel, flips or card/fan transitions."
+        "purpose": "No spatial travel, flips or card/fan transitions; dealing holds after the fade until its sound finishes."
+      },
+      {
+        "name": "attack-slash",
+        "value": "180ms ease-out / 90ms reduced-motion fade",
+        "purpose": "One upper-left to lower-right strike on the stationary monster; remove before travel and cancel on restart."
+      },
+      {
+        "name": "healing-radiance",
+        "value": "180ms ease-out / 90ms reduced-motion fade",
+        "purpose": "A soft diffuse golden glow brightens, expands and fades on healing-card use before travel; no glow for spent-card discards."
       }
     ],
-    "breakpoints": []
+    "breakpoints": [
+      {
+        "name": "score-controls-compact",
+        "value": "1200px"
+      },
+      {
+        "name": "score-dates-stacked",
+        "value": "1000px"
+      }
+    ]
   },
-  "components": [],
+  "components": [
+    {
+      "name": "Enter the dungeon",
+      "kind": "button",
+      "description": "Text action beneath the illustrated deck.",
+      "html": "<button class=\"ds-enter\">Enter the dungeon</button>",
+      "css": ".ds-enter { border:0; border-radius:0; padding:15px 38px; color:#ebd1a0; background:transparent; font:small-caps 1.5rem Georgia,serif; letter-spacing:.06em; text-shadow:0 3px 4px #000; cursor:pointer; }.ds-enter:hover { color:#fff0cf; }.ds-enter:active { transform:translateY(1px); }.ds-enter:focus-visible { outline:3px solid #f4ce79; outline-offset:5px; }"
+    },
+    {
+      "name": "Initials",
+      "kind": "input",
+      "description": "Three-letter score entry; uppercase presentation and visible keyboard focus.",
+      "html": "<label class=\"ds-label\">Your initials <input class=\"ds-initials\" aria-label=\"Your initials\" maxlength=\"3\" placeholder=\"AAA\"></label>",
+      "css": ".ds-label { color:#ead8b5; font:1.1rem Georgia,serif; }.ds-initials { display:block; width:118px; min-height:52px; padding:8px 8px 8px 16px; border:1px solid #bfa16a; border-radius:4px; background:#10140f; color:#eddfbd; caret-color:#eddfbd; font:1.65rem Georgia,serif; letter-spacing:.22em; text-transform:uppercase; }.ds-initials::placeholder { color:#bcb09b; }.ds-initials:disabled { opacity:.65; }.ds-initials:focus-visible { outline:3px solid #f4ce79; outline-offset:5px; }"
+    },
+    {
+      "name": "Guide navigation",
+      "kind": "nav",
+      "description": "Text chapter buttons in the illustrated guide toolbar.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Guide chapters\"><button>Rules</button><button>Combat</button></nav>",
+      "css": ".ds-nav { display:flex; gap:22px; }.ds-nav button { cursor:pointer; padding:8px 0; border:0; border-radius:0; background:transparent; color:#d0bc96; font:1rem Georgia,serif; }.ds-nav button:hover { color:#fff0d2; }.ds-nav button:focus-visible { outline:3px solid #f4ce79; outline-offset:5px; }"
+    },
+    {
+      "name": "Card frame",
+      "kind": "card",
+      "description": "Frame and nameplate preview; painted artwork is supplied separately by the card catalogue.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-art\" aria-label=\"Artwork area\"></div><div class=\"ds-name\">Crypt Guardian</div></article>",
+      "css": ".ds-card { width:210px; aspect-ratio:2/3; display:grid; grid-template-rows:1fr auto; padding:5px; border:2px solid #8a6b40; border-radius:10px; overflow:hidden; background:linear-gradient(135deg,#ad915c,#34271d 5%,#8a683d 6%,#2b241a 7%,#5c422a 94%,#be9f63 96%,#3c2d1e); box-shadow:0 12px 22px #0009; }.ds-art { background:#242e2b; }.ds-name { color:#251e15; background:radial-gradient(ellipse at center,#eddfbd,#c7ae81); border-top:2px solid #8a6b40; padding:15px 8px; text-align:center; font:500 1.1rem/1.15 Georgia,serif; }"
+    },
+    {
+      "name": "Score table",
+      "kind": "custom",
+      "description": "HTML rows above the illustrated ledger plate.",
+      "html": "<table class=\"ds-scores\"><thead><tr><th>Initials</th><th>Score</th></tr></thead><tbody><tr><th>AAA</th><td>20</td></tr></tbody></table>",
+      "css": ".ds-scores { width:100%; border-collapse:collapse; color:#eddfbd; font:1.05rem Georgia,serif; font-variant-numeric:tabular-nums; text-align:left; }.ds-scores thead th { padding:0 8px 10px; border-bottom:1px solid #8a6b40; color:#cfbf9f; font:.75rem system-ui,sans-serif; }.ds-scores td,.ds-scores tbody th { padding:4px 8px; border-bottom:1px solid #8a6b403d; }.ds-scores td:last-child,.ds-scores th:last-child { text-align:right; }"
+    }
+  ],
   "narrative": {
     "northStar": "A candlelit dungeon card table",
-    "overview": "Paintings, bronze image controls and physical card movement lead the desktop game. The illustrated reading guide uses the same charcoal, bronze and parchment world.",
+    "overview": "An atmospheric desktop fantasy card table. The paintings dominate; bronze image controls and physical card movement carry the surrounding interface. Bronze frames, parchment nameplates and dark charcoal/table materials give the cards their physical character. The guide is a reading surface within this same world.",
     "keyCharacteristics": [
-      "Desktop four-slot room",
-      "Top-aligned monster art",
-      "Transparent image controls",
-      "Face-up discard fan",
-      "Isolated practice guide"
+      "Painted cards with bronze frames and parchment nameplates.",
+      "Physical card movement across a desktop table.",
+      "Illustrated controls with keyboard access and reduced motion.",
+      "Slate Settings dialog with side-by-side audio and optional house rules."
     ],
     "rules": [
       {
@@ -117,14 +307,12 @@
       }
     ],
     "dos": [
-      "Preserve bronze/parchment card faces and source artwork",
-      "Keep keyboard actions and reduced motion",
-      "Use DESIGN.md as the normative token/visual contract"
+      "Keep gameplay, paintings and readable costs central.",
+      "Preserve keyboard access and reduced motion.",
+      "Retain exact prompts and originals through the artwork index; keep transient review captures out of Git."
     ],
     "donts": [
-      "Restore detached action panels or visible type badges",
-      "Treat old screenshots as current specifications",
-      "Add mobile work or a backend without a concrete request"
+      "Do not add mobile layouts by default, visible type badges, redundant helper text, promotional copy, invented lore, generic web-app button boxes or a joined action-panel extension below cards."
     ]
   }
 }

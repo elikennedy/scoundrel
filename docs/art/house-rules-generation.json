@@ -1,0 +1,124 @@
+[
+  {
+    "id": "diamonds-11",
+    "name": "The Oathbreaker",
+    "concept": "Black executioner\u2019s sword bound in broken chains",
+    "prompt": "Use case: stylized-concept. Asset type: Scoundrel portrait card illustration, diamonds-11, The Oathbreaker. Primary request: Black executioner\u2019s sword bound in broken chains. Scene/backdrop: ruined dungeon armoury, damp stone altar, candle smoke. Style/medium: Original dark gritty fantasy, realistic painterly rendering, weathered materials, muted earthy colours, dramatic atmospheric directional lighting, clear readable silhouette, rich environmental storytelling. Composition/framing: one portrait illustration approximately 1024x1536; subject slightly right of centre, subdued upper-left for a future value overlay; important features within generous safe margins; subject clearly readable in upper two thirds of image. Lighting/mood: cold grey fog, earthy brown and moss green shadows, restrained warm golden or spectral accents appropriate to subject. Constraints: illustration only; no text, numerals, borders, nameplate, logos or interface. Original design, consistent with a candlelit dungeon and decaying woodland card collection.",
+    "original": "docs/art/originals/diamonds-11.png",
+    "runtime": "public/art/cards/diamonds-11.webp",
+    "selected": true,
+    "generationSource": "docs/art/originals/diamonds-11.png"
+  },
+  {
+    "id": "diamonds-12",
+    "name": "Widow\u2019s Lament",
+    "concept": "Ornate enchanted rapier hovering alone in violet spectral mist",
+    "prompt": "Use case: precise-object-edit. Edit the supplied Scoundrel card painting, Widow's Lament. Remove the person completely and make the ornate enchanted rapier the ONLY foreground subject. The weapon floats unsupported in midair above the ruined armoury stone altar, with clear empty air beneath its point; it does not touch ground or stone. Show the entire rapier at a slight diagonal, pommel upper right and tip lower left, centered slightly right with generous safe margins. Physically credible rapier: a single long slender straight steel blade about four times grip length, elegant swept metal basket guard, one normal hand-length grip and small pommel. Violet spectral mist curls gently along the blade without obscuring its silhouette. Preserve the original damp ruined gothic dungeon armoury setting, candles, cold grey fog, earthy muted palette, dramatic directional light and realistic dark fantasy painted rendering. No people, body parts, human silhouettes, statues of people, hands, holders, stands or sheaths. Portrait approximately1024x1536. Full weapon clearly readable in upper two thirds, subdued upper-left for game value overlay. Illustration alone, no text, numbers, frame, symbols, nameplate or UI.",
+    "original": "docs/art/originals/diamonds-12-v2.png",
+    "runtime": "public/art/cards/diamonds-12-v2.webp",
+    "selected": true,
+    "generationSource": "docs/art/originals/diamonds-12-v2.png",
+    "reference": "docs/art/originals/diamonds-12.png"
+  },
+  {
+    "id": "diamonds-13",
+    "name": "Kingsbane",
+    "concept": "Legendary royal greatsword blazing with pale golden fire",
+    "prompt": "Use case: stylized-concept. Asset type: Scoundrel portrait card illustration, diamonds-13, Kingsbane. Primary request: Legendary royal greatsword blazing with pale golden fire. Scene/backdrop: ruined dungeon armoury, damp stone altar, candle smoke. Style/medium: Original dark gritty fantasy, realistic painterly rendering, weathered materials, muted earthy colours, dramatic atmospheric directional lighting, clear readable silhouette, rich environmental storytelling. Composition/framing: one portrait illustration approximately 1024x1536; subject slightly right of centre, subdued upper-left for a future value overlay; important features within generous safe margins; subject clearly readable in upper two thirds of image. Lighting/mood: cold grey fog, earthy brown and moss green shadows, restrained warm golden or spectral accents appropriate to subject. Constraints: illustration only; no text, numerals, borders, nameplate, logos or interface. Original design, consistent with a candlelit dungeon and decaying woodland card collection.",
+    "original": "docs/art/originals/diamonds-13.png",
+    "runtime": "public/art/cards/diamonds-13.webp",
+    "selected": true,
+    "generationSource": "docs/art/originals/diamonds-13.png"
+  },
+  {
+    "id": "diamonds-14",
+    "name": "The Last Needle",
+    "concept": "Compact ancient enchanted stiletto with believable proportions, hovering above a stone altar",
+    "prompt": "Use case: precise-object-edit. Rework the supplied Scoundrel card painting, The Last Needle, into a physically credible SMALL ancient enchanted stiletto dagger hovering unsupported in midair. Correct the weapon proportions completely: plain narrow straight needle-point steel blade approximately 22cm long, normal one-hand grip approximately10cm long, small restrained crossguard approximately7cm wide, small simple bronze pommel. Blade length about twice grip length, a compact practical dagger, NOT an elongated sword with an enormous ornamental handle. Remove the oversized sculpted face pommel, crown, dangling chains and jewels. Fine ancient bronze fittings and subtly etched slender steel, restrained pale magical glint. Show the whole dagger floating at a slight diagonal, pommel upper right and point lower left, clearly separated from every surface by empty air, never stuck in stone. Ground it in the same ruined gothic dungeon armoury with weathered damp stone altar, distant candles, grey mist and shadowed arches; background soft, dagger clearly the single focal object. Close view lets the small weapon read at card size while background candles establish its modest scale. Preserve dark realistic painterly fantasy style, muted earth colours, dramatic directional lighting, original atmosphere. Portrait1024x1536, subject centered slightly right with generous safe margins, whole dagger within upper two thirds, upper-left subdued for value overlay. No people, hands, holders, stands, other foreground weapons, text, numbers, borders, nameplate or UI.",
+    "original": "docs/art/originals/diamonds-14-v2.png",
+    "runtime": "public/art/cards/diamonds-14-v2.webp",
+    "selected": true,
+    "generationSource": "docs/art/originals/diamonds-14-v2.png",
+    "reference": "docs/art/originals/diamonds-14.png"
+  },
+  {
+    "id": "hearts-11",
+    "name": "The Kindly Witch",
+    "concept": "Elderly forest healer holding a glowing herbal charm",
+    "prompt": "Use case: stylized-concept. Asset type: Scoundrel portrait card illustration, hearts-11, The Kindly Witch. Primary request: Elderly forest healer holding a glowing herbal charm. Scene/backdrop: ancient woodland, mossy stone ruins and drifting mist. Style/medium: Original dark gritty fantasy, realistic painterly rendering, weathered materials, muted earthy colours, dramatic atmospheric directional lighting, clear readable silhouette, rich environmental storytelling. Composition/framing: one portrait illustration approximately 1024x1536; subject slightly right of centre, subdued upper-left for a future value overlay; important features within generous safe margins; subject clearly readable in upper two thirds of image. Lighting/mood: cold grey fog, earthy brown and moss green shadows, restrained warm golden or spectral accents appropriate to subject. Constraints: illustration only; no text, numerals, borders, nameplate, logos or interface. Original design, consistent with a candlelit dungeon and decaying woodland card collection.",
+    "original": "docs/art/originals/hearts-11.png",
+    "runtime": "public/art/cards/hearts-11.webp",
+    "selected": true,
+    "generationSource": "docs/art/originals/hearts-11.png"
+  },
+  {
+    "id": "hearts-12",
+    "name": "The Dawn Maiden",
+    "concept": "Benevolent spectral woman radiating golden morning light",
+    "prompt": "Use case: stylized-concept. Asset type: Scoundrel portrait card illustration, hearts-12, The Dawn Maiden. Primary request: Benevolent spectral woman radiating golden morning light. Scene/backdrop: ancient woodland, mossy stone ruins and drifting mist. Style/medium: Original dark gritty fantasy, realistic painterly rendering, weathered materials, muted earthy colours, dramatic atmospheric directional lighting, clear readable silhouette, rich environmental storytelling. Composition/framing: one portrait illustration approximately 1024x1536; subject slightly right of centre, subdued upper-left for a future value overlay; important features within generous safe margins; subject clearly readable in upper two thirds of image. Lighting/mood: cold grey fog, earthy brown and moss green shadows, restrained warm golden or spectral accents appropriate to subject. Constraints: illustration only; no text, numerals, borders, nameplate, logos or interface. Original design, consistent with a candlelit dungeon and decaying woodland card collection.",
+    "original": "docs/art/originals/hearts-12.png",
+    "runtime": "public/art/cards/hearts-12.webp",
+    "selected": true,
+    "generationSource": "docs/art/originals/hearts-12.png"
+  },
+  {
+    "id": "hearts-13",
+    "name": "The Ancient Guardian",
+    "concept": "Majestic moss-covered forest spirit with luminous antlers",
+    "prompt": "Use case: stylized-concept. Asset type: Scoundrel portrait card illustration, hearts-13, The Ancient Guardian. Primary request: Majestic moss-covered forest spirit with luminous antlers. Scene/backdrop: ancient woodland, mossy stone ruins and drifting mist. Style/medium: Original dark gritty fantasy, realistic painterly rendering, weathered materials, muted earthy colours, dramatic atmospheric directional lighting, clear readable silhouette, rich environmental storytelling. Composition/framing: one portrait illustration approximately 1024x1536; subject slightly right of centre, subdued upper-left for a future value overlay; important features within generous safe margins; subject clearly readable in upper two thirds of image. Lighting/mood: cold grey fog, earthy brown and moss green shadows, restrained warm golden or spectral accents appropriate to subject. Constraints: illustration only; no text, numerals, borders, nameplate, logos or interface. Original design, consistent with a candlelit dungeon and decaying woodland card collection.",
+    "original": "docs/art/originals/hearts-13.png",
+    "runtime": "public/art/cards/hearts-13.webp",
+    "selected": true,
+    "generationSource": "docs/art/originals/hearts-13.png"
+  },
+  {
+    "id": "hearts-14",
+    "name": "The First Light",
+    "concept": "A single radiant flame suspended within an ancient stone shrine",
+    "prompt": "Use case: stylized-concept. Asset type: Scoundrel portrait card illustration, hearts-14, The First Light. Primary request: A single radiant flame suspended within an ancient stone shrine. Scene/backdrop: ancient woodland, mossy stone ruins and drifting mist. Style/medium: Original dark gritty fantasy, realistic painterly rendering, weathered materials, muted earthy colours, dramatic atmospheric directional lighting, clear readable silhouette, rich environmental storytelling. Composition/framing: one portrait illustration approximately 1024x1536; subject slightly right of centre, subdued upper-left for a future value overlay; important features within generous safe margins; subject clearly readable in upper two thirds of image. Lighting/mood: cold grey fog, earthy brown and moss green shadows, restrained warm golden or spectral accents appropriate to subject. Constraints: illustration only; no text, numerals, borders, nameplate, logos or interface. Original design, consistent with a candlelit dungeon and decaying woodland card collection.",
+    "original": "docs/art/originals/hearts-14.png",
+    "runtime": "public/art/cards/hearts-14.webp",
+    "selected": true,
+    "generationSource": "docs/art/originals/hearts-14.png"
+  },
+  {
+    "id": "joker-1",
+    "name": "The Grinning Harlequin",
+    "concept": "Sneaky and creepy harlequin jester, gaunt sly face, ragged muted burgundy and charcoal motley, crouching beside a ruined crypt doorway, a hand concealing a stolen trinket",
+    "prompt": "Use case: stylized-concept. Asset type: Scoundrel portrait card illustration, joker-1, The Grinning Harlequin. Primary request: Sneaky and creepy harlequin jester, gaunt sly face, ragged muted burgundy and charcoal motley, crouching beside a ruined crypt doorway, a hand concealing a stolen trinket. Scene/backdrop: ancient woodland, mossy stone ruins and drifting mist. Style/medium: Original dark gritty fantasy, realistic painterly rendering, weathered materials, muted earthy colours, dramatic atmospheric directional lighting, clear readable silhouette, rich environmental storytelling. Composition/framing: one portrait illustration approximately 1024x1536; subject slightly right of centre, subdued upper-left for a future value overlay; important features within generous safe margins; subject clearly readable in upper two thirds of image. Lighting/mood: cold grey fog, earthy brown and moss green shadows, restrained warm golden or spectral accents appropriate to subject. Constraints: illustration only; no text, numerals, borders, nameplate, logos or interface. Original design, consistent with a candlelit dungeon and decaying woodland card collection.",
+    "original": "docs/art/originals/joker-1.png",
+    "runtime": "public/art/cards/joker-1.webp",
+    "selected": true,
+    "generationSource": "docs/art/originals/joker-1.png"
+  },
+  {
+    "id": "joker-2",
+    "name": "The Briar Trickster",
+    "concept": "Fey-wild trickster with pointed ears, mischievous knowing expression, leaf-and-briar motley and crooked twig crown, perched on a mossy root beside an ancient forest shrine",
+    "prompt": "Use case: stylized-concept. Asset type: Scoundrel portrait card illustration, joker-2, The Briar Trickster. Primary request: Fey-wild trickster with pointed ears, mischievous knowing expression, leaf-and-briar motley and crooked twig crown, perched on a mossy root beside an ancient forest shrine. Scene/backdrop: ancient woodland, mossy stone ruins and drifting mist. Style/medium: Original dark gritty fantasy, realistic painterly rendering, weathered materials, muted earthy colours, dramatic atmospheric directional lighting, clear readable silhouette, rich environmental storytelling. Composition/framing: one portrait illustration approximately 1024x1536; subject slightly right of centre, subdued upper-left for a future value overlay; important features within generous safe margins; subject clearly readable in upper two thirds of image. Lighting/mood: cold grey fog, earthy brown and moss green shadows, restrained warm golden or spectral accents appropriate to subject. Constraints: illustration only; no text, numerals, borders, nameplate, logos or interface. Original design, consistent with a candlelit dungeon and decaying woodland card collection.",
+    "original": "docs/art/originals/joker-2.png",
+    "runtime": "public/art/cards/joker-2.webp",
+    "selected": true,
+    "generationSource": "docs/art/originals/joker-2.png"
+  },
+  {
+    "id": "diamonds-12",
+    "name": "Widow\u2019s Lament",
+    "concept": "Ornate enchanted rapier trailing violet spectral mist",
+    "prompt": "Use case: stylized-concept. Asset type: Scoundrel portrait card illustration, diamonds-12, Widow\u2019s Lament. Primary request: Ornate enchanted rapier trailing violet spectral mist. Scene/backdrop: ruined dungeon armoury, damp stone altar, candle smoke. Style/medium: Original dark gritty fantasy, realistic painterly rendering, weathered materials, muted earthy colours, dramatic atmospheric directional lighting, clear readable silhouette, rich environmental storytelling. Composition/framing: one portrait illustration approximately 1024x1536; subject slightly right of centre, subdued upper-left for a future value overlay; important features within generous safe margins; subject clearly readable in upper two thirds of image. Lighting/mood: cold grey fog, earthy brown and moss green shadows, restrained warm golden or spectral accents appropriate to subject. Constraints: illustration only; no text, numerals, borders, nameplate, logos or interface. Original design, consistent with a candlelit dungeon and decaying woodland card collection.",
+    "original": "docs/art/originals/diamonds-12.png",
+    "selected": false,
+    "generationSource": "docs/art/originals/diamonds-12.png",
+    "supersededBy": "docs/art/originals/diamonds-12-v2.png"
+  },
+  {
+    "id": "diamonds-14",
+    "name": "The Last Needle",
+    "concept": "Tiny ancient enchanted stiletto, deceptively delicate",
+    "prompt": "Use case: stylized-concept. Asset type: Scoundrel portrait card illustration, diamonds-14, The Last Needle. Primary request: Tiny ancient enchanted stiletto, deceptively delicate. Scene/backdrop: ruined dungeon armoury, damp stone altar, candle smoke. Style/medium: Original dark gritty fantasy, realistic painterly rendering, weathered materials, muted earthy colours, dramatic atmospheric directional lighting, clear readable silhouette, rich environmental storytelling. Composition/framing: one portrait illustration approximately 1024x1536; subject slightly right of centre, subdued upper-left for a future value overlay; important features within generous safe margins; subject clearly readable in upper two thirds of image. Lighting/mood: cold grey fog, earthy brown and moss green shadows, restrained warm golden or spectral accents appropriate to subject. Constraints: illustration only; no text, numerals, borders, nameplate, logos or interface. Original design, consistent with a candlelit dungeon and decaying woodland card collection.",
+    "original": "docs/art/originals/diamonds-14.png",
+    "selected": false,
+    "generationSource": "docs/art/originals/diamonds-14.png",
+    "supersededBy": "docs/art/originals/diamonds-14-v2.png"
+  }
+]

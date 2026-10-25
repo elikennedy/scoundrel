@@ -1,6 +1,6 @@
-# return-to-game
+# Return to game button
 
-Generated with the built-in image generation tool. Transparent PNG original retained here; trimmed WebP runtime asset is public/art/ui/return-to-game.webp. Alpha preserved.
+Generated with the OpenAI image generation tools. Transparent PNG original retained here; trimmed WebP runtime asset is public/art/ui/return-to-game.webp. Alpha preserved.
 
 ## Exact prompt
 

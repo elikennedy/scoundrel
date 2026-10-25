@@ -1,10 +1,10 @@
 # Card Art Catalogue
 
-User-defined names and illustration concepts for Scoundrel. This catalogue supersedes the provisional identities in the visual reference: Bog Wraith belongs to clubs 9, clubs 7 is Plague Stalker, and diamonds 5 is Thornsteel Blade.
+Names and illustration concepts for this adaptation of Scoundrel.
 
-The current game uses 44 cards. Clubs and spades J/Q/K/A have danger values 11/12/13/14. Diamonds and hearts J/Q/K/A are **reserved concepts, excluded from the playable deck** under the current rules. Their inclusion here does not introduce a rules variant.
+The current game uses 44 cards. Clubs and spades J/Q/K/A have danger values 11/12/13/14. Diamonds and hearts J/Q/K/A are optional handicap cards valued 11–14. Handicap 1–4 adds that many distinct random cards from this eight-card pool. Two optional jokers exchange with a discarded card or can be discarded normally. Both options are house rules and exclude a run from high scores.
 
-Use stable asset IDs such as `clubs-9`, `spades-14`, and `diamonds-5`. Follow [card art direction](card-art-direction.md) when generating illustrations. All 44 playable cards now have generated illustrations and catalogue names connected to the interface. See the [artwork index](art/README.md) for prompts, provenance and review. Reserved concepts remain ungenerated.
+Use stable asset IDs such as `clubs-9`, `spades-14`, and `diamonds-5`. Follow [card art direction](card-art-direction.md) when generating illustrations. All 44 playable cards have generated illustrations and catalogue names connected to the interface. See the [artwork index](art/README.md) for prompts, provenance and review. The eight handicap cards and two jokers have their own retained prompts and illustrations.
 
 ## Clubs — Beasts & Abominations
 
@@ -61,10 +61,10 @@ Forged iron, ancient craftsmanship, bloodstained steel and increasingly powerful
 | 8 | Runebound Warhammer | Heavy iron hammer with faintly glowing runes |
 | 9 | Moonsteel Longsword | Elegant silver blade radiating cold blue light |
 | 10 | Emberfang | Ancient greatsword with molten cracks along its edge |
-| J (reserved) | The Oathbreaker | Black executioner's sword bound in broken chains |
-| Q (reserved) | Widow's Lament | Ornate enchanted rapier trailing violet spectral mist |
-| K (reserved) | Kingsbane | Legendary royal greatsword blazing with pale golden fire |
-| A (reserved) | The Last Needle | Tiny, ancient enchanted stiletto, deceptively delicate |
+| J | The Oathbreaker | Black executioner's sword bound in broken chains |
+| Q | Widow's Lament | Ornate enchanted rapier trailing violet spectral mist |
+| K | Kingsbane | Legendary royal greatsword blazing with pale golden fire |
+| A | The Last Needle | Tiny, ancient enchanted stiletto, deceptively delicate |
 
 ## Hearts — Healing, Spirits & Blessings
 
@@ -81,7 +81,16 @@ Rare warmth in a bleak world: woodland magic, alchemy, gentle spirits and ancien
 | 8 | Dryad's Gift | Living wooden hand offering a glowing green seed |
 | 9 | Starlight Elixir | Ornate crystal flask containing swirling celestial light |
 | 10 | The White Stag | Ethereal stag standing in a moonlit clearing |
-| J (reserved) | The Kindly Witch | Elderly forest healer holding a glowing herbal charm |
-| Q (reserved) | The Dawn Maiden | Benevolent spectral woman radiating golden morning light |
-| K (reserved) | The Ancient Guardian | Majestic moss-covered forest spirit with luminous antlers |
-| A (reserved) | The First Light | A single radiant flame suspended within an ancient stone shrine |
+| J | The Kindly Witch | Elderly forest healer holding a glowing herbal charm |
+| Q | The Dawn Maiden | Benevolent spectral woman radiating golden morning light |
+| K | The Ancient Guardian | Majestic moss-covered forest spirit with luminous antlers |
+| A | The First Light | A single radiant flame suspended within an ancient stone shrine |
+
+## Jokers — Optional Tricksters
+
+| Card | Name | Illustration concept |
+| --- | --- | --- |
+| Joker 1 | The Grinning Harlequin | Sneaky, creepy harlequin jester lurking beside a ruined crypt doorway |
+| Joker 2 | The Briar Trickster | Fey-wild trickster perched on a mossy root beside an ancient forest shrine |
+
+The [house-rule prompt set](art/house-rules-generation.json) records descriptions, exact prompts, retained originals and runtime exports for all ten additions.

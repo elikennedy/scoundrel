@@ -1,6 +1,6 @@
-# play-again
+# Play again button
 
-Generated with the built-in image generation tool. Transparent original retained in this directory; trimmed runtime WebP stored under public/art/ui/.
+Generated with the OpenAI image generation tools. Transparent original retained in this directory; trimmed runtime WebP stored under public/art/ui/.
 
 ## Exact prompt
 
