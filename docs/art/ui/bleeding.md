@@ -1,0 +1,7 @@
+# Bleeding warning wordmark
+
+Generated with the built-in OpenAI image generation tool, with a transparent background. Original: `docs/art/ui/bleeding-original.png`. Selected alpha-preserving runtime export: `public/art/ui/bleeding.webp`, trimmed to the nontransparent lettering bounds and resized to 840 × 310px (quality 92). Used above the discard pile after First Blood’s grace period expires; the image pulses over two seconds, with a steady reduced-motion alternative.
+
+## Exact prompt
+
+Use case: stylized-concept. Asset type: transparent wordmark for a dark fantasy dungeon card game status indicator. Primary request: the single word BLEEDING, hand-painted in fresh crimson blood, uppercase, on a genuinely transparent background. Text (verbatim): "BLEEDING" (B L E E D I N G), exactly these eight letters, one horizontal line. Broad expressive rough brush strokes, readable bold letterforms, dark wine-red edges and vivid wet blood-red strokes, a few restrained downward blood drips attached to the lettering, no excessive splatter. Flat front-facing typography, isolated lettering only, no scene or surface. Composition: wide compact wordmark, letters occupy most of the canvas with enough transparent margin for drips; all edges fully visible. This must remain legible as a small 116-pixel-wide in-game warning over a dark table. Avoid: any background, parchment, frame, white lettering, extra words, symbols, watermark, shadows beyond the letter edges, ornate unreadable script.

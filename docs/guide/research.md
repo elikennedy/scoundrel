@@ -27,4 +27,15 @@ The tactics paragraphs are qualitative decisions derived from these mechanics, n
 
 ## Optional house rules
 
-Handicap, jokers, cosmic cards and obstacles are user-defined additions to this adaptation, not rules from the sources above. Their exact behaviour is recorded in [Optional house rules](../rules.md#optional-house-rules) and tested in `tests/game.test.ts` and `tests/customCards.test.ts`. The illustrated guide explains these separately; its practice room continues to use the standard deck.
+Handicap, jokers, cosmic cards, obstacles and First Blood are user-defined additions to this adaptation, not rules from the sources above. Their exact behaviour is recorded in [Optional house rules](../rules.md#optional-house-rules) and tested in `tests/game.test.ts`, `tests/customCards.test.ts` and `tests/firstBlood.test.ts`. The illustrated guide explains these separately; its practice room continues to use the standard deck.
+
+
+## Teaching-flow and coverage review — 26 October 2026
+
+Reviewed the complete guide against the local engine, First Blood scheduler, card action controls, optional-rule settings, preview lifecycle and rules contract. This was an implementation/content audit, not a new verification of external sources.
+
+The reading order is controls → standard card types → room loop → combat → weapon limits → healing → fleeing → practice → endings and score saving → tactics → optional rules → credits. Readers learn the mechanics before the worked practice sequence. The House rules chapter proceeds from familiar supply changes (Handicap), through Joker exchanges and obstacle costs/weapon wear, to the four cosmic powers and finally timed First Blood. Each cosmic card has a separate illustration and heading. Topic links reach the five optional groups and each cosmic power.
+
+Coverage includes all four obstacle costs and the pit’s health-only exception, wear below power 2, unchanged target restrictions, no continuing thorn poison, full Fate/Forge/Sight/Mirror prerequisites and resolution/refill behaviour, reveal dismissal, mandatory Mirror completion, and First Blood interactions. The static First Blood illustration shows 0, 2.5 and 5 seconds; prose distinguishes the warning at 5 seconds from the first damage at 6, subsequent ticks, persistent bleeding after healing, action resets, animation exclusion, menus/hidden tabs, pending-exchange death and restart. All five options remain distinct from the creators’ baseline rules.
+
+Browser verification covers chapter/topic focus, obstacle-table rows, all four cosmic entries, combat comparison, practice/reset (14 → 14 → 11 → 17), static timer artwork, and Return/Escape focus restoration at desktop sizes.

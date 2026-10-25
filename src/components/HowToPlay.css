@@ -25,7 +25,7 @@
 .guide-text-link { padding:6px 0; border:0; border-bottom:1px solid #8a6b40; border-radius:0; background:transparent; box-shadow:none; color:#e4cd9f; font:1rem Georgia,serif; }
 .guide-text-link:hover:not(:disabled) { background:transparent; color:#fff0d2; }
 .guide-text-link span { margin-left:10px; }
-.guide-section { padding:80px 0; border-top:1px solid #af94653d; scroll-margin-top:120px; }
+.guide-section { padding:80px 0; border-top:1px solid #af94653d; scroll-margin-top:140px; }
 .guide-section-intro { max-width:800px; margin-bottom:42px; }
 .guide-card { width:100%; margin:0; min-width:0; }
 .guide-card .card-face { border:2px solid #8a6b40; border-radius:9px; overflow:hidden; min-height:0; box-shadow:4px 12px 20px #0009; }
@@ -41,7 +41,7 @@
 .guide-room-afterword { display:grid; grid-template-columns:1fr 1fr; gap:60px; margin-top:42px; }
 .guide-card-types { display:grid; grid-template-columns:repeat(3,1fr); gap:50px; }
 .guide-card-types .guide-card { width:180px; margin:0 auto 32px; }
-.guide-card-types h2 { font-size:2.2rem; }
+.guide-card-types h3 { font-size:2.2rem; }
 .guide-card-types p { font-size:1.02rem; }
 .guide-combat { display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; }
 .guide-combat-controls { display:flex; gap:30px; margin-top:28px; }
@@ -106,4 +106,22 @@
 .guide-house-row { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 64px; align-items: start; margin-bottom: 64px; }
 .guide-house-art { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; padding-top: 6px; }
 .guide-house-art .card-nameplate h3 { font-size: .8rem; }
-.guide-house-scores { max-width: 800px; margin-left: 424px; }
+.guide-body .guide-timed-note { margin:20px 0 0; color:#d0c3ab; font: .95rem/1.6 Georgia,serif; }
+.guide-house-nav { display:flex; flex-wrap:wrap; gap:12px 28px; margin-top:24px; }
+.guide-house h3[id] { scroll-margin-top:152px; }
+.guide-house-topic { margin:80px 0 40px; }
+.guide-house-single { grid-template-columns:180px; justify-content:center; }
+.guide-obstacle-costs { width:100%; border-collapse:collapse; margin:28px 0 48px; text-align:left; color:#d0c3ab; font:1.05rem/1.6 Georgia,serif; }
+.guide-obstacle-costs caption { margin-bottom:16px; text-align:left; color:#e4cd9f; font:1.2rem Georgia,serif; }
+.guide-obstacle-costs th,.guide-obstacle-costs td { padding:16px 24px 16px 0; border-bottom:1px solid #af94653d; }
+.guide-obstacle-costs thead th { color:#e4cd9f; font-weight:normal; }
+.guide-obstacle-costs tbody th { color:#f0dfbd; font-weight:normal; }
+.guide-obstacle-costs th:first-child { width:32%; }
+.guide-score-saving { max-width:800px; margin:48px 0 0; }
+.guide-blood-example { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; align-items:start; padding-top:12px; }
+.guide-blood-example figure { display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:18px; margin:0; }
+.guide-blood-clock { width:64px; height:64px; border:1px solid #ffffff70; border-radius:50%; }
+.guide-blood-clock.half-full { background:conic-gradient(#b50c16cc .5turn,transparent 0turn); }
+.guide-blood-example img { width:100%; height:64px; object-fit:contain; }
+.guide-blood-example figcaption { text-align:center; color:#d0c3ab; font:.9rem/1.6 Georgia,serif; }
+.guide-body .guide-house-summary { max-width:800px; margin:0 0 0 424px; }

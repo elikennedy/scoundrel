@@ -20,6 +20,7 @@ Runtime assets are under `public/art/ui/`. This directory holds originals and ex
 | `laurel-medallion.webp`, `nav-restart.webp`, `nav-help.webp` | [Laurel medallion original](laurel-medallion-original.png), existing control original | [Navigation medallions](laurel-medallion.md) |
 | `settings-medallion.webp` | [settings-medallion-original.png](settings-medallion-original.png) | [Settings cog](settings-medallion.md) |
 | `sound-medallion.webp` | [sound-medallion-original.png](sound-medallion-original.png) | [Sound settings](sound-medallion.md) |
+| `bleeding.webp` | [bleeding-original.png](bleeding-original.png) | [Bleeding warning](bleeding.md) |
 | `save-score.webp` | [save-score-original.png](save-score-original.png) | [Save score](save-score.md) |
 
 Control sprites are help, restart, flee, sword, fist and potion, in that order. The atlas is retained only as their source.

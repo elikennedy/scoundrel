@@ -57,7 +57,8 @@ export function SoundSettings({ dialogRef, open, onClose, rules, onRulesChange }
         <div className="house-setting-row"><label htmlFor="cosmic">Cosmic cards</label><select id="cosmic" value={rules.cosmic ? 'in' : 'out'} onChange={event => onRulesChange({ ...rules, cosmic: event.target.value === 'in' })}><option value="out">Cosmic cards out</option><option value="in">Cosmic cards in</option></select></div>
         <div className="house-setting-row"><label htmlFor="barricades">Barricades</label><select id="barricades" value={rules.barricades ? 'in' : 'out'} onChange={event => onRulesChange({ ...rules, barricades: event.target.value === 'in' })}><option value="out">Barricades out</option><option value="in">Barricades in</option></select></div>
         <p>Add 1–4 each of wood, rubble, Poisoned Thorns and Pit Traps, chosen independently.</p>
-
+        <div className="house-setting-row first-blood-setting"><label htmlFor="first-blood">First Blood</label><input id="first-blood" type="checkbox" checked={rules.firstBlood ?? false} aria-describedby="first-blood-help" onChange={event => onRulesChange({ ...rules, firstBlood: event.target.checked })} /></div>
+        <p id="first-blood-help">After your first damage, act within 5 seconds or bleed 1 HP per second. Healing won’t stop it.</p>
       </section>
       </div>
       <p className="settings-note">Changes apply to new games. Runs with any house rule use the House rules high score board.</p>

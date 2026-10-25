@@ -2,7 +2,7 @@
 
 An illustrated, single-player browser adaptation of the dungeon-crawling card game by **Zach Gage and Kurt Bieg**. Survive the standard 44-card dungeon by choosing when to fight, equip weapons, heal, or flee.
 
-This is an independent adaptation, built with React, TypeScript and Vite. It includes a How to Play guide with an interactive practice room, animated card movement, and a local high score table. Card and interface artwork is AI-generated; original images and prompts are included.
+This is an independent, vibe-coded hobby project, made for fun and entertainment only with React, TypeScript and Vite. It includes a How to Play guide with an interactive practice room, animated card movement, and local high score boards. See the credits below for the game, audio, generated artwork and code.
 
 Desktop browsers only. Keyboard controls and reduced motion are supported. The game runs entirely in your browser without an account or backend. Refreshing starts over; high scores, audio preferences and house-rule settings persist.
 
@@ -33,6 +33,7 @@ The bronze **Settings** cog includes these options alongside audio controls. All
 | Jokers in | Add two jokers that can be discarded or exchanged for a random discarded card |
 | Cosmic cards in | Add Hand of Fate, Forge of Destiny, Devil’s Sight and Mirror of Misfortune |
 | Barricades in | Add 1–4 each of Wooden Barricade, Rubble, Poisoned Thorns and Pit Trap, with independent counts |
+| First Blood | First health loss starts permanent bleeding: act within 5 seconds or lose 1 HP per second afterward; healing does not cure it |
 
 Cosmic cards can reshape the room, reset weapon restrictions or reveal the dungeon. Obstacles cost health or weapon power; Pit Traps allow only the health-cost action. A fully expanded deck has at most 70 cards. The in-game **House rules** chapter illustrates every option; [the rules reference](docs/rules.md#optional-house-rules) records their exact effects and edge cases.
 
@@ -70,4 +71,10 @@ To publish your own copy, follow the [self-hosting guide](docs/hosting.md). Only
 
 Scoundrel was created by Zach Gage and Kurt Bieg. Read their [original rules](https://www.stfj.net/art/2011/Scoundrel.pdf).
 
-This repository's original application, engine implementation and artwork are offered under the [MIT License](LICENSE), subject to the scope in [NOTICE](NOTICE). The original Scoundrel rules, rulebook and other third-party materials are excluded from that grant. This is not an official release by the game's creators.
+- **Sounds:** sourced from [OpenGameArt.org](https://opengameart.org/), with credit to their respective creators.
+- **Artwork:** all art assets were created through image generation with OpenAI. Retained originals and exact prompts are documented in the [artwork index](docs/art/README.md).
+- **Code:** produced using **GPT-6.1 Sol** in the **Codex coding harness**.
+
+The repository owner simply supplied some ideas for house rules for fun. They make no claim to having created the original game, code, artwork or sounds, and make no special claims of ownership. This is a vibe-coded hobby project for entertainment only, not an official release or endorsement by the game's creators or the credited contributors.
+
+The repository is shared under the [MIT License](LICENSE), subject to the scope in [NOTICE](NOTICE). The original Scoundrel rules, rulebook and other third-party materials are excluded from that grant and retain their respective rights and licenses.

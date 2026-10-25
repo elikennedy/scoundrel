@@ -10,13 +10,14 @@ export type Joker = Readonly<{ id: 'joker-1' | 'joker-2'; kind: 'joker'; suit: '
 export type Cosmic = Readonly<{ id: 'cosmic-fate' | 'cosmic-forge' | 'cosmic-sight' | 'cosmic-mirror'; kind: 'cosmic'; suit: 'cosmic'; value: 0 }>
 export type Barricade = Readonly<{ id: BarricadeId; kind: 'barricade'; suit: 'obstacles'; material: BarricadeMaterial; value: 1 | 2 | 3 }>
 export type Card = Monster | Weapon | Potion | Joker | Cosmic | Barricade
-export type HouseRules = Readonly<{ handicap: 0 | 1 | 2 | 3 | 4; jokers: boolean; cosmic?: boolean; barricades?: boolean }>
-export const DEFAULT_HOUSE_RULES: HouseRules = { handicap: 0, jokers: false, cosmic: false, barricades: false }
+export type HouseRules = Readonly<{ handicap: 0 | 1 | 2 | 3 | 4; jokers: boolean; cosmic?: boolean; barricades?: boolean; firstBlood?: boolean }>
+export const DEFAULT_HOUSE_RULES: HouseRules = { handicap: 0, jokers: false, cosmic: false, barricades: false, firstBlood: false }
 
 export function validHouseRules(rules: HouseRules): boolean {
   return Number.isInteger(rules.handicap) && rules.handicap >= 0 && rules.handicap <= 4 && typeof rules.jokers === 'boolean'
     && (rules.cosmic === undefined || typeof rules.cosmic === 'boolean')
     && (rules.barricades === undefined || typeof rules.barricades === 'boolean')
+    && (rules.firstBlood === undefined || typeof rules.firstBlood === 'boolean')
 }
 
 export function createHandicapCards(): (Weapon | Potion)[] {

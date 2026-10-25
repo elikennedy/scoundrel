@@ -224,7 +224,7 @@
       {
         "name": "attack-slash",
         "value": "180ms ease-out / 90ms reduced-motion fade",
-        "purpose": "One upper-left to lower-right strike on a stationary monster or barricade; remove before travel and cancel on restart."
+        "purpose": "One upper-left to lower-right strike on a stationary monster; remove before travel and cancel on restart."
       },
       {
         "name": "healing-radiance",
@@ -236,6 +236,32 @@
         "value": "180ms ease-out / 90ms reduced-motion fade",
         "purpose": "A soft diffuse purple glow shares healing radiance geometry and keyframes on Joker Play and all four cosmic Activate actions before travel; Discard skips it. Remove before cloning and cancel on restart.",
         "gradient": "radial-gradient(circle closest-side at 50% 43.333%, #f1dcffe6 0%, #c287f4b3 22%, #a860e566 45%, #8347c226 68%, #8347c200 100%)"
+      },
+      {
+        "name": "obstacle-dust",
+        "value": "360ms ease-out / 90ms reduced-motion fade",
+        "purpose": "Nine uneven earth-brown dust billows and eight falling dirt fragments on every obstacle clear before discard travel. Reduced motion fades the stationary cloud only. Remove before cloning and cancel on restart.",
+        "colors": [
+          "#c5ab87",
+          "#a38a68",
+          "#79634b",
+          "#887052"
+        ]
+      },
+      {
+        "name": "first-blood-tint",
+        "value": "180ms opacity transition / immediate reduced-motion update",
+        "purpose": "Steady full-viewport #b50c16 overlay while bleeding. Opacity increases from 0.025 at 20 HP to 0.455 at 1 HP. Never intercept pointers or double-tint native dialogs."
+      },
+      {
+        "name": "first-blood-pie",
+        "value": "5s clockwise fill / 100ms interpolation / immediate reset",
+        "purpose": "72px transparent circle centred 24px above discard with faint white outline and no text. Blood-red pie fills from twelve o\u2019clock using existing elapsed grace, then switches to the blood-painted BLEEDING warning at five seconds. Resets immediately on gameplay actions. Reduced motion removes interpolation."
+      },
+      {
+        "name": "bleeding-warning-pulse",
+        "value": "2s ease-in-out infinite / steady opaque reduced-motion alternative",
+        "purpose": "Generated transparent blood-painted BLEEDING artwork replaces the grace circle at five seconds. Only this small 140px wordmark fades from 0% to 100% opacity and back; the full-screen tint stays steady. Actions restore the empty circle."
       }
     ],
     "breakpoints": [
@@ -323,6 +349,16 @@
       {
         "name": "Outcome dismissal",
         "body": "Only Play again dismisses outcomes; guide allows Return or Escape.",
+        "section": "components"
+      },
+      {
+        "name": "First Blood",
+        "body": "Optional timed house rule. Actual health loss starts permanent bleeding. Accepted gameplay actions renew five seconds; each full second afterward costs 1 HP. Exclude card motion, keep menus/background time active, and retain healing without curing bleeding. Show a grace countdown and a steady red tint that deepens at lower health.",
+        "section": "components"
+      },
+      {
+        "name": "Guide teaching order",
+        "body": "Controls and card types precede rooms, combat/limits, healing, fleeing and practice. Endings/score saving and tactics come before optional rules. House rules have group and per-cosmic topic links, an obstacle cost table, separate cosmic entries and static First Blood timer illustrations. Preserve heading focus, standard-deck practice and creator credits.",
         "section": "components"
       }
     ],

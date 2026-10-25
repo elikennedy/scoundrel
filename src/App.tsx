@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { applyAction, getScoreBoard, canFlee, createDeck, createInitialState, shuffleDeck } from './game'
-import type { Card, GameAction, HouseRules } from './game'
+import type { CSSProperties } from 'react'
+import { applyAction, getScoreBoard, canFlee, createDeck, createInitialState, shuffleDeck, FIRST_BLOOD_GRACE_MS } from './game'
+import type { Card, GameAction, GameState, HouseRules } from './game'
 import { RoomCard } from './components/RoomCard'
 import { illustrations } from './components/cardIllustrations'
 import { cardName } from './components/cardPresentation'
@@ -11,15 +12,22 @@ import type { DungeonReveal } from './components/DrawPile'
 import { DiscardPile } from './components/DiscardPile'
 import { HighScores, ScoreLedger } from './components/HighScores'
 import type { CompletedRun } from './components/HighScores'
-import { cardElement, flyCard, hideCardSource, slashCard, radiateCard } from './components/cardMotion'
+import { cardElement, flyCard, hideCardSource, slashCard, radiateCard, dustCard } from './components/cardMotion'
 import { getDealSound, prepareGameAudio, playActionSound, warmGameAudio } from './components/gameAudio'
 import { waitForImages } from './components/imageReadiness'
 import { TableTool } from './components/TableTool'
 import { SoundSettings } from './components/SoundSettings'
-import { setAudioPageActive } from './components/gameAudio'
+import { setAudioPageActive, setMusicBleedingOut } from './components/gameAudio'
 import { resolutionSound } from './components/actionSounds'
 import { loadHouseRules, saveHouseRules } from './components/houseRulesPreferences'
 import './App.css'
+
+function completedRunFor(state: GameState): CompletedRun | null {
+  if ((state.status !== 'won' && state.status !== 'lost') || state.score === null) return null
+  // getRandomValues also works on plain-HTTP self-hosts, unlike randomUUID.
+  const id = Array.from(crypto.getRandomValues(new Uint32Array(4)), value => value.toString(16).padStart(8, '0')).join('')
+  return { board: getScoreBoard(state), id, score: state.score, completedAt: new Date().toISOString() }
+}
 
 function App() {
   const [houseRules, setHouseRules] = useState(loadHouseRules)
@@ -49,6 +57,8 @@ function App() {
   const [completedRun, setCompletedRun] = useState<CompletedRun | null>(null)
   const [savingScore, setSavingScore] = useState(false)
   const [game, setGame] = useState(createInitialState)
+  const currentGame = useRef(game)
+  const bleedClock = useRef<number | null>(null)
   const [reveal, setReveal] = useState<DungeonReveal | null>(null)
   const [announcement, setAnnouncement] = useState('Your adventure awaits.')
   const roomHeading = useRef<HTMLHeadingElement>(null)
@@ -56,6 +66,57 @@ function App() {
   const moveFocus = useRef(false)
   const playing = game.status === 'playing'
   const finished = game.status === 'won' || game.status === 'lost'
+  const bleeding = playing && game.rules.firstBlood && (game.bleeding || (healthPreview !== null && healthPreview < game.health))
+  const visibleHealth = healthPreview ?? game.health
+  const bloodOpacity = bleeding ? .025 + .43 * Math.pow((20 - Math.max(1, Math.min(20, visibleHealth))) / 19, 1.3) : 0
+  const bleedingOut = Boolean(bleeding && !busy && game.bleedElapsedMs >= FIRST_BLOOD_GRACE_MS)
+
+  useEffect(() => {
+    setMusicBleedingOut(bleedingOut)
+    return () => setMusicBleedingOut(false)
+  }, [bleedingOut])
+
+  function commitGame(next: GameState) {
+    currentGame.current = next
+    setGame(next)
+  }
+
+  function settleBleeding() {
+    const previous = currentGame.current
+    const now = performance.now()
+    if (bleedClock.current === null || locked.current || previous.status !== 'playing') return previous
+    const elapsed = now - bleedClock.current
+    bleedClock.current = now
+    const next = applyAction(previous, { type: 'elapse', milliseconds: elapsed }).state
+    commitGame(next)
+    if (next.health < previous.health) {
+      setAnnouncement(`First Blood: lost ${previous.health - next.health} health. ${next.health} health remaining.${next.status === 'lost' ? ` Your journey ends. Final score ${next.score}.` : ''}`)
+    }
+    if (next.status === 'lost') {
+      bleedClock.current = null
+      setCompletedRun(completedRunFor(next))
+      setReveal(null)
+      setSoundOpen(false)
+      setRulesOpen(false)
+      setScoresOpen(false)
+      moveFocus.current = true
+    }
+    return next
+  }
+
+  useEffect(() => {
+    if (!game.bleeding || game.status !== 'playing' || busy) { bleedClock.current = null; return }
+    // Card motion never consumes the player's thinking time. Menus and hidden tabs do.
+    bleedClock.current = performance.now()
+    const timer = window.setInterval(settleBleeding, 100)
+    const onVisibility = () => { if (!document.hidden) settleBleeding() }
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => {
+      window.clearInterval(timer)
+      document.removeEventListener('visibilitychange', onVisibility)
+      bleedClock.current = null
+    }
+  }, [game.bleeding, game.status, busy])
 
   useLayoutEffect(() => {
     // Restore only after React has committed the new slots, before the next paint.
@@ -107,6 +168,9 @@ function App() {
 
   async function act(action: GameAction) {
     if (locked.current && action.type !== 'start') return
+    // Settle real elapsed time before accepting a last-moment action.
+    const game = action.type === 'start' ? currentGame.current : settleBleeding()
+    if (game.status === 'lost' && action.type !== 'start') return
     if (action.type === 'start') {
       motion.current.abort()
       motion.current = new AbortController()
@@ -123,11 +187,9 @@ function App() {
     prepareGameAudio({ deferMusic: action.type === 'start' })
     const next = result.state
     const fateActivated = action.type === 'resolve' && action.cardId === 'cosmic-fate' && action.cosmic === 'activate'
-    if ((next.status === 'won' || next.status === 'lost') && next.score !== null) {
-      // getRandomValues also works on plain-HTTP self-hosts, unlike randomUUID.
-      const id = Array.from(crypto.getRandomValues(new Uint32Array(4)), value => value.toString(16).padStart(8, '0')).join('')
-      setCompletedRun({ board: getScoreBoard(next), id, score: next.score, completedAt: new Date().toISOString() })
-    }
+    const completed = completedRunFor(next)
+    if (completed) setCompletedRun(completed)
+    bleedClock.current = null
     locked.current = true
     setBusy(true)
     setHealthPreview(next.health)
@@ -140,7 +202,8 @@ function App() {
       void playActionSound(resolutionSound(card, game.potionUsed), signal)
       const target = card.kind === 'weapon' || (card.kind === 'monster' && action.combat === 'weapon') ? equipped : discard
       if (face && (card.kind === 'monster' || card.kind === 'barricade')) {
-        await slashCard(face, signal)
+        if (card.kind === 'barricade') await dustCard(face, signal)
+        else await slashCard(face, signal)
         if (signal.aborted) return
       }
       const magical = (card.kind === 'cosmic' && action.cosmic === 'activate') || (card.kind === 'joker' && action.joker === 'play')
@@ -247,7 +310,7 @@ function App() {
         setReveal({ cards: [next.dungeon[0]], mirror: true })
       }
     }
-    setGame(next)
+    commitGame(next)
   }
 
   function start() { act({ type: 'start', deck: shuffleDeck(createDeck(houseRules)), rules: houseRules }) }
@@ -256,7 +319,7 @@ function App() {
     : game.room.length < 4 ? 'The final cards must be faced.' : 'Return this room to the bottom of the dungeon.'
 
   return (
-    <main className={`app-shell ${game.status === 'ready' ? 'at-gate' : 'at-table'}`}>
+    <main className={`app-shell ${game.status === 'ready' ? 'at-gate' : 'at-table'}`} data-bleeding={Boolean(bleeding)} style={{ '--blood-opacity': bloodOpacity } as CSSProperties}>
       <nav className="table-tools" aria-label="Game controls">
         <TableTool className="restart" label="New game" tooltip="Start a new game" onClick={start} />
         <TableTool className="settings-medallion" label="Settings" tooltip="Sound and optional house rules" onClick={() => { prepareGameAudio(); setSoundOpen(true) }} />
@@ -275,7 +338,7 @@ function App() {
             setReveal(null)
             roomHeading.current?.focus()
           }} />
-          <DiscardPile cards={game.discard} />
+          <DiscardPile cards={game.discard} bleeding={Boolean(bleeding)} bleedElapsedMs={busy ? 0 : game.bleedElapsedMs} />
           <div className="play-area">
 
             <section className="room-section" aria-labelledby="room-title">
@@ -285,7 +348,7 @@ function App() {
 
             </section>
           </div>
-          <GameSidebar game={healthPreview === null ? game : { ...game, health: healthPreview }} />
+          <GameSidebar game={{ ...game, health: visibleHealth, bleeding: Boolean(bleeding), bleedElapsedMs: busy ? 0 : game.bleedElapsedMs }} />
         </div>
       )}
       <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{game.status !== 'ready' ? announcement : ''}</p>

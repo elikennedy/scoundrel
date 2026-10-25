@@ -177,6 +177,10 @@ progress::-moz-progress-bar { background: #b75e46; }
 .card-radiance { position:absolute; z-index:5; inset:0; pointer-events:none; transform-origin:50% 43.333%; }
 .healing-radiance { background:radial-gradient(circle closest-side at 50% 43.333%, #fff2bde6 0%, #f4ce79b3 22%, #f4ce7966 45%, #f4ce7926 68%, #f4ce7900 100%); }
 
+.card-dust { position:absolute; z-index:5; inset:0; overflow:hidden; pointer-events:none; container-type:size; }
+.dust-cloud { position:absolute; left:50%; top:44%; transform:translate(-50%,-50%); border-radius:50%; background:radial-gradient(ellipse, #c5ab87c9 0%, #a38a68b3 28%, #79634b66 53%, #79634b00 73%); }
+.dust-chip { position:absolute; left:50%; top:44%; opacity:0; background:#887052; clip-path:polygon(12% 0, 87% 18%, 100% 68%, 36% 100%, 0 53%); }
+
 
 .card-face.joker { --card-accent: #563c62; }
 
@@ -184,6 +188,20 @@ progress::-moz-progress-bar { background: #b75e46; }
 .card-face.barricade { --card-accent: #8a6b40; }
 .card-actions .action-cosmic::before { background-image: url('/art/ui/nav-restart.webp'); }
 .card-actions .action-discard::before { background-image: url('/art/ui/card-back.webp'); background-size: 48px 72px; }
+
+/* A steady tint carries blood loss without flashing or blocking any controls. */
+.app-shell::after, .app-shell dialog[open]::after { content:''; position:fixed; z-index:100; inset:0; background:#b50c16; opacity:var(--blood-opacity, 0); pointer-events:none; transition:opacity 180ms ease-out; }
+.app-shell:has(dialog[open])::after { content:none; }
+.first-blood-status { margin:10px 0 0; color:#e7d4b4; font:.95rem Georgia,serif; font-variant-numeric:tabular-nums; }
+@property --bleed-fill { syntax:'<angle>'; inherits:false; initial-value:0turn; }
+.bleeding-indicator { position:absolute; z-index:11; bottom:calc(100% + 24px); left:50%; display:grid; place-items:center; width:140px; height:72px; transform:translateX(-50%); pointer-events:none; }
+.bleeding-timer { width:72px; height:72px; border:1px solid #ffffff70; border-radius:50%; background:conic-gradient(from 0deg, #b50c16cc var(--bleed-fill), transparent 0turn); transition:--bleed-fill 100ms linear; }
+.discard-pile .bleeding-warning-art { display:block; width:140px; max-height:72px; object-fit:contain; border-radius:0; box-shadow:none; animation:bleeding-warning-pulse 2s ease-in-out infinite; }
+@keyframes bleeding-warning-pulse { 0%,100% { opacity:0; } 50% { opacity:1; } }
+.bleeding-timer.grace-reset { transition:none; }
+@media(prefers-reduced-motion:reduce) { .app-shell::after, .app-shell dialog[open]::after { transition:none; } }
+@media(prefers-reduced-motion:reduce) { .bleeding-timer { transition:none; } }
+@media(prefers-reduced-motion:reduce) { .discard-pile .bleeding-warning-art { animation:none; opacity:1; } }
 
 .draw-pile.has-sight { transform: none; z-index: 16; }
 .dungeon-sight { position: absolute; left: 138px; top: 0; width: 448px; padding: 38px 14px 14px; color: #eddfbd; background: #171714; border: 1px solid #8a6b40; border-radius: 4px; box-shadow: 4px 12px 22px #0009; }

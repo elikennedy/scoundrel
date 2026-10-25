@@ -6,7 +6,7 @@ The app is a static Vite/React site. The rules engine has no React or browser de
 
 - `src/game/`: pure immutable TypeScript rules, stable card IDs and action validation; no React or DOM dependencies.
 - `src/App.tsx`: live game lifecycle, four presentation slots, transition sequencing, announcements and dialogs.
-- `src/components/gameAudio.ts`: gesture-unlocked Web Audio, cached WAV decoding and cancellable playback. `actionSounds.ts` maps card actions to sound assets.
+- `src/components/gameAudio.ts`: gesture-unlocked Web Audio, cached WAV decoding and cancellable playback. `actionSounds.ts` maps card actions to sound assets; `musicPitch.ts` supplies a music-only native pitch effect.
 - `src/components/cardMotion.ts`: temporary visual copies, cancellation, flipping and travel; never changes rules.
 - `RoomCard.tsx`, `CardFace.tsx`, `cardIllustrations.ts`: actions, shared card template and artwork catalogue.
 - `GameSidebar.tsx`, `DiscardPile.tsx`, `DrawPile.tsx`: health/equipment, the last-five discard fan and known dungeon cards.
@@ -34,6 +34,7 @@ The app is a static Vite/React site. The rules engine has no React or browser de
 | `resolve` | A room `cardId`; monsters/obstacles require `combat`, jokers require `joker`, cosmic cards require `cosmic` |
 | `mirror-exchange` | A remaining room `cardId`; completes the pending mandatory Mirror exchange |
 | `flee` | Returns a legal full room to the dungeon bottom without shuffling |
+| `elapse` | A finite nonnegative `milliseconds` delta; applies First Blood grace and whole-second health loss without resolving cards |
 | `reset` | Returns to the empty ready state |
 
 For a standard game, start with `{ type: 'start', deck: shuffleDeck(createDeck()) }`. With house rules, pass the same rules to both `createDeck(rules)` and the start action. Joker Play supplies `randomSample`; Fate Activate supplies one `randomSamples` entry per Fisher–Yates step. The state machine itself has no hidden random draws.
@@ -60,7 +61,17 @@ Mirror activation sets `GameState.mirrorRevealed` to the dungeon’s top ID whil
 
 Joker swaps keep the room slot and resolution count; the returned card travels from discard. Fate returns all unresolved room faces before a fresh sequential deal. Forge discards trophy faces, and destroyed weapons travel with their trophies. Mirror sends the selected room face to the deck and deals the revealed arrival into its slot, or the carryover slot on advancement. All reuse the shared abort controller and reduced-motion paths.
 
-The guide’s optional-card catalogue is separate from its standard 44-card practice deck. Practice never changes the live run.
+The guide’s optional-card catalogue is separate from its standard 44-card practice deck. Practice never changes the live run. The teaching flow introduces controls/card types, rooms, combat/target limits, healing and fleeing before practice, then endings, tactics and optional rules. House-rule and cosmic-card topic links focus their own headings below the sticky toolbar. A semantic four-row table compares obstacle health/power costs. First Blood examples are static and use no timer or pulse; the real run’s clock still continues if already bleeding. See [guide coverage review](guide/research.md#teaching-flow-and-coverage-review--26-october-2026).
+
+## First Blood clock
+
+`HouseRules.firstBlood` is optional for older callers and defaults off when preferences are normalized. It changes no deck composition and selects House rules scoring even with every other option off. `GameState.bleeding` records permanent activation after actual health loss; `bleedElapsedMs` records accumulated time since the last accepted player action. The pure engine receives explicit `elapse` deltas, retaining partial milliseconds and enforcing the five-second grace, whole-second damage, death scoring and pending-Mirror death precedence. It never reads a clock. Accepted resolve/flee/exchange actions reset elapsed time; invalid actions and time updates do not.
+
+App keeps an authoritative state ref alongside React state and samples `performance.now()` every 100ms while bleeding and interactive. It settles actual elapsed time before accepting a player action and when a hidden page becomes visible. It never assumes one callback equals one second. Accepted actions stop sampling while card motion locks controls; sampling resumes when controls become available. Menus and hidden tabs do not pause or renew grace. Death captures the completed run once, closes other dialogs/previews, and presents the normal outcome/score workflow. Restart and unmount clear the interval and visibility listener.
+
+The health area exposes a quiet `role="timer"` countdown without announcing every fraction of a second; health loss is announced through the existing live region. DiscardPile also receives bleeding status and the existing elapsed grace time. A pointer-transparent circle above the pile uses a clockwise conic-gradient pie fill, clamped to five seconds; it has no visible text and resets immediately during card motion. At the five-second boundary it is replaced by `/art/ui/bleeding.webp`, a generated transparent blood-painted wordmark with a two-second 0→1→0 opacity loop. Reduced motion holds the image opaque. Its quiet timer label exposes remaining grace or active damage without per-update announcements. It shares the existing clock and never creates another timer.
+
+A pointer-transparent fixed red overlay appears immediately on first damage, including during the outgoing effect. Its opacity ranges from 0.025 at 20 HP to 0.455 at 1 HP. Native open dialogs render their own full-viewport overlay while suppressing the underlying one, avoiding both top-layer gaps and a double tint. The full-screen overlay remains steady; reduced motion removes its opacity transition. Only the small discard-area warning pulses. The practice guide retains its untimed standard deck.
 
 ## Asset loading
 
@@ -76,7 +87,7 @@ Engine results are calculated before animation. Health previews update immediate
 
 Each incoming card plays `/sound/card-dealt.wav` while travel and flip share its decoded duration. Deal playback alone passes through a 1,800Hz low-pass filter (Q 0.5) at 75% gain to soften its sharp edge; the source WAV and other sound cues remain unchanged. Audio is unlocked from a game action. The deal clip is requested alongside the first room art; other effects warm in batches of two after the room lands. Clips are decoded once and cached, and an action can request its own clip on demand. Missing, blocked or unsupported audio falls back to silent dealing with the bundled clip's measured timing; loading times out after three seconds. Restart/unmount stops active or scheduled sounds with the same abort signal as card motion. Reduced motion fades for 90ms, then holds the face through the remaining clip duration.
 
-Monster attacks and barricade clears await a cancellable diagonal red slash on the stationary card before travel to discard or equipment. `radiateCard` shares burst geometry, keyframes and cancellation between golden healing radiance and purple magic radiance. Healing-card use includes the golden burst even at full health; spent healing-card discards skip it. Joker Play and all four cosmic Activate actions await the purple burst; their Discard actions skip it. Radiance brightens, expands and fades over 180ms, with a stationary 90ms fade for reduced motion. Every effect is removed before cloning and aborts on restart or unmount.
+Monster attacks await a cancellable diagonal red slash on the stationary card before travel to discard or equipment. Barricade clears (wood, rubble, thorns and pits; both health and weapon actions) instead await `dustCard`: a bounded 360ms burst of nine dust clouds and eight falling dirt fragments before discard travel. It uses transform/opacity animations, fixed uneven trajectories independent of game randomness, and the shared effect cleanup. Reduced motion animates only the stationary parent opacity over 90ms. All particle animations cancel on restart or unmount and are removed before travel copies are made. `radiateCard` shares burst geometry, keyframes and cancellation between golden healing radiance and purple magic radiance. Healing-card use includes the golden burst even at full health; spent healing-card discards skip it. Joker Play and all four cosmic Activate actions await the purple burst; their Discard actions skip it. Radiance brightens, expands and fades over 180ms, with a stationary 90ms fade for reduced motion. Every effect is removed before cloning and aborts on restart or unmount.
 
 The whole source card is hidden before its visual copy moves, including action overlays and focus outlines. Visibility is restored in a layout effect after the next slots commit. Incoming real cards remain hidden until their copies land. The busy flag disables gameplay actions and suppresses overlays/card emphasis during transitions. New game aborts outstanding animations; stale completions must not update a restarted game.
 
@@ -88,7 +99,9 @@ Top-right controls appear in this order: New game, Settings, High scores, How to
 
 `gameAudio.ts` routes all effects through one gain bus and music through another. Gain changes apply to active sources with a short ramp. The deal-only filter and 75% gain remain before the SFX bus. Defaults are 100% SFX and 35% music, with all mute toggles off. Preferences are validated and saved under `scoundrel:audio:v1` in local storage. Missing/damaged fields recover to defaults; unavailable storage keeps changes for the current session.
 
-`public/sound/Harp.mp3` loops through an HTML audio element connected to the music bus. For a new game, playback begins after the first room finishes dealing. Opening/interacting with Settings or subsequent game actions can also start or retry playback; loading the page alone stays silent. Music continues through restarts, dialogs and outcomes; hiding the tab or unmounting the app pauses it. Returning to the tab resumes when the audio context is running. Blocked playback is retried at the next audio interaction. The track is streamed rather than decoded into the SFX cache.
+`public/sound/Harp.mp3` loops through an HTML audio element connected to the music bus. For a new game, playback begins after the first room finishes dealing. Opening/interacting with Settings or subsequent game actions can also start or retry playback; loading the page alone stays silent. First Blood changes the music element’s playback rate: 2× when grace expires and the BLEEDING warning is active, 1× during renewed grace, card motion, outcomes, restart and unmount. The element preserves pitch while speeding up; a separate Web Audio effect then lowers the warning music by roughly six semitones without slowing it. `musicPitch.ts` uses two overlapping, Hann-windowed, modulated delays with a 50ms dry/wet crossfade. The normal path is unprocessed, stereo is retained, and no new media assets, dependencies, worklets or secure-context requirements are introduced. Renewed grace, motion and outcomes restore both normal tempo and original pitch. Changing tempo/pitch keeps the current track position. The requested rate is retained if music has not been created yet. Mutes, volume, looping and sound-effect rates are independent.
+
+Music continues through restarts, dialogs and outcomes; hiding the tab or unmounting the app pauses it. Returning to the tab resumes when the audio context is running. Blocked playback is retried at the next audio interaction. The track is streamed rather than decoded into the SFX cache.
 
 `tests/audioPreferences.test.ts` covers normalization, channel independence and restoration after Mute all. Check keyboard slider operation, mute changes while sounds play, Escape/Return focus restoration, preference persistence, and hidden-tab music pause in the browser.
 
@@ -132,6 +145,7 @@ Run `npm test`, `npm run lint`, `npm run build`, and `git diff --check` before a
 | Test file | Coverage |
 | --- | --- |
 | `game.test.ts` | Standard rules, handicap/jokers, scoring, immutable transitions and complete runs |
+| `firstBlood.test.ts` | Damage activation, exact timing boundaries, healing/actions, invalid inputs, Mirror death, catch-up scoring and restart |
 | `customCards.test.ts` | Cosmic/obstacle composition, wear/destruction, reveals, mandatory Mirror choices, edge cases and seeded all-option simulations |
 | `scores.test.ts` | Initials, per-board ranking/retention, legacy-score preservation, independent persistence/errors, duplicate saves, storage failures and cloud selection |
 | `audioPreferences.test.ts`, `houseRulesPreferences.test.ts` | Normalization, mutes, defaults and saved-setting migration |
@@ -140,6 +154,8 @@ Run `npm test`, `npm run lint`, `npm run build`, and `git diff --check` before a
 The test command prints the current count; keep coverage descriptions current when contracts change.
 
 For high scores, verify every option and combined configurations route to House rules, including after options are disabled mid-run. Check both boards for empty/populated ledgers, initials normalization, one save per run, reload persistence, save failure/retry, local date/time and keyboard access. Escape closes the standalone ledger and returns focus to its opener; the outcome still only closes with Play again. Review ten rows at 1280×720 in both contexts: the bounded table may show fewer rows initially, and keyboard scrolling must reach the final entries without crossing the illustrated rim.
+
+For First Blood, check checkbox keyboard/persistence/next-game scope, unwounded waiting, five-second grace and subsequent ticks, zero-damage attacks, healing, action resets, animation exclusion, menus/hidden-tab catch-up, death/score entry and restart. Review the tint at 20 and 1 HP, including over native dialogs, with controls reachable in reduced motion.
 
 For custom cards, check mandatory Mirror selection and restart, Sight/Mirror X dismissal, no reopening as the dungeon changes, automatic Mirror-exchange cleanup, current weapon power, weapon destruction, and the health-only Pit action.
 

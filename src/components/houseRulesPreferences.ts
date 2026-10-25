@@ -4,7 +4,7 @@ const key = 'scoundrel-house-rules-v1'
 export function normalizeHouseRules(value: unknown): HouseRules {
   if (value && typeof value === 'object' && validHouseRules(value as HouseRules)) {
     const rules = value as HouseRules
-    return { handicap: rules.handicap, jokers: rules.jokers, cosmic: rules.cosmic ?? false, barricades: rules.barricades ?? false }
+    return { handicap: rules.handicap, jokers: rules.jokers, cosmic: rules.cosmic ?? false, barricades: rules.barricades ?? false, firstBlood: rules.firstBlood ?? false }
   }
   return { ...DEFAULT_HOUSE_RULES }
 }

@@ -1,4 +1,4 @@
-import { MAX_HEALTH } from '../game'
+import { FIRST_BLOOD_GRACE_MS, MAX_HEALTH } from '../game'
 import type { GameState } from '../game'
 import { CardFace } from './CardFace'
 import { illustrations } from './cardIllustrations'
@@ -10,7 +10,7 @@ export function GameSidebar({ game }: { game: GameState }) {
       <section className={`health-panel ${game.health <= 5 ? 'critical' : ''}`} aria-label="Health">
         <div className="health-value"><span>Health</span><strong>{game.health}<small> / {MAX_HEALTH}</small></strong></div>
         <progress max={MAX_HEALTH} value={Math.max(0, game.health)} aria-label={`Health: ${game.health} of ${MAX_HEALTH}`} />
-
+        {game.rules.firstBlood && <p className="first-blood-status" role="timer" aria-live="off">First Blood · {game.bleeding ? game.bleedElapsedMs < FIRST_BLOOD_GRACE_MS ? `${Math.ceil((FIRST_BLOOD_GRACE_MS - game.bleedElapsedMs) / 1000)}s grace` : '−1 HP / second' : 'Unwounded'}</p>}
       </section>
       <section className="weapon-panel" aria-label="Equipped weapon">
         <div className={`equipped-stack ${game.weapon ? 'armed' : 'unarmed'}`} data-weapon-target>

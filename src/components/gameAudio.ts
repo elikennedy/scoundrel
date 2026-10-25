@@ -1,6 +1,7 @@
 import { actionSoundNames } from './actionSounds'
 import { defaultAudioPreferences, effectiveVolumes, normalizeAudioPreferences } from './audioPreferences'
 import type { AudioPreferences } from './audioPreferences'
+import { createMusicPitch } from './musicPitch'
 
 // Measured fallback for the bundled WAV: 32,310 frames at 44,100 Hz.
 const fallbackDuration = 32310 / 44100 * 1000
@@ -8,6 +9,8 @@ let context: AudioContext | undefined
 let sfxBus: GainNode | undefined
 let musicBus: GainNode | undefined
 let music: HTMLAudioElement | undefined
+let musicPlaybackRate = 1
+let musicPitch: ReturnType<typeof createMusicPitch> | undefined
 let pageActive = true
 const preferencesKey = 'scoundrel:audio:v1'
 let preferences = defaultAudioPreferences
@@ -34,6 +37,12 @@ export function setAudioPageActive(active: boolean) {
   pageActive = active
   if (!active) music?.pause()
   else if (music && context?.state === 'running') void music.play().catch(() => {})
+}
+/** Hasten and deepen only music, preserving position, volume and effect timing. */
+export function setMusicBleedingOut(bleedingOut: boolean) {
+  musicPlaybackRate = bleedingOut ? 2 : 1
+  if (music) music.playbackRate = musicPlaybackRate
+  musicPitch?.setActive(bleedingOut)
 }
 const buffers = new Map<string, Promise<AudioBuffer | null>>()
 
@@ -74,7 +83,10 @@ function startMusic() {
     music = new Audio('/sound/Harp.mp3')
     music.loop = true
     music.preload = 'auto'
-    context.createMediaElementSource(music).connect(musicBus)
+    music.playbackRate = musicPlaybackRate
+    music.preservesPitch = true
+    const source = context.createMediaElementSource(music)
+    musicPitch = createMusicPitch(context, source, musicBus, musicPlaybackRate === 2)
   }
   if (pageActive && music?.paused) void music.play().catch(() => { /* Retry on the next user action. */ })
 }

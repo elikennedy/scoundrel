@@ -28,15 +28,15 @@ function cards(state: GameState): Card[] {
 }
 
 test('custom options compose with every existing rule combination and validate without random selection', () => {
-  for (const handicap of [0, 1, 2, 3, 4] as const) for (const jokers of [false, true]) for (const cosmic of [false, true]) for (const barricades of [false, true]) {
-    const rules = { handicap, jokers, cosmic, barricades }
+  for (const handicap of [0, 1, 2, 3, 4] as const) for (const jokers of [false, true]) for (const cosmic of [false, true]) for (const barricades of [false, true]) for (const firstBlood of [false, true]) {
+    const rules = { handicap, jokers, cosmic, barricades, firstBlood }
     const deck = createDeck(rules, () => .6)
     assert.equal(deck.length, 44 + handicap + Number(jokers) * 2 + Number(cosmic) * 4 + Number(barricades) * 12)
     assert.equal(new Set(deck.map(c => c.id)).size, deck.length)
     for (let i = 0; i < 5; i++) assert.equal(isCompleteDeck(deck, rules), true)
     const started = applyAction(createInitialState(), { type: 'start', deck, rules })
     assert.equal(started.ok, true)
-    assert.equal(getScoreBoard(started.state), !handicap && !jokers && !cosmic && !barricades ? 'original' : 'house')
+    assert.equal(getScoreBoard(started.state), !handicap && !jokers && !cosmic && !barricades && !firstBlood ? 'original' : 'house')
     assert.equal(isCompleteDeck([...deck.slice(1), deck[1]], rules), false)
   }
 })

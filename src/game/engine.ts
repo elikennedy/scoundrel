@@ -2,6 +2,8 @@ import { DEFAULT_HOUSE_RULES, isCompleteDeck, shuffleDeck } from './cards.ts'
 import type { Card, CardId, Monster, Weapon, Cosmic, HouseRules } from './cards.ts'
 
 export const MAX_HEALTH = 20
+export const FIRST_BLOOD_GRACE_MS = 5000
+export const FIRST_BLOOD_TICK_MS = 1000
 export type CombatMode = 'barehanded' | 'weapon'
 export type EquippedWeapon = Readonly<{ card: Weapon; power: number; monsters: readonly Monster[] }>
 export type GameStatus = 'ready' | 'playing' | 'won' | 'lost'
@@ -9,6 +11,8 @@ export type GameState = Readonly<{
   rules: HouseRules
   status: GameStatus
   health: number
+  bleeding: boolean
+  bleedElapsedMs: number
   dungeon: readonly Card[]
   room: readonly Card[]
   revealedDungeon: readonly CardId[]
@@ -28,17 +32,18 @@ export type GameAction =
   | Readonly<{ type: 'start'; deck: readonly Card[]; rules?: HouseRules }>
   | Readonly<{ type: 'reset' }>
   | Readonly<{ type: 'flee' }>
+  | Readonly<{ type: 'elapse'; milliseconds: number }>
   | Readonly<{ type: 'mirror-exchange'; cardId: CardId }>
   | Readonly<{ type: 'resolve'; cardId: CardId; combat?: CombatMode; joker?: 'play' | 'discard'; randomSample?: number; cosmic?: 'activate' | 'discard'; randomSamples?: readonly number[] }>
 
-export type ActionError = 'invalid-deck' | 'not-playing' | 'cannot-flee' | 'card-not-in-room' | 'combat-required' | 'unexpected-combat' | 'weapon-unavailable' | 'invalid-joker-action' | 'invalid-cosmic-action' | 'mirror-choice-required' | 'invalid-mirror-exchange'
+export type ActionError = 'invalid-deck' | 'not-playing' | 'cannot-flee' | 'card-not-in-room' | 'combat-required' | 'unexpected-combat' | 'weapon-unavailable' | 'invalid-joker-action' | 'invalid-cosmic-action' | 'mirror-choice-required' | 'invalid-mirror-exchange' | 'invalid-elapsed-time'
 export type Transition =
   | Readonly<{ ok: true; state: GameState }>
   | Readonly<{ ok: false; state: GameState; error: ActionError }>
 
 export function createInitialState(): GameState {
   return {
-    rules: DEFAULT_HOUSE_RULES, status: 'ready', health: MAX_HEALTH, dungeon: [], room: [], revealedDungeon: [], mirrorRevealed: null, discard: [],
+    rules: DEFAULT_HOUSE_RULES, status: 'ready', health: MAX_HEALTH, bleeding: false, bleedElapsedMs: 0, dungeon: [], room: [], revealedDungeon: [], mirrorRevealed: null, discard: [],
     weapon: null, roomNumber: 0, resolvedThisRoom: 0, jokerPlayedThisRoom: false, potionUsed: false,
     previousRoomFled: false, lastResolved: null, score: null,
   }
@@ -48,7 +53,7 @@ export type ScoreBoard = 'original' | 'house'
 
 /** Board selection belongs to the run snapshot, never to mutable preferences. */
 export function getScoreBoard(state: GameState): ScoreBoard {
-  return state.rules.handicap === 0 && !state.rules.jokers && !state.rules.cosmic && !state.rules.barricades ? 'original' : 'house'
+  return state.rules.handicap === 0 && !state.rules.jokers && !state.rules.cosmic && !state.rules.barricades && !state.rules.firstBlood ? 'original' : 'house'
 }
 
 export function canFlee(state: GameState): boolean {
@@ -105,12 +110,12 @@ function dealRoom(state: GameState): GameState {
 }
 
 function finishOrAdvance(state: GameState): GameState {
-  if (state.mirrorRevealed) return state
   if (state.health <= 0) {
     const remaining = [...state.dungeon, ...state.room]
       .reduce((sum, card) => sum + (card.kind === 'monster' ? card.value : 0), 0)
     return { ...state, status: 'lost', score: state.health - remaining }
   }
+  if (state.mirrorRevealed) return state
   if (state.dungeon.length === 0 && state.room.length === 0) {
     const bonus = state.health === MAX_HEALTH && state.lastResolved?.kind === 'potion' ? state.lastResolved.value : 0
     return { ...state, status: 'won', score: state.health + bonus }
@@ -119,7 +124,7 @@ function finishOrAdvance(state: GameState): GameState {
 }
 
 /** Pure, deterministic transition. Invalid actions preserve the original state. */
-export function applyAction(state: GameState, action: GameAction): Transition {
+function transition(state: GameState, action: GameAction): Transition {
   const reject = (error: ActionError): Transition => ({ ok: false, state, error })
   if (action.type === 'reset') return { ok: true, state: createInitialState() }
   if (action.type === 'start') {
@@ -127,6 +132,15 @@ export function applyAction(state: GameState, action: GameAction): Transition {
     return { ok: true, state: dealRoom({ ...createInitialState(), rules: { ...(action.rules ?? DEFAULT_HOUSE_RULES) }, status: 'playing', dungeon: [...action.deck] }) }
   }
   if (state.status !== 'playing') return reject('not-playing')
+  if (action.type === 'elapse') {
+    if (!Number.isFinite(action.milliseconds) || action.milliseconds < 0 || action.milliseconds > Number.MAX_SAFE_INTEGER - state.bleedElapsedMs) return reject('invalid-elapsed-time')
+    if (!state.rules.firstBlood || !state.bleeding || action.milliseconds === 0) return { ok: true, state }
+    const bleedElapsedMs = state.bleedElapsedMs + action.milliseconds
+    const ticks = (elapsed: number) => Math.floor(Math.max(0, elapsed - FIRST_BLOOD_GRACE_MS) / FIRST_BLOOD_TICK_MS)
+    // A delayed browser timer stops at the first lethal tick, never overscoring death.
+    const damage = Math.min(state.health, ticks(bleedElapsedMs) - ticks(state.bleedElapsedMs))
+    return { ok: true, state: finishOrAdvance({ ...state, health: state.health - damage, bleedElapsedMs }) }
+  }
   if (action.type === 'mirror-exchange') {
     const incoming = state.dungeon[0]
     const outgoing = state.room.find(card => card.id === action.cardId)
@@ -248,6 +262,17 @@ export function applyAction(state: GameState, action: GameAction): Transition {
   const advanced = finishOrAdvance(next)
   return { ok: true, state: card.id === 'cosmic-sight' && action.cosmic === 'activate'
     ? { ...advanced, revealedDungeon: advanced.dungeon.slice(0, 3).map(card => card.id) } : advanced }
+}
+
+/** Accepted player actions renew grace; health loss permanently starts First Blood. */
+export function applyAction(state: GameState, action: GameAction): Transition {
+  const result = transition(state, action)
+  if (!result.ok || action.type === 'elapse' || action.type === 'start' || action.type === 'reset') return result
+  return { ok: true, state: {
+    ...result.state,
+    bleeding: Boolean(state.rules.firstBlood && (state.bleeding || result.state.health < state.health)),
+    bleedElapsedMs: 0,
+  } }
 }
 
 /** React useReducer-compatible adapter; applyAction also exposes rejection reasons. */

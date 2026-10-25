@@ -59,17 +59,57 @@ export async function flyCard(face: HTMLElement, from: DOMRect, to: DOMRect, sig
 }
 
 /** Card effects share timing, reduced motion and restart cleanup. */
-async function animateCardEffect(face: HTMLElement, effect: SVGSVGElement | HTMLElement, keyframes: Keyframe[], signal: AbortSignal) {
+async function animateCardEffect(face: HTMLElement, effect: SVGSVGElement | HTMLElement, keyframes: Keyframe[], signal: AbortSignal, duration = 180, particles: { element: HTMLElement; keyframes: Keyframe[] }[] = []) {
   if (signal.aborted) return
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
   effect.setAttribute('aria-hidden', 'true')
   face.append(effect)
-  const animation = effect.animate(reduced ? [{ opacity: .85 }, { opacity: 0 }] : keyframes,
-    { duration: reduced ? 90 : 180, easing: 'ease-out', fill: 'both' })
-  const cancel = () => animation.cancel()
+  const timing = { duration: reduced ? 90 : duration, easing: 'ease-out', fill: 'both' as const }
+  const animations = [effect.animate(reduced ? [{ opacity: .85 }, { opacity: 0 }] : keyframes, timing)]
+  if (!reduced) particles.forEach(({ element, keyframes }) => animations.push(element.animate(keyframes, timing)))
+  const cancel = () => animations.forEach(animation => animation.cancel())
   signal.addEventListener('abort', cancel, { once: true })
-  try { await animation.finished } catch { /* Cancelled by a new game or unmount. */ }
-  finally { signal.removeEventListener('abort', cancel); animation.cancel(); effect.remove() }
+  try { await Promise.all(animations.map(animation => animation.finished)) } catch { /* Cancelled by a new game or unmount. */ }
+  finally { signal.removeEventListener('abort', cancel); cancel(); effect.remove() }
+}
+
+/** A dry impact: dust billows outward while heavier dirt fragments fall. */
+export async function dustCard(face: HTMLElement, signal: AbortSignal) {
+  if (signal.aborted) return
+  const dust = document.createElement('div')
+  dust.className = 'card-dust'
+  const particles: { element: HTMLElement; keyframes: Keyframe[] }[] = []
+  // Fixed, uneven trajectories keep the burst organic without touching game randomness.
+  for (let i = 0; i < 9; i++) {
+    const angle = (i * 137.5 + 18) * Math.PI / 180
+    const x = Math.cos(angle) * (24 + i % 3 * 9)
+    const y = Math.sin(angle) * (15 + i % 4 * 5) - 6
+    const cloud = document.createElement('span')
+    cloud.className = 'dust-cloud'
+    cloud.style.width = `${28 + i % 3 * 7}%`
+    cloud.style.height = `${20 + i % 4 * 3}%`
+    dust.append(cloud)
+    particles.push({ element: cloud, keyframes: [
+      { transform: `translate(-50%, -50%) translate(${x * .1}cqw, ${y * .1}cqh) scale(.3)`, opacity: 0, offset: 0 },
+      { transform: `translate(-50%, -50%) translate(${x * .5}cqw, ${y * .5}cqh) scale(.85)`, opacity: .8, offset: .22 },
+      { transform: `translate(-50%, -50%) translate(${x}cqw, ${y}cqh) scale(1.4)`, opacity: 0, offset: 1 },
+    ] })
+  }
+  for (let i = 0; i < 8; i++) {
+    const x = (i % 2 ? 1 : -1) * (14 + i * 4)
+    const y = -10 - i % 3 * 7
+    const chip = document.createElement('span')
+    chip.className = 'dust-chip'
+    chip.style.width = `${1.5 + i % 3}%`
+    chip.style.height = `${1 + i % 2}%`
+    dust.append(chip)
+    particles.push({ element: chip, keyframes: [
+      { transform: 'translate(-50%, -50%) scale(.4)', opacity: 0, offset: 0 },
+      { transform: `translate(${x * .6}cqw, ${y}cqh) rotate(${i * 37}deg)`, opacity: .95, offset: .3 },
+      { transform: `translate(${x}cqw, ${y + 30}cqh) rotate(${i * 73 + 90}deg)`, opacity: 0, offset: 1 },
+    ] })
+  }
+  await animateCardEffect(face, dust, [{ opacity: 1 }, { opacity: 1 }], signal, 360, particles)
 }
 
 /** Strike the stationary monster before making its travel copy. */
