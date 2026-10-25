@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { applyAction, isHighScoreEligible, canFlee, canUseWeapon, createDeck, createInitialState, gameReducer, getLegalActions, shuffleDeck } from '../src/game/index.ts'
+import { applyAction, getScoreBoard, canFlee, canUseWeapon, createDeck, createInitialState, gameReducer, getLegalActions, shuffleDeck } from '../src/game/index.ts'
 import type { Card, CardId, GameAction, GameState, Monster, Weapon } from '../src/game/index.ts'
 
 function card(id: CardId): Card {
@@ -267,12 +267,12 @@ test('a joker can retrieve the other joker; discarding the last joker wins norma
   assert.equal(final.score, 20)
 })
 
-test('only the standard rules snapshot is eligible for high scores', () => {
+test('the run rules snapshot selects the original or house high score board', () => {
   for (const handicap of [0, 1, 2, 3, 4] as const) for (const jokers of [false, true]) {
     const rules = { handicap, jokers }
     const state = applyAction(createInitialState(), { type: 'start', deck: createDeck(rules), rules }).state
-    assert.equal(isHighScoreEligible(state), handicap === 0 && !jokers)
-    assert.equal(isHighScoreEligible({ ...state, status: 'lost', score: -10 }), handicap === 0 && !jokers)
+    assert.equal(getScoreBoard(state), handicap === 0 && !jokers ? 'original' : 'house')
+    assert.equal(getScoreBoard({ ...state, status: 'lost', score: -10 }), handicap === 0 && !jokers ? 'original' : 'house')
   }
 })
 

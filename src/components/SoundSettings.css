@@ -35,7 +35,6 @@
 .house-setting-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; font: 1.1rem Georgia, serif; }
 .house-settings select { padding: 7px 10px; color: #eddfbd; background: #28241c; border: 1px solid #8a6b40; border-radius: 4px; font: 1rem Georgia, serif; accent-color: #bfa16a; }
 .house-settings p { margin: 8px 0 12px; color: #cfbf9f; font: .85rem/1.5 system-ui, sans-serif; }
-.house-run-note { color: #cfbf9f; font: .9rem/1.5 Georgia, serif; }
 
 
 .settings-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; margin-bottom: 8px; }

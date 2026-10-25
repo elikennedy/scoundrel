@@ -2,7 +2,7 @@
 
 Names and illustration concepts for this adaptation of Scoundrel.
 
-The standard deck uses 44 cards: 26 monsters, nine weapons and nine potions. Clubs/spades J/Q/K/A have danger values 11/12/13/14. Optional settings add red cards valued 11–14, two jokers, four cosmic cards and 1–4 copies of each of the four obstacle types. All house-rule runs are excluded from high scores. See [rules and effects](rules.md#optional-house-rules).
+The standard deck uses 44 cards: 26 monsters, nine weapons and nine potions. Clubs/spades J/Q/K/A have danger values 11/12/13/14. Optional settings add red cards valued 11–14, two jokers, four cosmic cards and 1–4 copies of each of the four obstacle types. All house-rule runs share a separate House rules high score board. See [rules and effects](rules.md#optional-house-rules).
 
 Use stable IDs such as `clubs-9`, `cosmic-mirror` and `thorns-1`. The 62 selected paintings cover every playable identity; obstacle copies share artwork. Follow [art direction](card-art-direction.md), and use the [artwork index](art/README.md) for exact prompts, retained variants and selected exports. The concepts below describe illustrations; the engine and rules reference own gameplay.
 

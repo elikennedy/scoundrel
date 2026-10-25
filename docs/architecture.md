@@ -14,7 +14,7 @@ The app is a static Vite/React site. The rules engine has no React or browser de
 - `src/scores/store.ts`: validated high score records, ranking and async storage contract; browser implementation and future cloud adapter selection. `config.ts` reads the Vite build-time cloud flag.
 - `TableTool.tsx` / `.css`: equal-size navigation medallions and hover/focus tooltips with Escape dismissal.
 - `SoundSettings.tsx` / `.css`: the native Settings dialog, audio controls and house-rule selects. `audioPreferences.ts` validates audio levels; `houseRulesPreferences.ts` migrates and validates saved rule choices.
-- `HighScores.tsx` / `.css`: shared illustrated score ledger, initials entry and standalone high score dialog. Eligible standard outcomes embed the same ledger beside the result plate; house-rule outcomes show the score without score entry.
+- `HighScores.tsx` / `.css`: shared illustrated score ledger, initials entry and standalone high score dialog. Every outcome embeds the same ledger beside the result plate, fixed to the board selected from that run’s rules.
 
 ## Engine API
 
@@ -26,7 +26,7 @@ The app is a static Vite/React site. The rules engine has no React or browser de
 - `shuffleDeck(deck, random?)` returns a shuffled copy; samples must be in `[0, 1)`.
 - `createInitialState()` returns the `ready` state. `gameReducer(state, action)` is a reducer adapter over `applyAction(state, action)`, which returns a successful state or an error with the original state unchanged.
 - `getLegalActions(state)`, `canFlee(state)`, `canUseWeapon(state, monster)` and `canActivateCosmic(state, card)` provide the engine’s availability checks. Start/reset are lifecycle actions rather than room choices.
-- `isHighScoreEligible(state)` checks the run’s rules snapshot. `combatDamage(monster, weapon, currentPower?)` supports combat previews and resolution; equipped combat passes current power rather than printed rank.
+- `getScoreBoard(state)` returns `original` or `house` from the run’s rules snapshot. `combatDamage(monster, weapon, currentPower?)` supports combat previews and resolution; equipped combat passes current power rather than printed rank.
 
 | Action | Required data and behaviour |
 | --- | --- |
@@ -42,7 +42,7 @@ States progress from `ready` to `playing`, then `won` or `lost`; `start` restart
 
 ## House-rule state and transitions
 
-`GameState.rules` snapshots the new-game settings. Browser preferences remain separate, so changing them mid-run cannot alter deck composition or score eligibility. Optional `HouseRules.cosmic` and `.barricades` fields keep older callers compatible; saved handicap/joker choices migrate with new options off. Exact card effects belong in [the rules reference](rules.md#optional-house-rules).
+`GameState.rules` snapshots the new-game settings. Browser preferences remain separate, so changing them mid-run cannot alter deck composition or score board. Optional `HouseRules.cosmic` and `.barricades` fields keep older callers compatible; saved handicap/joker choices migrate with new options off. Exact card effects belong in [the rules reference](rules.md#optional-house-rules).
 
 ### Card identity and equipment
 
@@ -52,7 +52,7 @@ Custom cards use `cosmic` and `barricade` unions. Obstacle copy IDs run from `wo
 
 ### Reveals and the Mirror choice
 
-`GameState.revealedDungeon` records specific known card IDs, not an automatically refreshing peek. Dealing removes departed IDs; Fate clears the snapshot when shuffling. Sight snapshots the next three after ordinary room advancement. A Mirror exchange makes the returned top card known. `DrawPile` displays known cards in draw order through a native Hide/Show disclosure.
+`GameState.revealedDungeon` records specific known card IDs, not an automatically refreshing peek. Dealing removes departed IDs; Fate clears the snapshot when shuffling. Sight snapshots the next three after ordinary room advancement. A Mirror exchange makes the returned top card known. `App` separately owns a temporary `DungeonReveal` presentation snapshot, created only by a successful Sight/Mirror activation and displayed by `DrawPile`. The snapshot is dismissed permanently with X (or Escape while focus is inside), or immediately on the next accepted game action, including Mirror exchange and restart. Engine knowledge IDs do not reopen it or create a preview of a returned Mirror card. Popovers appear after incoming card motions complete; dismissing returns keyboard focus to the room heading.
 
 Mirror activation sets `GameState.mirrorRevealed` to the dungeon’s top ID while discarding and resolving the mirror. Until the player chooses, the engine accepts only `mirror-exchange`, `start` or `reset`. Exchange replaces the selected room card with the revealed card and puts the selected card at dungeon index zero. It then clears the pending choice and evaluates normal advancement. A third resolution therefore waits for exchange before refilling; the returned card can be dealt immediately.
 
@@ -76,7 +76,7 @@ Engine results are calculated before animation. Health previews update immediate
 
 Each incoming card plays `/sound/card-dealt.wav` while travel and flip share its decoded duration. Deal playback alone passes through a 1,800Hz low-pass filter (Q 0.5) at 75% gain to soften its sharp edge; the source WAV and other sound cues remain unchanged. Audio is unlocked from a game action. The deal clip is requested alongside the first room art; other effects warm in batches of two after the room lands. Clips are decoded once and cached, and an action can request its own clip on demand. Missing, blocked or unsupported audio falls back to silent dealing with the bundled clip's measured timing; loading times out after three seconds. Restart/unmount stops active or scheduled sounds with the same abort signal as card motion. Reduced motion fades for 90ms, then holds the face through the remaining clip duration.
 
-Monster attacks await a cancellable diagonal red slash on the stationary card before travel to discard or equipment. Healing-card use awaits a diffuse golden glow that brightens and expands with the same timing and cancellation path; spent healing-card discards skip it. Both effects are removed before cloning; reduced motion uses a brief stationary fade.
+Monster attacks and barricade clears await a cancellable diagonal red slash on the stationary card before travel to discard or equipment. `radiateCard` shares burst geometry, keyframes and cancellation between golden healing radiance and purple magic radiance. Healing-card use includes the golden burst even at full health; spent healing-card discards skip it. Joker Play and all four cosmic Activate actions await the purple burst; their Discard actions skip it. Radiance brightens, expands and fades over 180ms, with a stationary 90ms fade for reduced motion. Every effect is removed before cloning and aborts on restart or unmount.
 
 The whole source card is hidden before its visual copy moves, including action overlays and focus outlines. Visibility is restored in a layout effect after the next slots commit. Incoming real cards remain hidden until their copies land. The busy flag disables gameplay actions and suppresses overlays/card emphasis during transitions. New game aborts outstanding animations; stale completions must not update a restarted game.
 
@@ -119,11 +119,11 @@ The standalone high score dialog closes with its Return to game image button or 
 
 ## High score lifecycle
 
-For an eligible standard run, App captures a stable random run ID, final engine score and ISO completion timestamp when an action produces a terminal state. House-rule outcomes retain the final score and omit score entry. An eligible outcome mounts one ledger per run; saving is explicit and optional. Initials normalize to three uppercase A–Z letters. A submission lock and stable ID prevent duplicate entries; Play again is disabled during a pending write. The list refreshes when the standalone ledger opens. The stored top ten rank by score descending, completion time ascending, then ID for deterministic ordering. Scores outside the top ten are acknowledged without claiming a retained entry.
+For every finished run, App captures a stable random run ID, final engine score, ISO completion timestamp and board selected by `getScoreBoard(next)` when an action produces a terminal state. All options off selects `original`; any enabled option selects `house`. Each outcome mounts one ledger for its run and board; saving is explicit and optional. Initials normalize to three uppercase A–Z letters. A submission lock and stable ID prevent duplicate entries; Play again is disabled during a pending write. The list refreshes when the standalone ledger opens. Each board’s stored top ten ranks by score descending, completion time ascending, then ID for deterministic ordering. Scores outside the top ten are acknowledged without claiming a retained entry.
 
-The browser store reads and validates existing records before each write, so it does not overwrite damaged data and incorporates other tabs' completed writes. Simultaneous writes across tabs are not transactional. Storage access and quota failures reject into visible recovery messages. Timestamps persist as ISO strings and display as local date/time. Data is scoped to the site origin; no current-game persistence is added.
+The browser store reads and validates existing records before each write, so it does not overwrite damaged data and incorporates other tabs' completed writes. Simultaneous writes across tabs are not transactional. Storage access and quota failures reject into visible recovery messages. Timestamps persist as ISO strings and display as local date/time. Data is scoped to the site origin; no current-game persistence is added. Original scores retain the existing `scoundrel.high-scores.v1` key without migration. House scores use `scoundrel.house-high-scores.v1`. `ScoreStore.list(board?)` and `save(entry, board?)` default to Original rules for compatibility, with independent validation, ranking, retention and errors per board. The standalone dialog switches boards with native pressed buttons; the outcome shows a fixed board label and cannot redirect a submission.
 
-To configure storage, copy `.env.example` to `.env.local` and restart Vite or rebuild. Only the literal `VITE_CLOUD_STORAGE_ENABLED=true` selects the cloud boundary; absent/false uses local storage. Vite exposes `VITE_` variables to browser code, so they must never contain secrets. The unconfigured cloud implementation rejects explicitly. A future Firestore store implements `list()` and idempotent `save(entry)` and is supplied to `selectScoreStore`; it must preserve validation, ranking, stable IDs and timestamps. Cloud authentication, security rules and abuse prevention remain future work. No Firebase SDK or service is initialized in this version.
+To configure storage, copy `.env.example` to `.env.local` and restart Vite or rebuild. Only the literal `VITE_CLOUD_STORAGE_ENABLED=true` selects the cloud boundary; absent/false uses local storage. Vite exposes `VITE_` variables to browser code, so they must never contain secrets. The unconfigured cloud implementation rejects explicitly. A future Firestore store implements `list(board?)` and idempotent `save(entry, board?)` and is supplied to `selectScoreStore`; it must preserve validation, ranking, stable IDs and timestamps. Cloud authentication, security rules and abuse prevention remain future work. No Firebase SDK or service is initialized in this version.
 
 ## Validation
 
@@ -133,15 +133,15 @@ Run `npm test`, `npm run lint`, `npm run build`, and `git diff --check` before a
 | --- | --- |
 | `game.test.ts` | Standard rules, handicap/jokers, scoring, immutable transitions and complete runs |
 | `customCards.test.ts` | Cosmic/obstacle composition, wear/destruction, reveals, mandatory Mirror choices, edge cases and seeded all-option simulations |
-| `scores.test.ts` | Initials, ranking/retention, persistence, duplicate saves, damaged data, storage failures and cloud selection |
+| `scores.test.ts` | Initials, per-board ranking/retention, legacy-score preservation, independent persistence/errors, duplicate saves, storage failures and cloud selection |
 | `audioPreferences.test.ts`, `houseRulesPreferences.test.ts` | Normalization, mutes, defaults and saved-setting migration |
 | `imageReadiness.test.ts`, `sounds.test.ts` | Image readiness/cancellation, cue mapping and bundled sound files |
 
 The test command prints the current count; keep coverage descriptions current when contracts change.
 
-For high scores, verify a house-rule outcome cannot save even after options are disabled mid-run. For eligible runs, check empty/populated ledgers, initials normalization, one save per run, reload persistence, save failure/retry, local date/time and keyboard access. Escape closes the standalone ledger and returns focus to its opener; the outcome still only closes with Play again. Review ten rows at 1280×720 in both contexts: the bounded table may show fewer rows initially, and keyboard scrolling must reach the final entries without crossing the illustrated rim.
+For high scores, verify every option and combined configurations route to House rules, including after options are disabled mid-run. Check both boards for empty/populated ledgers, initials normalization, one save per run, reload persistence, save failure/retry, local date/time and keyboard access. Escape closes the standalone ledger and returns focus to its opener; the outcome still only closes with Play again. Review ten rows at 1280×720 in both contexts: the bounded table may show fewer rows initially, and keyboard scrolling must reach the final entries without crossing the illustrated rim.
 
-For custom cards, check mandatory Mirror selection and restart, Sight Hide/Show and reveal cleanup, current weapon power, weapon destruction, and the health-only Pit action.
+For custom cards, check mandatory Mirror selection and restart, Sight/Mirror X dismissal, no reopening as the dungeon changes, automatic Mirror-exchange cleanup, current weapon power, weapon destruction, and the health-only Pit action.
 
 For UI changes, check the affected states in a desktop browser: deal order, landing handoff, carryover slide, source cleanup, correct discard/equipment destinations, flee returns and restart cancellation. Check keyboard focus and reduced motion when changing interaction code. For guide changes, check combat comparison, all practice steps/reset, scrolling/return controls and the longest narration at 1280×720. Practice health should read 14 → 14 → 11 → 17.
 

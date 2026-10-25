@@ -58,7 +58,7 @@ export async function flyCard(face: HTMLElement, from: DOMRect, to: DOMRect, sig
   finally { signal.removeEventListener('abort', cancel); stopSound?.(); shell.remove() }
 }
 
-/** Both card effects share timing, reduced motion and restart cleanup. */
+/** Card effects share timing, reduced motion and restart cleanup. */
 async function animateCardEffect(face: HTMLElement, effect: SVGSVGElement | HTMLElement, keyframes: Keyframe[], signal: AbortSignal) {
   if (signal.aborted) return
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -88,10 +88,10 @@ export async function slashCard(face: HTMLElement, signal: AbortSignal) {
   ], signal)
 }
 
-/** A radiant counterpart to the attack slash, before a healing card leaves its slot. */
-export async function healCard(face: HTMLElement, signal: AbortSignal) {
+/** Healing and magic share a radiant burst before the card leaves its slot. */
+export async function radiateCard(face: HTMLElement, signal: AbortSignal, tone: 'healing' | 'magic' = 'healing') {
   const glow = document.createElement('div')
-  glow.className = 'healing-radiance'
+  glow.className = `card-radiance ${tone}-radiance`
   await animateCardEffect(face, glow, [
     { transform: 'scale(.4)', opacity: .15, filter: 'brightness(.8)', offset: 0 },
     { transform: 'scale(.95)', opacity: 1, filter: 'brightness(1.5)', offset: .6 },

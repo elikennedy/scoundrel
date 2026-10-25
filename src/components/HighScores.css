@@ -55,3 +55,8 @@
   .result-record .score-table time { flex-direction: column; gap: 2px; }
   .result-record .save-score-button { width: 160px; }
 }
+.score-boards { display: flex; justify-content: center; gap: 24px; margin: 0 0 24px; }
+.score-boards button { padding: 8px 0; border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: transparent; color: #cfbf9f; box-shadow: none; font: 1.1rem Georgia, serif; }
+.score-boards button[aria-pressed="true"] { border-bottom-color: #bfa16a; color: #f4ce79; }
+.score-boards button:hover { background: transparent; color: #fff0d2; }
+.score-board-name { margin: 0 0 18px; color: #ead8b5; font: 1.1rem Georgia, serif; text-align: center; }

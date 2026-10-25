@@ -36,11 +36,11 @@ The bronze **Settings** cog includes these options alongside audio controls. All
 
 Cosmic cards can reshape the room, reset weapon restrictions or reveal the dungeon. Obstacles cost health or weapon power; Pit Traps allow only the health-cost action. A fully expanded deck has at most 70 cards. The in-game **House rules** chapter illustrates every option; [the rules reference](docs/rules.md#optional-house-rules) records their exact effects and edge cases.
 
-House-rule runs still show a final score but are excluded from the high score board. Turn every option off before starting a new game to make that run eligible.
+Runs with every option off use the **Original rules** high score board. Any combination of house rules uses the separate **House rules** board.
 
 ## High scores
 
-After a standard run with all house rules off, optionally enter three letters and choose **Save score**. The ten highest scores are kept in this browser, including negative scores; earlier completion times break ties. Dates display in your local timezone. Clearing site data removes scores, and different browsers or site addresses have separate tables.
+After any run, optionally enter three letters and choose **Save score**. The run’s starting rules select its board; changing Settings during play does not move it. Use the **Original rules** and **House rules** controls in High scores to view either board. Existing scores remain on Original rules. Each board keeps its own ten highest scores in this browser, including negative scores; earlier completion times break ties. Dates display in your local timezone. Clearing site data removes scores, and different browsers or site addresses have separate tables.
 
 Cloud scores are not implemented. Leave `VITE_CLOUD_STORAGE_ENABLED` at its default `false`; enabling it shows an unavailable message. See [storage architecture](docs/architecture.md#high-score-lifecycle) for the extension point.
 

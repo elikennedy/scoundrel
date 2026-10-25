@@ -60,7 +60,7 @@ export function SoundSettings({ dialogRef, open, onClose, rules, onRulesChange }
 
       </section>
       </div>
-      <p className="settings-note">Changes apply to new games. Runs with any house rule show a final score and are excluded from high scores.</p>
+      <p className="settings-note">Changes apply to new games. Runs with any house rule use the House rules high score board.</p>
       <button className="sound-return" onClick={() => dialogRef.current?.close()} aria-label="Return to game"><img src="/art/ui/return-to-game.webp" alt="" /></button>
     </div>
     </>}

@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { applyAction, isHighScoreEligible, canFlee, createDeck, createInitialState, shuffleDeck } from './game'
+import { applyAction, getScoreBoard, canFlee, createDeck, createInitialState, shuffleDeck } from './game'
 import type { Card, GameAction, HouseRules } from './game'
 import { RoomCard } from './components/RoomCard'
 import { illustrations } from './components/cardIllustrations'
@@ -7,10 +7,11 @@ import { cardName } from './components/cardPresentation'
 import { GameSidebar } from './components/GameSidebar'
 import { HowToPlay } from './components/HowToPlay'
 import { DrawPile } from './components/DrawPile'
+import type { DungeonReveal } from './components/DrawPile'
 import { DiscardPile } from './components/DiscardPile'
 import { HighScores, ScoreLedger } from './components/HighScores'
-import type { HighScore } from './scores/store'
-import { cardElement, flyCard, hideCardSource, slashCard, healCard } from './components/cardMotion'
+import type { CompletedRun } from './components/HighScores'
+import { cardElement, flyCard, hideCardSource, slashCard, radiateCard } from './components/cardMotion'
 import { getDealSound, prepareGameAudio, playActionSound, warmGameAudio } from './components/gameAudio'
 import { waitForImages } from './components/imageReadiness'
 import { TableTool } from './components/TableTool'
@@ -45,9 +46,10 @@ function App() {
   const [rulesOpen, setRulesOpen] = useState(false)
   const [soundOpen, setSoundOpen] = useState(false)
   const [scoresOpen, setScoresOpen] = useState(false)
-  const [completedRun, setCompletedRun] = useState<Omit<HighScore, 'name'> | null>(null)
+  const [completedRun, setCompletedRun] = useState<CompletedRun | null>(null)
   const [savingScore, setSavingScore] = useState(false)
   const [game, setGame] = useState(createInitialState)
+  const [reveal, setReveal] = useState<DungeonReveal | null>(null)
   const [announcement, setAnnouncement] = useState('Your adventure awaits.')
   const roomHeading = useRef<HTMLHeadingElement>(null)
   const resultHeading = useRef<HTMLHeadingElement>(null)
@@ -117,13 +119,14 @@ function App() {
       setAnnouncement(`That action is unavailable: ${result.error.replaceAll('-', ' ')}.`)
       return
     }
+    setReveal(null)
     prepareGameAudio({ deferMusic: action.type === 'start' })
     const next = result.state
     const fateActivated = action.type === 'resolve' && action.cardId === 'cosmic-fate' && action.cosmic === 'activate'
-    if ((next.status === 'won' || next.status === 'lost') && next.score !== null && isHighScoreEligible(next)) {
+    if ((next.status === 'won' || next.status === 'lost') && next.score !== null) {
       // getRandomValues also works on plain-HTTP self-hosts, unlike randomUUID.
       const id = Array.from(crypto.getRandomValues(new Uint32Array(4)), value => value.toString(16).padStart(8, '0')).join('')
-      setCompletedRun({ id, score: next.score, completedAt: new Date().toISOString() })
+      setCompletedRun({ board: getScoreBoard(next), id, score: next.score, completedAt: new Date().toISOString() })
     }
     locked.current = true
     setBusy(true)
@@ -136,12 +139,13 @@ function App() {
       const card = game.room.find(c => c.id === action.cardId)!
       void playActionSound(resolutionSound(card, game.potionUsed), signal)
       const target = card.kind === 'weapon' || (card.kind === 'monster' && action.combat === 'weapon') ? equipped : discard
-      if (face && (card.kind === 'monster' || card.kind === 'barricade' || (card.kind === 'cosmic' && card.id === 'cosmic-sight' && action.cosmic === 'activate'))) {
+      if (face && (card.kind === 'monster' || card.kind === 'barricade')) {
         await slashCard(face, signal)
         if (signal.aborted) return
       }
-      if (face && ((card.kind === 'potion' && !game.potionUsed) || (card.kind === 'cosmic' && action.cosmic === 'activate' && card.id === 'cosmic-forge'))) {
-        await healCard(face, signal)
+      const magical = (card.kind === 'cosmic' && action.cosmic === 'activate') || (card.kind === 'joker' && action.joker === 'play')
+      if (face && ((card.kind === 'potion' && !game.potionUsed) || magical)) {
+        await radiateCard(face, signal, magical ? 'magic' : 'healing')
         if (signal.aborted) return
       }
       if (face && target) {
@@ -236,6 +240,13 @@ function App() {
     if (next.status === 'lost') message += ` Your journey ends. Final score ${next.score}.`
     setAnnouncement(message)
     moveFocus.current = true
+    if (next.status === 'playing' && action.type === 'resolve' && action.cosmic === 'activate') {
+      if (action.cardId === 'cosmic-sight' && next.revealedDungeon.length) {
+        setReveal({ cards: next.dungeon.filter(card => next.revealedDungeon.includes(card.id)), mirror: false })
+      } else if (action.cardId === 'cosmic-mirror' && next.mirrorRevealed) {
+        setReveal({ cards: [next.dungeon[0]], mirror: true })
+      }
+    }
     setGame(next)
   }
 
@@ -260,7 +271,10 @@ function App() {
         </section>
       ) : (
         <div className="game-layout">
-          <DrawPile cards={game.dungeon} revealedIds={game.revealedDungeon} mirrorCard={game.mirrorRevealed ? game.dungeon[0] : undefined} />
+          <DrawPile cards={game.dungeon} reveal={busy ? null : reveal} onDismissReveal={() => {
+            setReveal(null)
+            roomHeading.current?.focus()
+          }} />
           <DiscardPile cards={game.discard} />
           <div className="play-area">
 
@@ -275,7 +289,7 @@ function App() {
         </div>
       )}
       <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{game.status !== 'ready' ? announcement : ''}</p>
-      <dialog className={`result-modal ${isHighScoreEligible(game) ? 'with-scores' : 'house-result'} ${game.status}`} ref={resultDialog} aria-labelledby="result-title" aria-describedby="result-score" onCancel={event => event.preventDefault()}>
+      <dialog className={`result-modal with-scores ${game.status}`} ref={resultDialog} aria-labelledby="result-title" aria-describedby="result-score" onCancel={event => event.preventDefault()}>
         {finished && <div className="result-layout">
         <div className="result-summary">
         <img className="result-plate" src="/art/ui/result-plate.webp?v=1" alt="" />
@@ -283,11 +297,10 @@ function App() {
         <img className="result-emblem" src={game.status === 'won' ? '/art/ui/bronze-chalice.webp' : '/art/ui/bronze-skull.webp?v=1'} alt="" />
         <h2 id="result-title" ref={resultHeading} tabIndex={-1}>{game.status === 'won' ? 'You survived.' : 'Your descent ends.'}</h2>
         <p id="result-score">Final score <strong>{game.score}</strong></p>
-        {!isHighScoreEligible(game) && <p className="house-run-note">House rules run · excluded from high scores</p>}
         <button className="replay-button" disabled={savingScore} onClick={start} aria-label="Play again"><img src="/art/ui/play-again.webp" alt="Play again" /></button>
         </div>
         </div>
-        {finished && completedRun && <div className="result-record"><ScoreLedger key={completedRun.id} run={completedRun} onSaving={setSavingScore} /></div>}
+        {finished && completedRun && <div className="result-record"><ScoreLedger key={completedRun.id} board={completedRun.board} run={completedRun} onSaving={setSavingScore} /></div>}
         </div>}
       </dialog>
       <SoundSettings dialogRef={soundDialog} open={soundOpen} rules={houseRules} onRulesChange={updateHouseRules} onClose={() => setSoundOpen(false)} />

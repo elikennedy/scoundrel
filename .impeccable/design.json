@@ -224,12 +224,18 @@
       {
         "name": "attack-slash",
         "value": "180ms ease-out / 90ms reduced-motion fade",
-        "purpose": "One upper-left to lower-right strike on a stationary monster, barricade or activated Devil’s Sight; remove before travel and cancel on restart."
+        "purpose": "One upper-left to lower-right strike on a stationary monster or barricade; remove before travel and cancel on restart."
       },
       {
         "name": "healing-radiance",
         "value": "180ms ease-out / 90ms reduced-motion fade",
-        "purpose": "A soft diffuse golden glow brightens, expands and fades on healing-card use or Forge activation before travel; no glow for spent-card discards."
+        "purpose": "A soft diffuse golden glow brightens, expands and fades on healing-card use before travel, including use at full health; no glow for spent-card discards."
+      },
+      {
+        "name": "magic-radiance",
+        "value": "180ms ease-out / 90ms reduced-motion fade",
+        "purpose": "A soft diffuse purple glow shares healing radiance geometry and keyframes on Joker Play and all four cosmic Activate actions before travel; Discard skips it. Remove before cloning and cancel on restart.",
+        "gradient": "radial-gradient(circle closest-side at 50% 43.333%, #f1dcffe6 0%, #c287f4b3 22%, #a860e566 45%, #8347c226 68%, #8347c200 100%)"
       }
     ],
     "breakpoints": [
@@ -280,18 +286,18 @@
       "css": ".ds-scores { width:100%; border-collapse:collapse; color:#eddfbd; font:1.05rem Georgia,serif; font-variant-numeric:tabular-nums; text-align:left; }.ds-scores thead th { padding:0 8px 10px; border-bottom:1px solid #8a6b40; color:#cfbf9f; font:.75rem system-ui,sans-serif; }.ds-scores td,.ds-scores tbody th { padding:4px 8px; border-bottom:1px solid #8a6b403d; }.ds-scores td:last-child,.ds-scores th:last-child { text-align:right; }"
     },
     {
-      "name": "Dungeon sight disclosure",
+      "name": "Dungeon sight popover",
       "kind": "custom",
-      "description": "Static native Hide/Show disclosure beside the draw pile for known cards from Sight or Mirror; cards remain ordered until dealt or shuffled.",
-      "html": "<details class=\"ds-sight\" open><summary>Revealed dungeon · 3 <span class=\"ds-hide\">Hide</span><span class=\"ds-show\">Show</span></summary><ol aria-label=\"Revealed cards in draw order\"><li>Next</li><li>Then</li><li>Third</li></ol></details>",
-      "css": ".ds-sight { width:448px; padding:14px; color:#eddfbd; background:#171714; border:1px solid #8a6b40; border-radius:4px; box-shadow:4px 12px 22px #0009; }.ds-sight summary { cursor:pointer; font:1rem/1.5 Georgia,serif; }.ds-sight summary span { display:inline; margin-left:16px; font-size:.85rem; text-decoration:underline; text-underline-offset:4px; }.ds-sight[open] .ds-show,.ds-sight:not([open]) .ds-hide { display:none; }.ds-sight summary:hover { color:#fff0d2; }.ds-sight summary:focus-visible { outline:3px solid #f4ce79; outline-offset:5px; }.ds-sight ol { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:12px 0 0; padding:0; list-style:none; }.ds-sight li { color:#cfbf9f; font:.85rem Georgia,serif; }"
+      "description": "Temporary untitled reveal beside the draw pile after a successful Sight activation and completed card motion. X or Escape inside dismisses it permanently and focuses the room heading; the next accepted game action also clears it. No reopen control. Miniature frame specimen; painted artwork comes from the card catalogue.",
+      "html": "<div class=\"ds-sight\" role=\"region\" aria-label=\"Revealed dungeon cards\"><button class=\"ds-close\" type=\"button\" aria-label=\"Close revealed cards\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"m6 6 12 12M18 6 6 18\" /></svg></button><ol aria-label=\"Revealed dungeon cards in draw order\"><li><p class=\"ds-order\">Next</p><div class=\"ds-mini-card\"><div aria-label=\"Artwork area\"></div><div class=\"ds-name\">Crypt Guardian</div></div></li><li><p class=\"ds-order\">Then</p><div class=\"ds-mini-card\"><div aria-label=\"Artwork area\"></div><div class=\"ds-name\">Crypt Guardian</div></div></li><li><p class=\"ds-order\">Third</p><div class=\"ds-mini-card\"><div aria-label=\"Artwork area\"></div><div class=\"ds-name\">Crypt Guardian</div></div></li></ol></div>",
+      "css": ".ds-sight { position:relative; width:448px; padding:38px 14px 14px; color:#eddfbd; background:#171714; border:1px solid #8a6b40; border-radius:4px; box-shadow:4px 12px 22px #0009; }.ds-sight ol { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:0; padding:0; list-style:none; }.ds-sight li { min-width:0; }.ds-sight .ds-order { margin:0 0 8px; color:#cfbf9f; font:.85rem Georgia,serif; }.ds-sight .ds-mini-card { aspect-ratio:2/3; display:grid; grid-template-rows:1fr auto; overflow:hidden; border:2px solid #8a6b40; border-radius:6px; background:#242e2b; box-shadow:2px 6px 10px #0009; }.ds-sight .ds-name { min-height:36px; padding:9px 3px; color:#251e15; background:radial-gradient(ellipse at center,#eddfbd,#c7ae81); border-top:2px solid #8a6b40; text-align:center; font:500 .65rem/1.15 Georgia,serif; }.ds-sight .ds-close { position:absolute; top:4px; right:4px; display:grid; place-items:center; width:32px; height:32px; padding:4px; border:0; border-radius:4px; background:transparent; color:#eddfbd; cursor:pointer; box-shadow:none; }.ds-sight .ds-close svg { width:22px; height:22px; }.ds-sight .ds-close:hover { background:#bfa16a1c; color:#f4ce79; }.ds-sight .ds-close:focus-visible { outline:3px solid #f4ce79; outline-offset:5px; }"
     },
     {
-      "name": "Mirror exchange disclosure",
+      "name": "Mirror exchange popover",
       "kind": "custom",
-      "description": "Compact native preview of the dungeon top during the mandatory Mirror exchange; remaining room cards offer Exchange until a choice is made.",
-      "html": "<details class=\"ds-sight\" open><summary>Mirror of Misfortune · 1 <span class=\"ds-hide\">Hide</span><span class=\"ds-show\">Show</span></summary><ol aria-label=\"Revealed dungeon cards in draw order\"><li>Next</li></ol></details>",
-      "css": ".ds-sight { width:228px; padding:14px; color:#eddfbd; background:#171714; border:1px solid #8a6b40; border-radius:4px; box-shadow:4px 12px 22px #0009; }.ds-sight summary { cursor:pointer; font:1rem/1.5 Georgia,serif; }.ds-sight summary span { display:inline; margin-left:16px; font-size:.85rem; text-decoration:underline; text-underline-offset:4px; }.ds-sight[open] .ds-show,.ds-sight:not([open]) .ds-hide { display:none; }.ds-sight summary:hover { color:#fff0d2; }.ds-sight summary:focus-visible { outline:3px solid #f4ce79; outline-offset:5px; }.ds-sight ol { display:grid; grid-template-columns:minmax(0,1fr); gap:12px; margin:12px 0 0; padding:0; list-style:none; }.ds-sight li { color:#cfbf9f; font:.85rem Georgia,serif; }"
+      "description": "Temporary untitled dungeon-top preview after Mirror activation and completed card motion. X or Escape inside dismisses it permanently and focuses the room heading without cancelling the mandatory Exchange choice. Choosing Exchange or restarting clears it; the returned top card never opens a preview. Miniature frame specimen; painted artwork comes from the card catalogue.",
+      "html": "<div class=\"ds-sight ds-mirror\" role=\"region\" aria-label=\"Revealed dungeon cards\"><button class=\"ds-close\" type=\"button\" aria-label=\"Close revealed cards\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"m6 6 12 12M18 6 6 18\" /></svg></button><ol aria-label=\"Revealed dungeon cards in draw order\"><li><p class=\"ds-order\">Next</p><div class=\"ds-mini-card\"><div aria-label=\"Artwork area\"></div><div class=\"ds-name\">Crypt Guardian</div></div></li></ol></div>",
+      "css": ".ds-sight { position:relative; width:228px; padding:38px 14px 14px; color:#eddfbd; background:#171714; border:1px solid #8a6b40; border-radius:4px; box-shadow:4px 12px 22px #0009; }.ds-sight ol { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:0; padding:0; list-style:none; }.ds-sight li { min-width:0; }.ds-sight .ds-order { margin:0 0 8px; color:#cfbf9f; font:.85rem Georgia,serif; }.ds-sight .ds-mini-card { aspect-ratio:2/3; display:grid; grid-template-rows:1fr auto; overflow:hidden; border:2px solid #8a6b40; border-radius:6px; background:#242e2b; box-shadow:2px 6px 10px #0009; }.ds-sight .ds-name { min-height:36px; padding:9px 3px; color:#251e15; background:radial-gradient(ellipse at center,#eddfbd,#c7ae81); border-top:2px solid #8a6b40; text-align:center; font:500 .65rem/1.15 Georgia,serif; }.ds-sight .ds-close { position:absolute; top:4px; right:4px; display:grid; place-items:center; width:32px; height:32px; padding:4px; border:0; border-radius:4px; background:transparent; color:#eddfbd; cursor:pointer; box-shadow:none; }.ds-sight .ds-close svg { width:22px; height:22px; }.ds-sight .ds-close:hover { background:#bfa16a1c; color:#f4ce79; }.ds-sight .ds-close:focus-visible { outline:3px solid #f4ce79; outline-offset:5px; } .ds-mirror ol { grid-template-columns:minmax(0,1fr); max-width:160px; margin-inline:auto; }"
     }
   ],
   "narrative": {

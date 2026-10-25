@@ -1,3 +1,5 @@
+import type { ScoreBoard } from '../game/engine.ts'
+
 export type HighScore = Readonly<{
   id: string
   name: string
@@ -7,12 +9,17 @@ export type HighScore = Readonly<{
 
 export interface ScoreStore {
   readonly mode: 'browser' | 'cloud'
-  list(): Promise<HighScore[]>
-  save(entry: HighScore): Promise<HighScore[]>
+  list(board?: ScoreBoard): Promise<HighScore[]>
+  save(entry: HighScore, board?: ScoreBoard): Promise<HighScore[]>
 }
 
 export const SCORE_LIMIT = 10
 export const SCORE_STORAGE_KEY = 'scoundrel.high-scores.v1'
+export const HOUSE_SCORE_STORAGE_KEY = 'scoundrel.house-high-scores.v1'
+
+function storageKey(board: ScoreBoard): string {
+  return board === 'original' ? SCORE_STORAGE_KEY : HOUSE_SCORE_STORAGE_KEY
+}
 
 export function normalizeInitials(value: string): string {
   return value.replace(/[^a-z]/gi, '').toUpperCase().slice(0, 3)
@@ -37,8 +44,8 @@ export function rankScores(entries: readonly HighScore[]): HighScore[] {
 type BrowserStorage = { getItem(key: string): string | null; setItem(key: string, value: string): void }
 
 export function createBrowserScoreStore(storage: () => BrowserStorage): ScoreStore {
-  function read(): HighScore[] {
-    const raw = storage().getItem(SCORE_STORAGE_KEY)
+  function read(board: ScoreBoard): HighScore[] {
+    const raw = storage().getItem(storageKey(board))
     if (raw === null) return []
     let data: unknown
     try { data = JSON.parse(raw) } catch { throw new Error('Saved scores could not be read. Browser data has been left unchanged.') }
@@ -49,13 +56,13 @@ export function createBrowserScoreStore(storage: () => BrowserStorage): ScoreSto
   }
   return {
     mode: 'browser',
-    async list() { return read() },
-    async save(entry) {
+    async list(board = 'original') { return read(board) },
+    async save(entry, board = 'original') {
       if (!isHighScore(entry)) throw new Error('Enter exactly three letters to save your score.')
       // A stable run ID makes a repeated submission idempotent.
-      const previous = read()
+      const previous = read(board)
       const entries = rankScores([...previous.filter(item => item.id !== entry.id), entry])
-      storage().setItem(SCORE_STORAGE_KEY, JSON.stringify(entries))
+      storage().setItem(storageKey(board), JSON.stringify(entries))
       return entries
     },
   }

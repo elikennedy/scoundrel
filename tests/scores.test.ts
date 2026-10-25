@@ -72,3 +72,33 @@ test('cloud selection never silently writes local scores; supports a future adap
   const cloud = { ...browser, mode: 'cloud' as const }
   assert.equal(selectScoreStore(true, browser, cloud), cloud)
 })
+
+test('boards retain independent top tens and preserve existing original scores without migration', async () => {
+  const storage = memoryStorage()
+  const legacy = JSON.stringify([entry('legacy', 5)])
+  storage.setItem(SCORE_STORAGE_KEY, legacy)
+  const store = createBrowserScoreStore(() => storage)
+  assert.deepEqual(await store.list('house'), [])
+  for (let i = 0; i < 12; i++) await store.save(entry(`house-${i}`, i), 'house')
+  assert.equal(storage.getItem(SCORE_STORAGE_KEY), legacy)
+  assert.deepEqual(await store.list('original'), [entry('legacy', 5)])
+  const house = await store.list('house')
+  assert.equal(house.length, 10)
+  assert.equal(house[0].id, 'house-11')
+  await store.save(entry('original-new', 20), 'original')
+  assert.deepEqual(await store.list('house'), house)
+  const reopened = createBrowserScoreStore(() => storage)
+  assert.deepEqual(await reopened.list('house'), house)
+  await reopened.save(entry('house-11', 11), 'house')
+  assert.deepEqual(await reopened.list('house'), house)
+})
+
+test('a damaged board cannot overwrite its data or prevent using the other board', async () => {
+  const storage = memoryStorage()
+  storage.setItem(SCORE_STORAGE_KEY, '{broken')
+  const store = createBrowserScoreStore(() => storage)
+  await assert.rejects(store.list('original'), /could not be read/)
+  await store.save(entry('house'), 'house')
+  assert.deepEqual(await store.list('house'), [entry('house')])
+  assert.equal(storage.getItem(SCORE_STORAGE_KEY), '{broken')
+})

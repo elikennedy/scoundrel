@@ -44,9 +44,11 @@ export function createInitialState(): GameState {
   }
 }
 
-/** Eligibility belongs to the run snapshot, never to mutable presentation preferences. */
-export function isHighScoreEligible(state: GameState): boolean {
-  return state.rules.handicap === 0 && !state.rules.jokers && !state.rules.cosmic && !state.rules.barricades
+export type ScoreBoard = 'original' | 'house'
+
+/** Board selection belongs to the run snapshot, never to mutable preferences. */
+export function getScoreBoard(state: GameState): ScoreBoard {
+  return state.rules.handicap === 0 && !state.rules.jokers && !state.rules.cosmic && !state.rules.barricades ? 'original' : 'house'
 }
 
 export function canFlee(state: GameState): boolean {

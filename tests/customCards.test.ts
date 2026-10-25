@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { applyAction, canFlee, canUseWeapon, createDeck, createCosmicCards, createBarricadeCards, createInitialState, getLegalActions, isCompleteDeck, isHighScoreEligible, shuffleDeck } from '../src/game/index.ts'
+import { applyAction, canFlee, canUseWeapon, createDeck, createCosmicCards, createBarricadeCards, createInitialState, getLegalActions, isCompleteDeck, getScoreBoard, shuffleDeck } from '../src/game/index.ts'
 import type { Card, GameAction, GameState, Monster, Weapon } from '../src/game/index.ts'
 
 const standard = createDeck()
@@ -36,7 +36,7 @@ test('custom options compose with every existing rule combination and validate w
     for (let i = 0; i < 5; i++) assert.equal(isCompleteDeck(deck, rules), true)
     const started = applyAction(createInitialState(), { type: 'start', deck, rules })
     assert.equal(started.ok, true)
-    assert.equal(isHighScoreEligible(started.state), !handicap && !jokers && !cosmic && !barricades)
+    assert.equal(getScoreBoard(started.state), !handicap && !jokers && !cosmic && !barricades ? 'original' : 'house')
     assert.equal(isCompleteDeck([...deck.slice(1), deck[1]], rules), false)
   }
 })
@@ -200,7 +200,7 @@ test('all custom-rule deterministic runs conserve every physical card, remain im
       assert.ok(++steps <= 500)
     }
     assert.equal(typeof state.score, 'number')
-    assert.equal(isHighScoreEligible(state), false)
+    assert.equal(getScoreBoard(state), 'house')
   }
 })
 

@@ -2,10 +2,12 @@ import { useLayoutEffect, useEffect, useRef, useState } from 'react'
 import type { FormEvent, RefObject } from 'react'
 import { scoreStore } from '../scores/config'
 import { normalizeInitials } from '../scores/store'
+import type { ScoreBoard } from '../game'
 import type { HighScore } from '../scores/store'
 import './HighScores.css'
 
-type CompletedRun = Omit<HighScore, 'name'>
+export type CompletedRun = Omit<HighScore, 'name'> & Readonly<{ board: ScoreBoard }>
+const boardLabels = { original: 'Original rules', house: 'House rules' } as const
 const dateFormat = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short', year: 'numeric' })
 const timeFormat = new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' })
 
@@ -14,7 +16,26 @@ function storageError(error: unknown): string {
     : 'Browser storage is unavailable. Allow site storage and try again. You can still play again.'
 }
 
-export function ScoreLedger({ run, onSaving, onReturn }: { run?: CompletedRun; onSaving?: (saving: boolean) => void; onReturn?: () => void }) {
+type LedgerProps = { board: ScoreBoard; run?: CompletedRun; onSaving?: (saving: boolean) => void; onReturn?: () => void }
+
+export function ScoreLedger({ board, run, onSaving, onReturn, onBoardChange }: LedgerProps & { onBoardChange?: (board: ScoreBoard) => void }) {
+  return <section className="score-ledger" aria-labelledby={run ? 'run-scores-title' : 'scores-title'}>
+    <img className="score-plate" src="/art/ui/high-scores-plate.webp" alt="" />
+    <div className="score-ledger-content">
+      <header className="score-ledger-heading">
+        <img className="score-emblem" src="/art/ui/bronze-laurel.webp" alt="" />
+        <div><h2 id={run ? 'run-scores-title' : 'scores-title'}>High scores</h2>
+        <p className="score-scope">{scoreStore.mode === 'browser' ? 'Your best ten descents · This browser' : 'Cloud high scores'}</p></div>
+      </header>
+      {onBoardChange ? <div className="score-boards" role="group" aria-label="High score board">
+        {(['original', 'house'] as const).map(value => <button key={value} type="button" aria-pressed={board === value} onClick={() => onBoardChange(value)}>{boardLabels[value]}</button>)}
+      </div> : <p className="score-board-name">{boardLabels[board]}</p>}
+      <ScoreEntries key={board} board={board} run={run} onSaving={onSaving} onReturn={onReturn} />
+    </div>
+  </section>
+}
+
+function ScoreEntries({ board, run, onSaving, onReturn }: LedgerProps) {
   const [entries, setEntries] = useState<HighScore[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -29,17 +50,17 @@ export function ScoreLedger({ run, onSaving, onReturn }: { run?: CompletedRun; o
   async function load() {
     setLoading(true)
     setError('')
-    try { setEntries(await scoreStore.list()) }
+    try { setEntries(await scoreStore.list(board)) }
     catch (cause) { setError(storageError(cause)) }
     finally { setLoading(false) }
   }
   useEffect(() => {
     let active = true
-    scoreStore.list().then(scores => { if (active) setEntries(scores) })
+    scoreStore.list(board).then(scores => { if (active) setEntries(scores) })
       .catch(cause => { if (active) setError(storageError(cause)) })
       .finally(() => { if (active) setLoading(false) })
     return () => { active = false }
-  }, [])
+  }, [board])
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -50,21 +71,14 @@ export function ScoreLedger({ run, onSaving, onReturn }: { run?: CompletedRun; o
     onSaving?.(true)
     setError('')
     try {
-      setEntries(await scoreStore.save({ ...run, name }))
+      setEntries(await scoreStore.save({ id: run.id, score: run.score, completedAt: run.completedAt, name }, run.board))
       setSaved(true)
     } catch (cause) { setError(storageError(cause)) }
     finally { submitting.current = false; setSaving(false); onSaving?.(false) }
   }
 
   const rank = saved ? entries.findIndex(entry => entry.id === run?.id) + 1 : 0
-  return <section className="score-ledger" aria-labelledby={run ? 'run-scores-title' : 'scores-title'}>
-    <img className="score-plate" src="/art/ui/high-scores-plate.webp" alt="" />
-    <div className="score-ledger-content">
-    <header className="score-ledger-heading">
-      <img className="score-emblem" src="/art/ui/bronze-laurel.webp" alt="" />
-      <div><h2 id={run ? 'run-scores-title' : 'scores-title'}>High scores</h2>
-      <p className="score-scope">{scoreStore.mode === 'browser' ? 'Your best ten descents · This browser' : 'Cloud high scores'}</p></div>
-    </header>
+  return <>
     {run && <div className="score-entry">
       {saved ? <p className="score-saved" role="status" ref={savedMessage} tabIndex={-1}>{rank ? `${name}, your score is No. ${rank}.` : `${name}, your score did not reach the top ten.`}</p>
         : <form onSubmit={save}>
@@ -77,7 +91,7 @@ export function ScoreLedger({ run, onSaving, onReturn }: { run?: CompletedRun; o
         </form>}
     </div>}
     {error && <div className="score-error" role="alert"><p>{error}</p><button className="ledger-action" type="button" disabled={saving || loading} onClick={load}>Try again</button></div>}
-    <div className="score-table-wrap" role="region" aria-label="High score table" tabIndex={entries.length ? 0 : undefined} aria-busy={loading}>
+    <div className="score-table-wrap" role="region" aria-label={`${boardLabels[board]} high score table`} tabIndex={entries.length ? 0 : undefined} aria-busy={loading}>
       <table className="score-table">
         <caption className="sr-only">Ten highest scores, highest first. Ties go to the earlier run. Dates and times are local.</caption>
         <thead><tr><th scope="col">No.</th><th scope="col">Name</th><th scope="col">Score</th><th scope="col">Date &amp; time</th></tr></thead>
@@ -89,16 +103,16 @@ export function ScoreLedger({ run, onSaving, onReturn }: { run?: CompletedRun; o
       {!entries.length && <p className="score-empty">{loading ? 'Opening the ledger…' : error ? 'The ledger is unavailable.' : 'No scores yet. Your next descent could be the first.'}</p>}
     </div>
     {onReturn && <button className="ledger-image-button scores-return" onClick={onReturn} aria-label="Return to game"><img src="/art/ui/return-to-game.webp" alt="" /></button>}
-    </div>
-  </section>
+  </>
 }
 
 export function HighScores({ dialogRef, open, onClose }: { dialogRef: RefObject<HTMLDialogElement | null>; open: boolean; onClose: () => void }) {
+  const [board, setBoard] = useState<ScoreBoard>('original')
   useLayoutEffect(() => {
     if (open) dialogRef.current?.showModal()
     else dialogRef.current?.close()
   }, [open, dialogRef])
   return <dialog className="scores-modal" ref={dialogRef} aria-labelledby="scores-title" onClose={onClose}>
-    {open && <ScoreLedger onReturn={() => dialogRef.current?.close()} />}
+    {open && <ScoreLedger board={board} onBoardChange={setBoard} onReturn={() => dialogRef.current?.close()} />}
   </dialog>
 }
