@@ -2,9 +2,9 @@
 
 Names and illustration concepts for this adaptation of Scoundrel.
 
-The current game uses 44 cards. Clubs and spades J/Q/K/A have danger values 11/12/13/14. Diamonds and hearts J/Q/K/A are optional handicap cards valued 11–14. Handicap 1–4 adds that many distinct random cards from this eight-card pool. Two optional jokers exchange with a discarded card or can be discarded normally. Both options are house rules and exclude a run from high scores.
+The standard deck uses 44 cards: 26 monsters, nine weapons and nine potions. Clubs/spades J/Q/K/A have danger values 11/12/13/14. Optional settings add red cards valued 11–14, two jokers, four cosmic cards and 1–4 copies of each of the four obstacle types. All house-rule runs are excluded from high scores. See [rules and effects](rules.md#optional-house-rules).
 
-Use stable asset IDs such as `clubs-9`, `spades-14`, and `diamonds-5`. Follow [card art direction](card-art-direction.md) when generating illustrations. All 44 playable cards have generated illustrations and catalogue names connected to the interface. See the [artwork index](art/README.md) for prompts, provenance and review. The eight handicap cards and two jokers have their own retained prompts and illustrations.
+Use stable IDs such as `clubs-9`, `cosmic-mirror` and `thorns-1`. The 62 selected paintings cover every playable identity; obstacle copies share artwork. Follow [art direction](card-art-direction.md), and use the [artwork index](art/README.md) for exact prompts, retained variants and selected exports. The concepts below describe illustrations; the engine and rules reference own gameplay.
 
 ## Clubs — Beasts & Abominations
 
@@ -62,9 +62,9 @@ Forged iron, ancient craftsmanship, bloodstained steel and increasingly powerful
 | 9 | Moonsteel Longsword | Elegant silver blade radiating cold blue light |
 | 10 | Emberfang | Ancient greatsword with molten cracks along its edge |
 | J | The Oathbreaker | Black executioner's sword bound in broken chains |
-| Q | Widow's Lament | Ornate enchanted rapier trailing violet spectral mist |
+| Q | Widow's Lament | Ornate enchanted rapier hovering alone in violet spectral mist |
 | K | Kingsbane | Legendary royal greatsword blazing with pale golden fire |
-| A | The Last Needle | Tiny, ancient enchanted stiletto, deceptively delicate |
+| A | The Last Needle | Small ancient enchanted stiletto with credible proportions, hovering above stone |
 
 ## Hearts — Healing, Spirits & Blessings
 
@@ -94,3 +94,23 @@ Rare warmth in a bleak world: woodland magic, alchemy, gentle spirits and ancien
 | Joker 2 | The Briar Trickster | Fey-wild trickster perched on a mossy root beside an ancient forest shrine |
 
 The [house-rule prompt set](art/house-rules-generation.json) records descriptions, exact prompts, retained originals and runtime exports for all ten additions.
+
+## Cosmic cards — Optional fate and foresight
+
+| Asset ID | Name | Illustration concept |
+| --- | --- | --- |
+| cosmic-fate | Hand of Fate | Feminine hand with jewellery, fine tattoos, ornate nails and a silk robe sleeve against an astral background |
+| cosmic-forge | Forge of Destiny | Glowing magical anvil surrounded by a lava lake |
+| cosmic-sight | Devil’s Sight | Shadowy adventurer with eyes glowing with eldritch magic |
+| cosmic-mirror | Mirror of Misfortune | Ornate floating mirror reflecting a distorted violet passage |
+
+## Barricades — Optional obstacles
+
+| Shared asset | Name | Illustration concept |
+| --- | --- | --- |
+| wood | Wooden Barricade | Splintered timber blocking a ruined dungeon passage; cost 1 |
+| rubble | Rubble | Fallen rocks blocking a ruined passage; cost 2 |
+| thorns | Poisoned Thorns | Tangled poison thorns blocking a passage; cost 3 |
+| pit | Pit Trap | Open pit beneath broken flagstones; 1 health, no weapon action |
+
+The barricade toggle adds 1–4 unique copies of each material. Exact prompts, originals and selected exports for all eight cosmic/obstacle paintings live in [the cosmic and barricade manifest](art/cosmic-barricades-generation.json).

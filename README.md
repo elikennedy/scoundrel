@@ -1,10 +1,10 @@
 # Scoundrel
 
-An illustrated, single-player browser adaptation of the dungeon-crawling card game by **Zach Gage and Kurt Bieg**. Survive a 44-card dungeon by choosing when to fight, equip weapons, heal, or flee.
+An illustrated, single-player browser adaptation of the dungeon-crawling card game by **Zach Gage and Kurt Bieg**. Survive the standard 44-card dungeon by choosing when to fight, equip weapons, heal, or flee.
 
 This is an independent adaptation, built with React, TypeScript and Vite. It includes a How to Play guide with an interactive practice room, animated card movement, and a local high score table. Card and interface artwork is AI-generated; original images and prompts are included.
 
-Desktop browsers only. Keyboard controls and reduced motion are supported. The game runs entirely in your browser without an account or backend. Refreshing starts over; high scores and audio preferences persist.
+Desktop browsers only. Keyboard controls and reduced motion are supported. The game runs entirely in your browser without an account or backend. Refreshing starts over; high scores, audio preferences and house-rule settings persist.
 
 ## Run locally
 
@@ -23,9 +23,24 @@ Choose **Enter the dungeon**, then open the question-mark control for rules and 
 
 Use the **Settings** cog beside New game to adjust effects and music, mute either channel, or mute all. Background music begins after a game or audio interaction. Settings are saved in this browser.
 
+## Optional house rules
+
+The bronze **Settings** cog includes these options alongside audio controls. All default off, can be combined, and apply to the next new game. Changing settings does not alter a run already in progress.
+
+| Setting | Effect |
+| --- | --- |
+| Handicap 1–4 | Add that many distinct hearts/diamonds valued 11–14, selected randomly from eight cards |
+| Jokers in | Add two jokers that can be discarded or exchanged for a random discarded card |
+| Cosmic cards in | Add Hand of Fate, Forge of Destiny, Devil’s Sight and Mirror of Misfortune |
+| Barricades in | Add 1–4 each of Wooden Barricade, Rubble, Poisoned Thorns and Pit Trap, with independent counts |
+
+Cosmic cards can reshape the room, reset weapon restrictions or reveal the dungeon. Obstacles cost health or weapon power; Pit Traps allow only the health-cost action. A fully expanded deck has at most 70 cards. The in-game **House rules** chapter illustrates every option; [the rules reference](docs/rules.md#optional-house-rules) records their exact effects and edge cases.
+
+House-rule runs still show a final score but are excluded from the high score board. Turn every option off before starting a new game to make that run eligible.
+
 ## High scores
 
-After a run, optionally enter three letters and choose **Save score**. The ten highest scores are kept in this browser, including negative scores; earlier completion times break ties. Dates display in your local timezone. Clearing site data removes scores, and different browsers or site addresses have separate tables.
+After a standard run with all house rules off, optionally enter three letters and choose **Save score**. The ten highest scores are kept in this browser, including negative scores; earlier completion times break ties. Dates display in your local timezone. Clearing site data removes scores, and different browsers or site addresses have separate tables.
 
 Cloud scores are not implemented. Leave `VITE_CLOUD_STORAGE_ENABLED` at its default `false`; enabling it shows an unavailable message. See [storage architecture](docs/architecture.md#high-score-lifecycle) for the extension point.
 
@@ -35,7 +50,7 @@ Cloud scores are not implemented. Leave `VITE_CLOUD_STORAGE_ENABLED` at its defa
 | --- | --- |
 | `npm ci` | Install locked dependencies |
 | `npm run dev` | Start the development server |
-| `npm test` | Type-check and run engine and score-storage tests |
+| `npm test` | Type-check and run rules, storage, preferences and media tests |
 | `npm run lint` | Run Oxlint |
 | `npm run build` | Type-check and create the static site in `dist/` |
 | `npm run preview` | Preview the build locally, normally on port 4173 |
@@ -56,5 +71,3 @@ To publish your own copy, follow the [self-hosting guide](docs/hosting.md). Only
 Scoundrel was created by Zach Gage and Kurt Bieg. Read their [original rules](https://www.stfj.net/art/2011/Scoundrel.pdf).
 
 This repository's original application, engine implementation and artwork are offered under the [MIT License](LICENSE), subject to the scope in [NOTICE](NOTICE). The original Scoundrel rules, rulebook and other third-party materials are excluded from that grant. This is not an official release by the game's creators.
-
-Optional house rules are available from the bronze Settings cog: handicap 1–4 adds random high-value red cards; Jokers in adds two tricksters that can exchange with a discarded card. Settings apply to the next new game. House-rule runs show a final score and are excluded from high scores. See [rules](docs/rules.md) and [art prompts](docs/art/house-rules-generation.json).

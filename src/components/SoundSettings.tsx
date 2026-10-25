@@ -54,9 +54,13 @@ export function SoundSettings({ dialogRef, open, onClose, rules, onRulesChange }
         </select></div>
         <p id="handicap-help">Add randomly chosen hearts and diamonds valued 11–14.</p>
         <div className="house-setting-row"><label htmlFor="jokers">Jokers</label><select id="jokers" value={rules.jokers ? 'in' : 'out'} onChange={event => onRulesChange({ ...rules, jokers: event.target.value === 'in' })}><option value="out">Jokers out</option><option value="in">Jokers in</option></select></div>
-        <p>Applies to your next new game. House rules runs show a final score and are excluded from high scores.</p>
+        <div className="house-setting-row"><label htmlFor="cosmic">Cosmic cards</label><select id="cosmic" value={rules.cosmic ? 'in' : 'out'} onChange={event => onRulesChange({ ...rules, cosmic: event.target.value === 'in' })}><option value="out">Cosmic cards out</option><option value="in">Cosmic cards in</option></select></div>
+        <div className="house-setting-row"><label htmlFor="barricades">Barricades</label><select id="barricades" value={rules.barricades ? 'in' : 'out'} onChange={event => onRulesChange({ ...rules, barricades: event.target.value === 'in' })}><option value="out">Barricades out</option><option value="in">Barricades in</option></select></div>
+        <p>Add 1–4 each of wood, rubble, Poisoned Thorns and Pit Traps, chosen independently.</p>
+
       </section>
       </div>
+      <p className="settings-note">Changes apply to new games. Runs with any house rule show a final score and are excluded from high scores.</p>
       <button className="sound-return" onClick={() => dialogRef.current?.close()} aria-label="Return to game"><img src="/art/ui/return-to-game.webp" alt="" /></button>
     </div>
     </>}

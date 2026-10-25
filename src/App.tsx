@@ -2,9 +2,11 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { applyAction, isHighScoreEligible, canFlee, createDeck, createInitialState, shuffleDeck } from './game'
 import type { Card, GameAction, HouseRules } from './game'
 import { RoomCard } from './components/RoomCard'
+import { illustrations } from './components/cardIllustrations'
 import { cardName } from './components/cardPresentation'
 import { GameSidebar } from './components/GameSidebar'
 import { HowToPlay } from './components/HowToPlay'
+import { DrawPile } from './components/DrawPile'
 import { DiscardPile } from './components/DiscardPile'
 import { HighScores, ScoreLedger } from './components/HighScores'
 import type { HighScore } from './scores/store'
@@ -117,6 +119,7 @@ function App() {
     }
     prepareGameAudio({ deferMusic: action.type === 'start' })
     const next = result.state
+    const fateActivated = action.type === 'resolve' && action.cardId === 'cosmic-fate' && action.cosmic === 'activate'
     if ((next.status === 'won' || next.status === 'lost') && next.score !== null && isHighScoreEligible(next)) {
       // getRandomValues also works on plain-HTTP self-hosts, unlike randomUUID.
       const id = Array.from(crypto.getRandomValues(new Uint32Array(4)), value => value.toString(16).padStart(8, '0')).join('')
@@ -133,26 +136,36 @@ function App() {
       const card = game.room.find(c => c.id === action.cardId)!
       void playActionSound(resolutionSound(card, game.potionUsed), signal)
       const target = card.kind === 'weapon' || (card.kind === 'monster' && action.combat === 'weapon') ? equipped : discard
-      if (face && card.kind === 'monster') {
+      if (face && (card.kind === 'monster' || card.kind === 'barricade' || (card.kind === 'cosmic' && card.id === 'cosmic-sight' && action.cosmic === 'activate'))) {
         await slashCard(face, signal)
         if (signal.aborted) return
       }
-      if (face && card.kind === 'potion' && !game.potionUsed) {
+      if (face && ((card.kind === 'potion' && !game.potionUsed) || (card.kind === 'cosmic' && action.cosmic === 'activate' && card.id === 'cosmic-forge'))) {
         await healCard(face, signal)
         if (signal.aborted) return
       }
       if (face && target) {
         flights.push(flyCard(face, hideCardSource(face), target, signal))
       }
-      if (card.kind === 'weapon' && discard) {
+      if ((card.kind === 'weapon' || (game.weapon && !next.weapon)) && discard) {
         document.querySelectorAll<HTMLElement>('.equipped-stack .card-face').forEach((old, i) => {
           flights.push(flyCard(old, hideCardSource(old), discard, signal, { delay: i * 60 }))
         })
       }
     }
-    if (action.type === 'flee') {
+    if (action.type === 'mirror-exchange') {
+      const face = cardElement(action.cardId)
       const draw = document.querySelector('.draw-pile img')?.getBoundingClientRect()
-      if (draw) game.room.forEach((card, i) => {
+      if (face && draw) flights.push(flyCard(face, hideCardSource(face), draw, signal, { flip: 'hide' }))
+    }
+    if (action.type === 'resolve' && action.cardId === 'cosmic-forge' && action.cosmic === 'activate' && discard) {
+      document.querySelectorAll<HTMLElement>('.equipped-stack .weapon-trophy .card-face').forEach((old, i) => {
+        flights.push(flyCard(old, hideCardSource(old), discard, signal, { delay: i * 60 }))
+      })
+    }
+    if (action.type === 'flee' || fateActivated) {
+      const draw = document.querySelector('.draw-pile img')?.getBoundingClientRect()
+      if (draw) game.room.filter(card => !fateActivated || card.id !== 'cosmic-fate').forEach((card, i) => {
         const face = cardElement(card.id)
         if (face) {
           flights.push(flyCard(face, hideCardSource(face), draw, signal, { flip: 'hide', delay: i * 50 }))
@@ -161,9 +174,14 @@ function App() {
     }
     await Promise.all(flights)
     if (signal.aborted) return
-    const previous = action.type === 'start' || action.type === 'flee' ? [] : slots
+    const previous = action.type === 'start' || action.type === 'flee' || fateActivated ? [] : slots
     const nextSlots = Array.from({ length: 4 }, (_, i) => previous[i] && next.room.some(c => c.id === previous[i]!.id) ? previous[i]! : null)
-    if (action.type === 'resolve' && next.status === 'playing' && next.roomNumber !== game.roomNumber) {
+    const mirrorArrival = action.type === 'mirror-exchange' ? game.dungeon[0] : undefined
+    if (mirrorArrival && action.type === 'mirror-exchange') {
+      const outgoingId = action.cardId
+      nextSlots[next.roomNumber !== game.roomNumber ? 3 : slots.findIndex(card => card?.id === outgoingId)] = mirrorArrival
+    }
+    if (action.type === 'resolve' && !fateActivated && next.status === 'playing' && next.roomNumber !== game.roomNumber) {
       const survivorIndex = nextSlots.findIndex(card => card !== null)
       const survivor = nextSlots[survivorIndex]
       if (survivor && survivorIndex !== 3) {
@@ -187,24 +205,32 @@ function App() {
     const newcomers = next.room.filter(c => !nextSlots.some(existing => existing?.id === c.id))
     newcomers.forEach(card => { nextSlots[nextSlots.indexOf(null)] = card })
     // The draw pile is on the left: deal the farthest (rightmost) open slot first.
-    incoming.current = [...newcomers].sort((a, b) =>
+    const arrivals = [...newcomers, ...(mirrorArrival ? [mirrorArrival] : [])]
+    incoming.current = arrivals.sort((a, b) =>
       nextSlots.findIndex(card => card?.id === b.id) - nextSlots.findIndex(card => card?.id === a.id))
     returningCard.current = swapped?.id ?? null
     if (swapped) incoming.current.push(swapped)
-    setHiddenCards([...newcomers, ...(swapped ? [swapped] : [])].map(c => c.id))
+    setHiddenCards([...arrivals, ...(swapped ? [swapped] : [])].map(c => c.id))
     setSlots(nextSlots)
     setHealthPreview(null)
-    if (!newcomers.length && !swapped) { locked.current = false; setBusy(false) }
+    if (!arrivals.length && !swapped) { locked.current = false; setBusy(false) }
     let message = ''
     if (action.type === 'start') message = ''
     if (action.type === 'flee') message = `You fled. Room ${next.roomNumber} revealed. You must face this room.`
     if (action.type === 'resolve') {
       const card = game.room.find((entry) => entry.id === action.cardId)!
+      if (card.kind === 'cosmic') message = action.cosmic === 'discard' ? `Discarded ${cardName(card)}.` : card.id === 'cosmic-fate' ? 'Hand of Fate reshuffled the remaining room into the dungeon.' : card.id === 'cosmic-sight' ? `Devil's Sight cost 3 health. Revealed ${next.dungeon.filter(card => next.revealedDungeon.includes(card.id)).map(cardName).join(', ') || 'no cards; the dungeon is empty'}.` : card.id === 'cosmic-mirror' ? `Mirror of Misfortune revealed ${next.dungeon[0] ? cardName(next.dungeon[0]) : 'a card'}. Choose a remaining room card to exchange.` : `Forge of Destiny cleared your weapon target restriction. Power remains ${next.weapon?.power}.`
+      if (card.kind === 'barricade') message = action.combat === 'weapon' ? `Cleared ${cardName(card)} without losing health. ${next.weapon ? `Weapon power reduced to ${next.weapon.power}.` : 'Your weapon was destroyed.'}` : `Cleared ${cardName(card)} barehanded. Lost ${card.value} health.`
       if (card.kind === 'joker') message = action.joker === 'play' ? `${cardName(card)} exchanged for ${swapped ? cardName(swapped) : 'a discarded card'}.` : `Discarded ${cardName(card)}.`
       if (card.kind === 'monster') message = `Defeated ${cardName(card)} ${action.combat === 'weapon' ? 'with your weapon' : 'barehanded'}. Lost ${game.health - next.health} health.`
       if (card.kind === 'weapon') message = `Equipped ${cardName(card)}. Weapon power ${card.value}.`
       if (card.kind === 'potion') message = game.potionUsed ? `Discarded ${cardName(card)}. Healing already used this turn.` : `Drank ${cardName(card)}. Restored ${next.health - game.health} health.`
       if (next.roomNumber !== game.roomNumber && next.status === 'playing') message += ` Room ${next.roomNumber} revealed.`
+    }
+    if (action.type === 'mirror-exchange') {
+      const outgoing = game.room.find(card => card.id === action.cardId)!
+      message = `Exchanged ${cardName(outgoing)} for ${cardName(game.dungeon[0])}. ${cardName(outgoing)} returned to the dungeon.`
+      if (next.roomNumber !== game.roomNumber) message += ` Room ${next.roomNumber} revealed.`
     }
     if (next.status === 'won') message += ` Dungeon cleared. Final score ${next.score}.`
     if (next.status === 'lost') message += ` Your journey ends. Final score ${next.score}.`
@@ -234,12 +260,13 @@ function App() {
         </section>
       ) : (
         <div className="game-layout">
-          <aside className="table-pile draw-pile" aria-label={`Draw pile: ${game.dungeon.length} cards`}><img src="/art/ui/card-back.webp" alt="Draw pile" /><span>Dungeon <strong>{game.dungeon.length}</strong></span></aside>
+          <DrawPile cards={game.dungeon} revealedIds={game.revealedDungeon} mirrorCard={game.mirrorRevealed ? game.dungeon[0] : undefined} />
           <DiscardPile cards={game.discard} />
           <div className="play-area">
 
             <section className="room-section" aria-labelledby="room-title">
               <div className="section-heading"><h2 id="room-title" ref={roomHeading} tabIndex={-1}>Room {game.roomNumber}</h2><span className="turn-counter" aria-label={`${game.resolvedThisRoom} of 3 cards resolved`}>{[0,1,2].map(i => <i key={i} className={i < game.resolvedThisRoom ? 'resolved' : ''} aria-hidden="true" />)}</span>{playing && <button className="flee-control" disabled={busy || !canFlee(game)} title={fleeReason} aria-label={`Flee room. ${fleeReason}`} onClick={() => act({ type: 'flee' })}><span className="medallion escape" aria-hidden="true" /><span>Flee room</span></button>}</div>
+              {game.mirrorRevealed && <p className="mirror-instruction" id="mirror-choice-help">Choose a room card to exchange for {game.dungeon[0] && (illustrations[game.dungeon[0].id]?.name ?? cardName(game.dungeon[0]))}.</p>}
               <div className="room-grid" aria-busy={busy}>{slots.map((card, i) => <div className="room-slot" key={i} style={{ visibility: card && hiddenCards.includes(card.id) ? 'hidden' : undefined }}>{card && <RoomCard card={card} game={game} onAction={act} busy={busy} />}</div>)}</div>
 
             </section>
@@ -256,7 +283,7 @@ function App() {
         <img className="result-emblem" src={game.status === 'won' ? '/art/ui/bronze-chalice.webp' : '/art/ui/bronze-skull.webp?v=1'} alt="" />
         <h2 id="result-title" ref={resultHeading} tabIndex={-1}>{game.status === 'won' ? 'You survived.' : 'Your descent ends.'}</h2>
         <p id="result-score">Final score <strong>{game.score}</strong></p>
-        {(game.rules.handicap > 0 || game.rules.jokers) && <p className="house-run-note">House rules run · excluded from high scores</p>}
+        {!isHighScoreEligible(game) && <p className="house-run-note">House rules run · excluded from high scores</p>}
         <button className="replay-button" disabled={savingScore} onClick={start} aria-label="Play again"><img src="/art/ui/play-again.webp" alt="Play again" /></button>
         </div>
         </div>

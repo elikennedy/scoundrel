@@ -64,5 +64,15 @@ export const illustrations: Partial<Record<Card['id'], CardIllustration>> = {
   "hearts-14": { name: "The First Light", description: "A single radiant flame suspended within an ancient stone shrine", src: "/art/cards/hearts-14.webp" },
   "joker-1": { name: "The Grinning Harlequin", description: "Sneaky and creepy harlequin jester, gaunt sly face, ragged muted burgundy and charcoal motley, crouching beside a ruined crypt doorway, a hand concealing a stolen trinket", src: "/art/cards/joker-1.webp" },
   "joker-2": { name: "The Briar Trickster", description: "Fey-wild trickster with pointed ears, mischievous knowing expression, leaf-and-briar motley and crooked twig crown, perched on a mossy root beside an ancient forest shrine", src: "/art/cards/joker-2.webp" },
+  'cosmic-fate': { name: 'Hand of Fate', description: 'An adorned feminine hand reaching through astral light', src: '/art/cards/cosmic-fate.webp' },
+  'cosmic-mirror': { name: 'Mirror of Misfortune', description: 'An ornate mirror reflecting an impossible and ominous passage', src: '/art/cards/cosmic-mirror.webp' },
+  'cosmic-sight': { name: "Devil's Sight", description: 'A shadowy adventurer with eyes glowing with eldritch magic', src: '/art/cards/cosmic-sight.webp', position: '50% 0%' },
+  'cosmic-forge': { name: 'Forge of Destiny', description: 'A glowing magical anvil surrounded by a lake of lava', src: '/art/cards/cosmic-forge.webp' },
+  ...Object.fromEntries([1, 2, 3, 4].flatMap(copy => [
+    [`wood-${copy}`, { name: 'Wooden Barricade', description: 'Splintered timber blocking a dungeon passage', src: '/art/cards/wood.webp' }],
+    [`rubble-${copy}`, { name: 'Rubble', description: 'Fallen rocks blocking the path', src: '/art/cards/rubble.webp' }],
+    [`thorns-${copy}`, { name: 'Poisoned Thorns', description: 'A tangled mass of poisonous thorns blocking the path', src: '/art/cards/thorns.webp' }],
+    [`pit-${copy}`, { name: 'Pit Trap', description: 'A hidden pit exposed in the dungeon floor', src: '/art/cards/pit.webp' }],
+  ])),
 }
 

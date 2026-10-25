@@ -115,7 +115,7 @@ test('weapon combat reduces damage, allows equal targets and rejects higher targ
 })
 
 test('barehanded combat preserves weapon history; weak monsters cause zero weapon damage', () => {
-  const equipped = { card: weapon('diamonds-10'), monsters: [monster('clubs-5')] }
+  const equipped = { card: weapon('diamonds-10'), power: 10, monsters: [monster('clubs-5')] }
   let state = scenario(['clubs-9', 'spades-2'], { weapon: equipped })
   state = resolve(state, 'clubs-9', 'barehanded')
   assert.equal(state.health, 11)
@@ -127,7 +127,7 @@ test('barehanded combat preserves weapon history; weak monsters cause zero weapo
 })
 
 test('replacement is binding and discards old weapon and all attached monsters', () => {
-  const equipped = { card: weapon('diamonds-10'), monsters: [monster('clubs-5'), monster('spades-2')] }
+  const equipped = { card: weapon('diamonds-10'), power: 10, monsters: [monster('clubs-5'), monster('spades-2')] }
   const state = resolve(scenario(['diamonds-2', 'clubs-14'], { weapon: equipped }), 'diamonds-2')
   assert.deepEqual(state.discard.map((entry) => entry.id), ['diamonds-10', 'clubs-5', 'spades-2'])
   assert.equal(state.weapon?.card.value, 2)

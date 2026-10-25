@@ -17,7 +17,8 @@ Runtime assets are under `public/art/ui/`. This directory holds originals and ex
 | `return-to-game.webp` | [return-to-game-original.png](return-to-game-original.png) | [Return to game](return-to-game.md) |
 | `high-scores-plate.webp` | [high-scores-plate-original.png](high-scores-plate-original.png) | [High score plate](high-scores-plate.md) |
 | `bronze-laurel.webp` | [bronze-laurel-original.png](bronze-laurel-original.png) | [High score emblem](bronze-laurel.md) |
-| `laurel-medallion.webp`, `nav-restart.webp`, `nav-sound.webp`, `nav-help.webp` | [Laurel medallion original](laurel-medallion-original.png), existing control/speaker originals | [Navigation medallions](laurel-medallion.md) |
+| `laurel-medallion.webp`, `nav-restart.webp`, `nav-help.webp` | [Laurel medallion original](laurel-medallion-original.png), existing control original | [Navigation medallions](laurel-medallion.md) |
+| `settings-medallion.webp` | [settings-medallion-original.png](settings-medallion-original.png) | [Settings cog](settings-medallion.md) |
 | `sound-medallion.webp` | [sound-medallion-original.png](sound-medallion-original.png) | [Sound settings](sound-medallion.md) |
 | `save-score.webp` | [save-score-original.png](save-score-original.png) | [Save score](save-score.md) |
 

@@ -10,7 +10,7 @@ New here? Start with the [README](../README.md) to run the game, or the [rules](
 | [Self-hosting](hosting.md) | Static deployment, configuration, updates and troubleshooting |
 | [Product scope](../PRODUCT.md) | Capabilities, constraints and possible future work |
 | [Design system](../DESIGN.md) | Palette, typography, desktop layout, controls and motion |
-| [Rules](rules.md) | Credited baseline and this adaptation's interpretations |
+| [Rules](rules.md) | Credited baseline, interpretations and every optional house rule |
 | [Guide research](guide/research.md) | Source limitations and worked examples |
 
 ## Artwork
@@ -20,6 +20,9 @@ New here? Start with the [README](../README.md) to run the game, or the [rules](
 | [Artwork index](art/README.md) | Original images, exact prompts and selected runtime exports |
 | [Card catalogue](card-catalogue.md) | Names and illustration concepts for standard cards and optional house-rule cards |
 | [Art direction](card-art-direction.md) | Composition, cropping and replacement guidance |
+| [Standard card prompts](art/card-generation.jsonl) | Original deck and retained correction |
+| [Red-card and joker prompts](art/house-rules-generation.json) | Handicap/joker originals, revisions and selected exports |
+| [Cosmic and obstacle prompts](art/cosmic-barricades-generation.json) | All eight cosmic/obstacle paintings and selected exports |
 
 ## Keeping documentation useful
 

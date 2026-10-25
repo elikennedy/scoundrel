@@ -8,6 +8,8 @@ export function resolutionSound(card: Card, potionUsed: boolean): string | null 
     return `${family}-${size}`
   }
   if (card.kind === 'weapon') return 'equip'
+  if (card.kind === 'barricade') return 'decard'
+  if (card.kind === 'cosmic') return 'decard'
   if (card.kind === 'joker') return 'decard'
   if (potionUsed) return 'decard'
   if (card.id === 'hearts-6') return 'clay-uncork'

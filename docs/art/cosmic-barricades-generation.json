@@ -1,0 +1,82 @@
+[
+  {
+    "id": "cosmic-fate",
+    "name": "Hand of Fate",
+    "concept": "A single graceful feminine hand emerging from the visible end of a rich silk robe sleeve, fine delicate tattoos, elegant ornate long nails and intricate gemstone rings and jewelry, fingers poised in a mysterious gesture, against an astral cosmic background of deep violet nebulae, distant stars and subtle luminous dust. Anatomically credible hand with exactly five natural fingers. Only the hand, sleeve and wrist are visible; no face or full person.",
+    "prompt": "Use case: stylized-concept. Asset type: original Scoundrel fantasy card illustration, Hand of Fate. Primary request: A single graceful feminine hand emerging from the visible end of a rich silk robe sleeve, fine delicate tattoos, elegant ornate long nails and intricate gemstone rings and jewelry, fingers poised in a mysterious gesture, against an astral cosmic background of deep violet nebulae, distant stars and subtle luminous dust. Anatomically credible hand with exactly five natural fingers. Only the hand, sleeve and wrist are visible; no face or full person. Lighting/mood: Ethereal violet and muted gold cosmic light, darkness and painterly atmospheric depth. Style/medium: dark gritty fantasy, realistic painterly rendering, weathered tactile materials, rich environmental storytelling, clear readable subject and restrained palette consistent with a candlelit dungeon card collection. Composition/framing: portrait approximately1024x1536; focal subject centered slightly right, important details within generous safe margins and upper two thirds for card crop, subdued upper-left for a future value banner. Constraints: illustration only, no text, lettering, numerals, question marks, icons, borders, nameplates, logos or interface. Original design.",
+    "original": "docs/art/originals/cosmic-fate.png",
+    "runtime": "public/art/cards/cosmic-fate.webp",
+    "generationSource": "docs/art/originals/cosmic-fate.png",
+    "selected": true
+  },
+  {
+    "id": "cosmic-forge",
+    "name": "Forge of Destiny",
+    "concept": "A single glowing magical anvil on an ancient basalt forge island surrounded by a lake of flowing lava, arcane heat shimmering over weathered forged iron and subtle violet magical energy enveloping the anvil. Anvil is the unmistakable central subject, no smith, no people, no weapons held in hands.",
+    "prompt": "Use case: stylized-concept. Asset type: original Scoundrel fantasy card illustration, Forge of Destiny. Primary request: A single glowing magical anvil on an ancient basalt forge island surrounded by a lake of flowing lava, arcane heat shimmering over weathered forged iron and subtle violet magical energy enveloping the anvil. Anvil is the unmistakable central subject, no smith, no people, no weapons held in hands. Lighting/mood: Molten amber-orange underlight, restrained violet magic and deep charcoal shadows in a vast volcanic cavern. Style/medium: dark gritty fantasy, realistic painterly rendering, weathered tactile materials, rich environmental storytelling, clear readable subject and restrained palette consistent with a candlelit dungeon card collection. Composition/framing: portrait approximately1024x1536; focal subject centered slightly right, important details within generous safe margins and upper two thirds for card crop, subdued upper-left for a future value banner. Constraints: illustration only, no text, lettering, numerals, question marks, icons, borders, nameplates, logos or interface. Original design.",
+    "original": "docs/art/originals/cosmic-forge.png",
+    "runtime": "public/art/cards/cosmic-forge.webp",
+    "generationSource": "docs/art/originals/cosmic-forge.png",
+    "selected": true
+  },
+  {
+    "id": "wood",
+    "name": "Wooden Barricade",
+    "concept": "A crude wooden barricade of splintered heavy timber planks and rough crossbeams physically blocking a narrow ruined dungeon corridor, old iron nails and frayed rope, damp mossy stone walls and drifting ground mist. Readable silhouette of an improvised wooden obstacle spanning the path. No figures, no faces, no text.",
+    "prompt": "Use case: stylized-concept. Asset type: original Scoundrel fantasy card illustration, Wooden Barricade. Primary request: A crude wooden barricade of splintered heavy timber planks and rough crossbeams physically blocking a narrow ruined dungeon corridor, old iron nails and frayed rope, damp mossy stone walls and drifting ground mist. Readable silhouette of an improvised wooden obstacle spanning the path. No figures, no faces, no text. Lighting/mood: Muted brown wood and mossy olive, a restrained distant candle, cool grey mist and dramatic directional lighting. Style/medium: dark gritty fantasy, realistic painterly rendering, weathered tactile materials, rich environmental storytelling, clear readable subject and restrained palette consistent with a candlelit dungeon card collection. Composition/framing: portrait approximately1024x1536; focal subject centered slightly right, important details within generous safe margins and upper two thirds for card crop, subdued upper-left for a future value banner. Constraints: illustration only, no text, lettering, numerals, question marks, icons, borders, nameplates, logos or interface. Original design.",
+    "original": "docs/art/originals/wood.png",
+    "runtime": "public/art/cards/wood.webp",
+    "generationSource": "docs/art/originals/wood.png",
+    "selected": true
+  },
+  {
+    "id": "rubble",
+    "name": "Rubble",
+    "concept": "A substantial pile of fallen stone blocks, jagged rocks and broken masonry physically blocking the passage through a ruined dungeon corridor, dusty damp rubble, cracked gothic stone arch above and ground mist. Rocks are the single focal subject, low enough to read clearly, no figures or creatures.",
+    "prompt": "Use case: stylized-concept. Asset type: original Scoundrel fantasy card illustration, Rubble. Primary request: A substantial pile of fallen stone blocks, jagged rocks and broken masonry physically blocking the passage through a ruined dungeon corridor, dusty damp rubble, cracked gothic stone arch above and ground mist. Rocks are the single focal subject, low enough to read clearly, no figures or creatures. Lighting/mood: Muted stone greys and earthy browns, damp moss-green shadows, restrained distant candlelight and cool directional light. Style/medium: dark gritty fantasy, realistic painterly rendering, weathered tactile materials, rich environmental storytelling, clear readable subject and restrained palette consistent with a candlelit dungeon card collection. Composition/framing: portrait approximately1024x1536; focal subject centered slightly right, important details within generous safe margins and upper two thirds for card crop, subdued upper-left for a future value banner. Constraints: illustration only, no text, lettering, numerals, question marks, icons, borders, nameplates, logos or interface. Original design.",
+    "original": "docs/art/originals/rubble.png",
+    "runtime": "public/art/cards/rubble.webp",
+    "generationSource": "docs/art/originals/rubble.png",
+    "selected": true
+  },
+  {
+    "id": "cosmic-sight",
+    "name": "Devil's Sight",
+    "concept": "A shadowy adventurer with eyes glowing with eldritch magic",
+    "prompt": "Use case: stylized-concept. Asset type: original Scoundrel fantasy card illustration, Devil's Sight. Primary request: a mostly shadowy figure of an adventurer standing in a ruined dungeon passage, face and clothing largely lost in darkness, with only their two eyes glowing intensely with eldritch violet-green magic. An original weathered hooded adventurer silhouette, restrained wisps of uncanny light near the eyes, subtle outlines of worn travelling gear. The eyes are the clear focal point; retain mystery and deep shadow rather than illuminating the face. Scene/backdrop: damp ancient gothic dungeon arches and distant grey mist, a restrained distant candle. Style/medium: dark gritty fantasy, realistic painterly rendering, weathered tactile materials, muted earthy colours, dramatic directional lighting, atmospheric depth consistent with a candlelit dungeon card collection. Composition/framing: portrait approximately1024x1536, adventurer slightly right of centre, head and glowing eyes safely within upper middle, generous margins for card crop and subdued upper-left for a value banner. Constraints: illustration only; no text, lettering, numerals, question marks, icons, borders, nameplates, logos or interface. No modern clothing, no cartoon rendering.",
+    "original": "docs/art/originals/cosmic-sight.png",
+    "runtime": "public/art/cards/cosmic-sight.webp",
+    "generationSource": "docs/art/originals/cosmic-sight.png",
+    "selected": true
+  },
+  {
+    "id": "cosmic-mirror",
+    "name": "Mirror of Misfortune",
+    "concept": "An ancient ornate standing hand mirror floating unsupported inside a ruined gothic dungeon chamber, tarnished bronze and blackened silver frame with subtly twisted baroque motifs; its dark glass reflects an impossible violet astral abyss and a distorted ominous echo of the passage ahead. The entire mirror is clearly visible, one focal object, no visible holder, hands or people.",
+    "prompt": "Use case: stylized-concept. Asset type: original Scoundrel fantasy card illustration, Mirror of Misfortune. Primary request: An ancient ornate standing hand mirror floating unsupported inside a ruined gothic dungeon chamber, tarnished bronze and blackened silver frame with subtly twisted baroque motifs; its dark glass reflects an impossible violet astral abyss and a distorted ominous echo of the passage ahead. The entire mirror is clearly visible, one focal object, no visible holder, hands or people. Lighting/mood: Cold violet eldritch light in the mirror, muted bronze highlights, deep charcoal and grey mist. Style/medium: dark gritty fantasy, realistic painterly rendering, weathered tactile materials, rich environmental storytelling, restrained palette and strong readable subject consistent with a candlelit dungeon card collection. Composition/framing: portrait approximately1024x1536; primary subject slightly right of centre, generous safe margins for card crop, focal details within upper two thirds, upper-left subdued for a future value banner. Constraints: illustration only, no text, lettering, numerals, question marks, symbols, borders, nameplates, logos or interface. Original design.",
+    "original": "docs/art/originals/cosmic-mirror.png",
+    "runtime": "public/art/cards/cosmic-mirror.webp",
+    "generationSource": "docs/art/originals/cosmic-mirror.png",
+    "selected": true
+  },
+  {
+    "id": "thorns",
+    "name": "Poisoned Thorns",
+    "concept": "A tangled dense mass of vicious hooked poison thorns and twisted thorny vines completely blocking a narrow ruined dungeon passage, damp dark bark and sharp readable spines, subtle poisonous green sap glistening on the thorns. No flowers, creatures, faces or people; the toxic thorn obstacle is the single focal subject.",
+    "prompt": "Use case: stylized-concept. Asset type: original Scoundrel fantasy card illustration, Poisoned Thorns. Primary request: A tangled dense mass of vicious hooked poison thorns and twisted thorny vines completely blocking a narrow ruined dungeon passage, damp dark bark and sharp readable spines, subtle poisonous green sap glistening on the thorns. No flowers, creatures, faces or people; the toxic thorn obstacle is the single focal subject. Lighting/mood: Muted earthy browns and moss greens, restrained sickly green poison accents, cold grey mist and distant candlelight. Style/medium: dark gritty fantasy, realistic painterly rendering, weathered tactile materials, rich environmental storytelling, restrained palette and strong readable subject consistent with a candlelit dungeon card collection. Composition/framing: portrait approximately1024x1536; primary subject slightly right of centre, generous safe margins for card crop, focal details within upper two thirds, upper-left subdued for a future value banner. Constraints: illustration only, no text, lettering, numerals, question marks, symbols, borders, nameplates, logos or interface. Original design.",
+    "original": "docs/art/originals/thorns.png",
+    "runtime": "public/art/cards/thorns.webp",
+    "generationSource": "docs/art/originals/thorns.png",
+    "selected": true
+  },
+  {
+    "id": "pit",
+    "name": "Pit Trap",
+    "concept": "A treacherous open pit trap in the stone floor of a ruined dungeon corridor, broken flagstones and a collapsed concealed cover framing a dark shaft with jagged wooden stakes below. View at a natural elevated three-quarter angle clearly showing the hole blocking the walking path; believable stone scale and perspective. No figures or bodies.",
+    "prompt": "Use case: stylized-concept. Asset type: original Scoundrel fantasy card illustration, Pit Trap. Primary request: A treacherous open pit trap in the stone floor of a ruined dungeon corridor, broken flagstones and a collapsed concealed cover framing a dark shaft with jagged wooden stakes below. View at a natural elevated three-quarter angle clearly showing the hole blocking the walking path; believable stone scale and perspective. No figures or bodies. Lighting/mood: Damp stone greys, earthy dark browns, distant warm candlelight and deep blue-black pit shadows. Style/medium: dark gritty fantasy, realistic painterly rendering, weathered tactile materials, rich environmental storytelling, restrained palette and strong readable subject consistent with a candlelit dungeon card collection. Composition/framing: portrait approximately1024x1536; primary subject slightly right of centre, generous safe margins for card crop, focal details within upper two thirds, upper-left subdued for a future value banner. Constraints: illustration only, no text, lettering, numerals, question marks, symbols, borders, nameplates, logos or interface. Original design.",
+    "original": "docs/art/originals/pit.png",
+    "runtime": "public/art/cards/pit.webp",
+    "generationSource": "docs/art/originals/pit.png",
+    "selected": true
+  }
+]

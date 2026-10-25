@@ -24,3 +24,7 @@ The engine and [rules contract](../rules.md) resolve ambiguities: equal-value ta
 - Victory: health 13 scores 13; finishing at 20 with a final value-8 potion scores 28.
 
 The tactics paragraphs are qualitative decisions derived from these mechanics, not promises of a winning strategy. The practice controls affect local demonstration state only.
+
+## Optional house rules
+
+Handicap, jokers, cosmic cards and obstacles are user-defined additions to this adaptation, not rules from the sources above. Their exact behaviour is recorded in [Optional house rules](../rules.md#optional-house-rules) and tested in `tests/game.test.ts` and `tests/customCards.test.ts`. The illustrated guide explains these separately; its practice room continues to use the standard deck.

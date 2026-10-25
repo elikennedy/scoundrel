@@ -180,3 +180,27 @@ progress::-moz-progress-bar { background: #b75e46; }
 .house-result .result-content { padding-bottom: 58px; }
 
 .card-face.joker { --card-accent: #563c62; }
+
+.card-face.cosmic { --card-accent: #563c62; }
+.card-face.barricade { --card-accent: #8a6b40; }
+.card-actions .action-cosmic::before { background-image: url('/art/ui/nav-restart.webp'); }
+.card-actions .action-discard::before { background-image: url('/art/ui/card-back.webp'); background-size: 48px 72px; }
+
+.draw-pile.has-sight { transform: none; z-index: 16; }
+.dungeon-sight { position: absolute; left: 138px; top: 0; width: 448px; padding: 14px; color: #eddfbd; background: #171714; border: 1px solid #8a6b40; border-radius: 4px; box-shadow: 4px 12px 22px #0009; }
+.dungeon-sight summary { cursor: pointer; font: 1rem/1.5 Georgia, serif; }
+.dungeon-sight summary span { display: inline; margin-left: 16px; font-size: .85rem; text-decoration: underline; text-underline-offset: 4px; }
+.dungeon-sight ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 12px 0 0; padding: 0; list-style: none; }
+.dungeon-sight li { min-width: 0; }
+.dungeon-sight .sight-order { margin: 0 0 8px; color: #cfbf9f; font: .85rem Georgia, serif; }
+.dungeon-sight .card-face { min-height: 0; border: 2px solid #8a6b40; border-radius: 6px; overflow: hidden; box-shadow: 2px 6px 10px #0009; }
+.dungeon-sight .card-illustration img { border-radius: 0; box-shadow: none; }
+.dungeon-sight .card-nameplate { min-height: 36px; padding: 9px 3px; }
+.dungeon-sight .card-nameplate h3 { font-size: .65rem; }
+.dungeon-sight .value-banner { width: 27px; left: 7px; padding: 5px 2px 11px; gap: 3px; }
+.dungeon-sight .value-banner strong { font-size: 1.1rem; }
+.dungeon-sight .value-banner svg { width: 15px; height: 15px; }
+
+.mirror-instruction { margin: -8px 0 20px; color: #eddfbd; text-align: center; font: 1rem/1.5 Georgia, serif; }
+.dungeon-sight.mirror-sight { width: 228px; }
+.mirror-sight ol { grid-template-columns: minmax(0, 1fr); max-width: 160px; margin-inline: auto; }

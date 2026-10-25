@@ -146,7 +146,7 @@
       },
       "joker": {
         "role": "status",
-        "displayName": "Joker muted purple"
+        "displayName": "Joker and cosmic muted purple"
       },
       "healing": {
         "role": "status",
@@ -199,7 +199,7 @@
       {
         "name": "resolve-travel",
         "value": "320ms",
-        "purpose": "Room card to discard/equipment."
+        "purpose": "Room card to discard/equipment; Forge trophies use the same discard flights."
       },
       {
         "name": "carryover-slide",
@@ -209,7 +209,7 @@
       {
         "name": "flee-flip",
         "value": "640ms",
-        "purpose": "Face-down return with 320ms travel and 50ms stagger."
+        "purpose": "Flee and Hand of Fate return cards face down with 320ms travel and 50ms stagger before redealing."
       },
       {
         "name": "discard-fan",
@@ -224,12 +224,12 @@
       {
         "name": "attack-slash",
         "value": "180ms ease-out / 90ms reduced-motion fade",
-        "purpose": "One upper-left to lower-right strike on the stationary monster; remove before travel and cancel on restart."
+        "purpose": "One upper-left to lower-right strike on a stationary monster, barricade or activated Devil’s Sight; remove before travel and cancel on restart."
       },
       {
         "name": "healing-radiance",
         "value": "180ms ease-out / 90ms reduced-motion fade",
-        "purpose": "A soft diffuse golden glow brightens, expands and fades on healing-card use before travel; no glow for spent-card discards."
+        "purpose": "A soft diffuse golden glow brightens, expands and fades on healing-card use or Forge activation before travel; no glow for spent-card discards."
       }
     ],
     "breakpoints": [
@@ -262,7 +262,7 @@
       "name": "Guide navigation",
       "kind": "nav",
       "description": "Text chapter buttons in the illustrated guide toolbar.",
-      "html": "<nav class=\"ds-nav\" aria-label=\"Guide chapters\"><button>Rules</button><button>Combat</button></nav>",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Guide chapters\"><button>The room</button><button>Combat</button></nav>",
       "css": ".ds-nav { display:flex; gap:22px; }.ds-nav button { cursor:pointer; padding:8px 0; border:0; border-radius:0; background:transparent; color:#d0bc96; font:1rem Georgia,serif; }.ds-nav button:hover { color:#fff0d2; }.ds-nav button:focus-visible { outline:3px solid #f4ce79; outline-offset:5px; }"
     },
     {
@@ -278,6 +278,20 @@
       "description": "HTML rows above the illustrated ledger plate.",
       "html": "<table class=\"ds-scores\"><thead><tr><th>Initials</th><th>Score</th></tr></thead><tbody><tr><th>AAA</th><td>20</td></tr></tbody></table>",
       "css": ".ds-scores { width:100%; border-collapse:collapse; color:#eddfbd; font:1.05rem Georgia,serif; font-variant-numeric:tabular-nums; text-align:left; }.ds-scores thead th { padding:0 8px 10px; border-bottom:1px solid #8a6b40; color:#cfbf9f; font:.75rem system-ui,sans-serif; }.ds-scores td,.ds-scores tbody th { padding:4px 8px; border-bottom:1px solid #8a6b403d; }.ds-scores td:last-child,.ds-scores th:last-child { text-align:right; }"
+    },
+    {
+      "name": "Dungeon sight disclosure",
+      "kind": "custom",
+      "description": "Static native Hide/Show disclosure beside the draw pile for known cards from Sight or Mirror; cards remain ordered until dealt or shuffled.",
+      "html": "<details class=\"ds-sight\" open><summary>Revealed dungeon · 3 <span class=\"ds-hide\">Hide</span><span class=\"ds-show\">Show</span></summary><ol aria-label=\"Revealed cards in draw order\"><li>Next</li><li>Then</li><li>Third</li></ol></details>",
+      "css": ".ds-sight { width:448px; padding:14px; color:#eddfbd; background:#171714; border:1px solid #8a6b40; border-radius:4px; box-shadow:4px 12px 22px #0009; }.ds-sight summary { cursor:pointer; font:1rem/1.5 Georgia,serif; }.ds-sight summary span { display:inline; margin-left:16px; font-size:.85rem; text-decoration:underline; text-underline-offset:4px; }.ds-sight[open] .ds-show,.ds-sight:not([open]) .ds-hide { display:none; }.ds-sight summary:hover { color:#fff0d2; }.ds-sight summary:focus-visible { outline:3px solid #f4ce79; outline-offset:5px; }.ds-sight ol { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:12px 0 0; padding:0; list-style:none; }.ds-sight li { color:#cfbf9f; font:.85rem Georgia,serif; }"
+    },
+    {
+      "name": "Mirror exchange disclosure",
+      "kind": "custom",
+      "description": "Compact native preview of the dungeon top during the mandatory Mirror exchange; remaining room cards offer Exchange until a choice is made.",
+      "html": "<details class=\"ds-sight\" open><summary>Mirror of Misfortune · 1 <span class=\"ds-hide\">Hide</span><span class=\"ds-show\">Show</span></summary><ol aria-label=\"Revealed dungeon cards in draw order\"><li>Next</li></ol></details>",
+      "css": ".ds-sight { width:228px; padding:14px; color:#eddfbd; background:#171714; border:1px solid #8a6b40; border-radius:4px; box-shadow:4px 12px 22px #0009; }.ds-sight summary { cursor:pointer; font:1rem/1.5 Georgia,serif; }.ds-sight summary span { display:inline; margin-left:16px; font-size:.85rem; text-decoration:underline; text-underline-offset:4px; }.ds-sight[open] .ds-show,.ds-sight:not([open]) .ds-hide { display:none; }.ds-sight summary:hover { color:#fff0d2; }.ds-sight summary:focus-visible { outline:3px solid #f4ce79; outline-offset:5px; }.ds-sight ol { display:grid; grid-template-columns:minmax(0,1fr); gap:12px; margin:12px 0 0; padding:0; list-style:none; }.ds-sight li { color:#cfbf9f; font:.85rem Georgia,serif; }"
     }
   ],
   "narrative": {

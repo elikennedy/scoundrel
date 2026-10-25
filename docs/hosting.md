@@ -10,9 +10,9 @@ npm run preview
 
 Check the preview before uploading.
 
-Build on your workstation or a build server, then upload **the contents of `dist/`** to a static web server's document root. Include the entire directory tree, including `assets/` and `art/`. Node.js is needed to build, but is not needed on the web server serving the finished files. The repository, `node_modules/` and retained artwork originals in `docs/` do not need to be published.
+Build on your workstation or a build server, then upload **the contents of `dist/`** to a static web server's document root. Include the entire directory tree, including `assets/`, `art/` and `sound/`. Node.js is needed to build, but is not needed on the web server serving the finished files. The repository, `node_modules/` and retained artwork originals in `docs/` do not need to be published.
 
-Serve the app at the root of a domain or subdomain, such as `https://scoundrel.example.com/`. Artwork currently uses root-relative `/art/...` URLs; hosting under a path such as `/scoundrel/` requires code changes as well as Vite's base-path setting. Open the game over HTTP or HTTPS rather than opening `dist/index.html` directly from disk.
+Serve the app at the root of a domain or subdomain, such as `https://scoundrel.example.com/`. Artwork and audio currently use root-relative `/art/...` and `/sound/...` URLs; hosting under a path such as `/scoundrel/` requires code changes as well as Vite's base-path setting. Open the game over HTTP or HTTPS rather than opening `dist/index.html` directly from disk.
 
 ## Example: Nginx on your own server
 
@@ -24,7 +24,7 @@ On the server, create the document root:
 sudo mkdir -p /var/www/scoundrel
 ```
 
-Copy the contents of the built `dist/` directory into `/var/www/scoundrel/` using your normal deployment or file-transfer tool. The resulting paths should include `/var/www/scoundrel/index.html`, `/var/www/scoundrel/assets/` and `/var/www/scoundrel/art/`. Ensure the Nginx worker can read these files and traverse their directories.
+Copy the contents of the built `dist/` directory into `/var/www/scoundrel/` using your normal deployment or file-transfer tool. The resulting paths should include `/var/www/scoundrel/index.html`, `/var/www/scoundrel/assets/`, `/var/www/scoundrel/art/` and `/var/www/scoundrel/sound/`. Ensure the Nginx worker can read these files and traverse their directories.
 
 Add this server block to Nginx's loaded configuration. On installations that include `/etc/nginx/conf.d/*.conf` inside the `http` block, save it as `/etc/nginx/conf.d/scoundrel.conf`:
 
@@ -70,5 +70,5 @@ Deploy the new `dist/` contents together, ideally by uploading into a new releas
 
 - **Install or build fails:** check Node.js is version 24, install development dependencies with `npm ci`, and retain the committed lockfile.
 - **Blank page or missing artwork:** check the browser's network panel for failed requests. Confirm you deployed everything in `dist/` at the domain root, rather than publishing a nested `dist/` folder or only `index.html`.
-- **Old UI after deployment:** refresh the browser and invalidate any proxy/CDN cache. Avoid long-lived caching of `index.html` and `/art/` files, whose names can remain unchanged between releases. Files in `assets/` have build-generated hashes.
+- **Old UI after deployment:** refresh the browser and invalidate any proxy/CDN cache. Avoid long-lived caching of `index.html`, `/art/` and `/sound/` files, whose names can remain unchanged between releases. Files in `assets/` have build-generated hashes.
 

@@ -2,9 +2,9 @@
 
 Generated with the built-in OpenAI image generation tool. Reference: `public/art/ui/control-0.png`, extracted from the retained `docs/art/ui/bronze-controls-original.png`. Original: `docs/art/ui/laurel-medallion-original.png`. Runtime export: `public/art/ui/laurel-medallion.webp`.
 
-The laurel wreath sits inside the same bronze ring as the other navigation controls. The export preserves alpha, crops to visible artwork bounds measured at 25% alpha (discarding faint source padding), fits the artwork into a 224-pixel square, and centers it on a 256-pixel transparent canvas. All four navigation images use these bounds and 68-pixel buttons.
+The laurel wreath sits inside the same bronze ring as the other navigation controls. The export preserves alpha, crops to visible artwork bounds measured at 25% alpha (discarding faint source padding), fits the artwork into a 224-pixel square, and centers it on a 256-pixel transparent canvas. The current navigation images, including the [Settings cog](settings-medallion.md), use these bounds and 68-pixel buttons.
 
-The matching navigation exports are `public/art/ui/nav-restart.webp` and `public/art/ui/nav-help.webp` from the retained bronze control atlas, and `public/art/ui/nav-sound.webp` from `docs/art/ui/sound-medallion-original.png`. The original control sprites and smaller sound export remain in use elsewhere. The unringed `bronze-laurel.webp` remains the decorative emblem in score ledgers.
+The matching navigation exports are `public/art/ui/nav-restart.webp` and `public/art/ui/nav-help.webp` from the retained bronze control atlas. The former `nav-sound.webp` was superseded by the Settings cog and removed from runtime exports. Its retained source is `docs/art/ui/sound-medallion-original.png`; the smaller speaker export remains in use for mute controls. The original control sprites remain in use elsewhere. The unringed `bronze-laurel.webp` remains the decorative emblem in score ledgers.
 
 ## Exact prompt
 

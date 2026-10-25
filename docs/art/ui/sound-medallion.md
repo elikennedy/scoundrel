@@ -2,7 +2,7 @@
 
 Generated with the built-in OpenAI image generation tool. Retained original: `docs/art/ui/sound-medallion-original.png`. Runtime export: `public/art/ui/sound-medallion.webp`.
 
-The reference image was the repository's `public/art/ui/control-0.png`, extracted from `docs/art/ui/bronze-controls-original.png`. The generated speaker replaces the question mark while retaining the circular bronze family. The alpha-preserving export is trimmed, resized to 176 pixels, and centered on a transparent 256-pixel canvas to match the other navigation controls. The overlay reuses the same image for its heading and mute controls; muted controls add a decorative diagonal line in HTML/SVG.
+The reference image was the repository's `public/art/ui/control-0.png`, extracted from `docs/art/ui/bronze-controls-original.png`. The generated speaker replaces the question mark while retaining the circular bronze family. The alpha-preserving export is trimmed, resized to 176 pixels, and centered on a transparent 256-pixel canvas to match the other navigation controls. Settings retains this speaker for its mute controls; the navigation button and heading now use the [cog](settings-medallion.md). Muted controls add a decorative diagonal line in HTML/SVG.
 
 ## Exact prompt
 

@@ -6,17 +6,22 @@ Original artwork created for this repository is covered by the [MIT License](../
 
 ## Cards
 
-All 44 playable cards have unique catalogue names and selected local illustrations. The [catalogue](../card-catalogue.md) owns names/concepts; [art direction](../card-art-direction.md) owns composition and generation constraints.
+The standard deck has 44 unique paintings. Optional house rules add 18 concepts: eight high-value red cards, two jokers, four cosmic cards and four obstacle materials. All 62 selected paintings have local WebP exports. Multiple copies of an obstacle share its painting. The [catalogue](../card-catalogue.md) owns names and concepts; [art direction](../card-art-direction.md) owns composition and generation constraints.
 
-The [generation manifest](card-generation.jsonl) records the original deck prompts: 44 original cards and one ceramic correction for Witch's Remedy. Every record identifies its retained original, whether it is selected, and its runtime path when selected. All asset paths, including generation sources, are relative to the repository root and point to retained files rather than machine-specific generation caches.
+| Manifest | Retained generations |
+| --- | --- |
+| [Standard deck](card-generation.jsonl) | 44 initial cards and the ceramic correction for Witch’s Remedy |
+| [High red cards and jokers](house-rules-generation.json) | Ten concepts, including revised hovering weapons for diamonds 12 and 14 |
+| [Cosmic cards and obstacles](cosmic-barricades-generation.json) | Eight concepts and their selected exports |
+
+Every record identifies its exact prompt, retained original, selection status and runtime path when selected. Paths are relative to the repository root; no machine-specific generation cache is needed.
 
 - Originals: `docs/art/originals/` (1024 × 1536 PNGs).
 - Selected exports: `public/art/cards/` (WebP, quality 85).
-- Selection: `src/components/cardIllustrations.ts` maps every engine card ID to its artwork and name.
-- Witch's Remedy: `hearts-6-v2.png` / `hearts-6-v2.webp` is the selected earthenware bottle. `hearts-6.png` is the retained glass draft; its duplicate WebP export was removed.
-- Eight high-value red cards and two jokers have generated illustrations for optional house rules; their exact prompts are recorded in [the extension manifest](house-rules-generation.json).
+- Selection: `src/components/cardIllustrations.ts` maps engine card IDs to artwork, names and descriptions.
+- Selected revisions: Witch’s Remedy uses `hearts-6-v2`; Widow’s Lament and The Last Needle use `diamonds-12-v2` and `diamonds-14-v2`. Meaningful drafts and exact prompts remain in the manifests; superseded runtime exports are removed.
 
-The manifest includes the initial Bog Wraith and Thornsteel Blade illustrations as well as the rest of the deck. See [architecture](../architecture.md#validation) for checks when replacing assets.
+See [architecture](../architecture.md#validation) for checks when replacing assets.
 
 ## Interface artwork
 
@@ -25,9 +30,3 @@ See the [UI artwork index](ui/README.md) for runtime assets, exact prompts and o
 ## Replacing artwork
 
 Preserve the original and exact prompt, create a versioned export, update the presentation mapping or component reference, and verify it in the app. Once a replacement is selected, remove the unreferenced runtime export while retaining meaningful source provenance. Review screenshots belong in ignored `.impeccable/review/`, not in the art catalogue.
-
-## House-rule additions
-
-[Exact prompts and export mapping](house-rules-generation.json) cover hearts and diamonds 11–14 plus both jokers. Built-in OpenAI image generation produced these assets; source PNGs are retained under `docs/art/originals/` and selected WebP exports under `public/art/cards/`. The [settings cog](ui/settings-medallion.md) extends the bronze interface controls.
-
-Widow’s Lament (`diamonds-12`) and The Last Needle (`diamonds-14`) use the selected `-v2` originals/exports: isolated hovering weapons, with corrected stiletto proportions. Initial drafts and both generations’ exact prompts remain in the extension manifest; superseded runtime exports are removed.
